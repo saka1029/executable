@@ -2,6 +2,7 @@ package saka1029.executable;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Cons implements List {
 
@@ -51,5 +52,15 @@ public class Cons implements List {
             }
 
         };
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(car, cdr);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Cons cons && cons.car.equals(car) && cons.cdr.equals(cdr);
     }
 }
