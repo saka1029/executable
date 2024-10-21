@@ -1,6 +1,10 @@
 package saka1029.executable;
 
 public interface Executable {
-	void exécute(Context c);
-	void run(Context c);
+	default void execute(Context c) {
+		c.push(this);
+	}
+	default void call(Context c) {
+		execute(c);
+	}
 }
