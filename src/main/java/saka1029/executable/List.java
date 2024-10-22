@@ -10,11 +10,16 @@ public interface List extends Executable, Iterable<Executable> {
         public Iterator<Executable> iterator() {
             return Collections.emptyIterator();
         }
+
+        @Override
+        public String toString() {
+            return "()";
+        }
     };
 
     @Override
-    default void execute(Context c) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+    default void call(Context c) {
+        c.call(iterator());
     }
+
 }

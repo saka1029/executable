@@ -63,4 +63,13 @@ public class Cons implements List {
     public boolean equals(Object obj) {
         return obj instanceof Cons cons && cons.car.equals(car) && cons.cdr.equals(cdr);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("(");
+        sb.append(car);
+        for (List list = cdr; list instanceof Cons cons; list = cons.cdr)
+            sb.append(" ").append(cons.car);
+        return sb.append(")").toString();
+    }
 }
