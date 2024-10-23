@@ -17,6 +17,11 @@ public class Symbol implements Executable {
     }
 
     @Override
+    public void execute(Context c) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public String toString() {
         return name;
     }

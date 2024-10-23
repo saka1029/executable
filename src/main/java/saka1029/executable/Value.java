@@ -1,8 +1,9 @@
 package saka1029.executable;
 
-public interface Value {
+public interface Value extends Executable {
+
 	@Override
-	void execute(Context c) {
+	default void execute(Context c) {
 		c.push(this);
 	}
 }

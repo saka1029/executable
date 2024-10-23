@@ -3,7 +3,7 @@ package saka1029.executable;
 import java.util.Collections;
 import java.util.Iterator;
 
-public interface List extends Executable, Iterable<Executable> {
+public interface List extends Value, Iterable<Executable> {
 
     public static List NIL = new List() {
         @Override
@@ -17,7 +17,6 @@ public interface List extends Executable, Iterable<Executable> {
         }
     };
 
-    @Override
     default void call(Context c) {
         c.call(iterator());
     }
