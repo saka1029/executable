@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import static saka1029.executable.Helper.*;
 
 public class Context{
 
@@ -33,6 +34,18 @@ public class Context{
         executables.addLast(body);
     }
 
+    public void run() {
+        L: for ( ; !executables.isEmpty(); executables.removeLast()) {
+            int currentSize = executables.size();
+            for (Iterator<Executable> it = executables.getLast(); it.hasNext(); ) {
+                it.next().execute(this);
+                if (executables.size() != currentSize)
+                    continue L;
+            }
+        }
+    }
+
+
     @Override
     public String toString() {
         return stack.toString();
@@ -45,6 +58,6 @@ public class Context{
     }
 
     private void initialize() {
-        add("+", c -> c.push(Int.of(((Int)c.pop()).value + ((Int)c.pop()).value)));
+        add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
     }
 }
