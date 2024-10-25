@@ -34,6 +34,12 @@ public class Context{
         executables.addLast(body);
     }
 
+    public void run(List list) {
+        list.execute(this);
+        pop().call(this);
+        run();
+    }
+
     public void run() {
         L: for ( ; !executables.isEmpty(); executables.removeLast()) {
             int currentSize = executables.size();

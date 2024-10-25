@@ -18,7 +18,7 @@ public class Symbol implements Executable {
 
     @Override
     public void execute(Context c) {
-        // TODO Auto-generated method stub
+        c.globals.get(this).execute(c);
     }
 
     @Override

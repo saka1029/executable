@@ -21,6 +21,12 @@ public class Helper {
         return ((Int)e).value;
     }
 
+    public static Symbol s(String name) {
+        return Symbol.of(name);
+    }
+
+    public static List NIL = List.NIL;
+
     public static List l(Executable... es) {
         return Cons.of(es);
     }

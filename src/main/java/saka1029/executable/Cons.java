@@ -39,7 +39,7 @@ public class Cons implements List {
 
             @Override
             public boolean hasNext() {
-                return list.equals(List.NIL);
+                return list instanceof Cons;
             }
 
             @Override
