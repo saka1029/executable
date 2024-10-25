@@ -2,6 +2,7 @@ package saka1029.executable;
 
 import java.util.Collections;
 import java.util.Iterator;
+// import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import saka1029.Common;
@@ -23,7 +24,7 @@ public interface List extends Value, Iterable<Executable> {
     };
 
     default void call(Context c) {
-        logger.info("call: context=%s list=%s".formatted(c, this));
+        // Common.log(logger, Level.INFO, "call: context=%s list=%s", c, this);
         c.call(iterator());
     }
 

@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+// import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import saka1029.Common;
@@ -51,9 +52,9 @@ public class Context{
             int currentSize = executables.size();
             for (Iterator<Executable> it = executables.getLast(); it.hasNext(); ) {
                 Executable e = it.next();
-                logger.info("run execute before: context=%s execute=%s size=%d".formatted(this, e, currentSize));
+                // Common.log(logger, Level.INFO, "run execute before: context=%s execute=%s size=%d", this, e, currentSize);
                 e.execute(this);
-                logger.info("run execute after : context=%s size=%d".formatted(this, executables.size()));
+                // Common.log(logger, Level.INFO, "run execute after : context=%s size=%d", this, executables.size());
                 if (executables.size() != currentSize)
                     continue L;
             }

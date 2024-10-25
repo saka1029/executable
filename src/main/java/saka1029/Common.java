@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -14,15 +15,19 @@ public class Common {
         @Override public String format(LogRecord record){
             // String loggerName = record.getLoggerName();
             String loggerName = record.getLoggerName().replaceFirst("^.+\\.", "");
+            Object[] parameters = record.getParameters();
+            String mess = record.getMessage();
+            String message = parameters == null ? mess : mess.formatted(parameters);
             return String.format("%1$tY-%1$tm-%1$td %1$tT.%1$tL %3$s %4$s: %5$s%6$s%n",
                 new Date(record.getMillis()), record.getSourceClassName(), loggerName,
-                record.getLevel(), record.getMessage(), record.getThrown()==null ? "" : " " + record.getThrown());
+                record.getLevel(), message, record.getThrown()==null ? "" : " " + record.getThrown());
             }
         };
 
     public static Logger logger(Class<?> clazz) {
         initLogger();
-        return Logger.getLogger(clazz.getName());
+        Logger logger = Logger.getLogger(clazz.getName());
+        return logger;
     }
 
     static boolean INIT_LOGGER = false;
@@ -47,6 +52,14 @@ public class Common {
         for (Handler h : Logger.getLogger("").getHandlers())
             if (!h.getFormatter().equals(MY_FORMATTER))
                 h.setFormatter(MY_FORMATTER);
+    }
+
+    public static void log(Logger logger, Level level, String message, Object... parameters) {
+        logger.log(level, message, parameters);
+    }
+
+    public static void log(Logger logger, Level level, String message, Throwable thrown) {
+        logger.log(level, message, thrown);
     }
 
     public static String methodName() {
