@@ -42,7 +42,7 @@ public class TestList {
 
     @Test
     public void testCall() {
-        List list = l(l(i(1)), s("call"));
+        List list = l(l(i(3)), s("call"));
         c.run(list);
         assertEquals(1, c.stack.size());
         assertEquals(i(3), c.pop());

@@ -12,7 +12,8 @@ public class Common {
 
     static final Formatter MY_FORMATTER= new Formatter() {
         @Override public String format(LogRecord record){
-            String loggerName=record.getLoggerName();
+            // String loggerName = record.getLoggerName();
+            String loggerName = record.getLoggerName().replaceFirst("^.+\\.", "");
             return String.format("%1$tY-%1$tm-%1$td %1$tT.%1$tL %3$s %4$s: %5$s%6$s%n",
                 new Date(record.getMillis()), record.getSourceClassName(), loggerName,
                 record.getLevel(), record.getMessage(), record.getThrown()==null ? "" : " " + record.getThrown());

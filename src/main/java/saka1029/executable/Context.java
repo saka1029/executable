@@ -6,9 +6,15 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Logger;
+
+import saka1029.Common;
+
 import static saka1029.executable.Helper.*;
 
 public class Context{
+
+    static final Logger logger = Common.logger(Context.class);
 
     java.util.List<Executable> stack = new ArrayList<>();
 
@@ -41,13 +47,17 @@ public class Context{
     }
 
     public void run() {
-        L: for ( ; !executables.isEmpty(); executables.removeLast()) {
+        L: while (!executables.isEmpty()) {
             int currentSize = executables.size();
             for (Iterator<Executable> it = executables.getLast(); it.hasNext(); ) {
-                it.next().execute(this);
+                Executable e = it.next();
+                logger.info("run execute before: context=%s execute=%s size=%d".formatted(this, e, currentSize));
+                e.execute(this);
+                logger.info("run execute after : context=%s size=%d".formatted(this, executables.size()));
                 if (executables.size() != currentSize)
                     continue L;
             }
+            executables.removeLast();
         }
     }
 
