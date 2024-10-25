@@ -10,6 +10,8 @@ import java.util.Iterator;
 
 public class TestList {
 
+    static Context c = Context.of();
+
     @Test
     public void testNIL() {
         assertEquals("()", NIL.toString());
@@ -28,6 +30,22 @@ public class TestList {
         assertEquals(i(2), it.next());
         assertEquals(s("+"), it.next());
         assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testRun() {
+        List list = l(i(1), i(2), s("+"));
+        c.run(list);
+        assertEquals(1, c.stack.size());
+        assertEquals(i(3), c.pop());
+    }
+
+    @Test
+    public void testCall() {
+        List list = l(l(i(1)), s("call"));
+        c.run(list);
+        assertEquals(1, c.stack.size());
+        assertEquals(i(3), c.pop());
     }
 
 }

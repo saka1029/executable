@@ -65,5 +65,6 @@ public class Context{
 
     private void initialize() {
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
+        add("call", c -> c.pop().call(c));
     }
 }

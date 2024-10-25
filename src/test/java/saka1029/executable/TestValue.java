@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import saka1029.Common;
 
+import static org.junit.Assert.assertEquals;
 import static saka1029.executable.Helper.*;
 
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ public class TestValue {
     public void testInt() {
         List list = l(i(1), i(2), s("+"));
         c.run(list);
-        System.out.println(c);
+        assertEquals(1, c.stack.size());
+        assertEquals(i(3), c.pop());
     }
 }
