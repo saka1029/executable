@@ -31,7 +31,11 @@ public class Helper {
     public static List NIL = List.NIL;
 
     public static List l(Executable... es) {
-        return List.of(es);
+        return Cons.of(es);
+    }
+
+    public static List l(java.util.List<Executable> es) {
+        return Cons.of(es);
     }
 
     public static Define define(Symbol symbol) {

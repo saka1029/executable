@@ -25,10 +25,6 @@ public interface List extends Value, Iterable<Executable> {
 
     default void call(Context c) {
         // Common.log(logger, Level.INFO, "call: context=%s list=%s", c, this);
-        c.call(iterator());
-    }
-
-    public static List of(Executable... es) {
-        return Cons.of(es);
+        c.executables.addLast(iterator());
     }
 }

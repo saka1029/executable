@@ -32,20 +32,4 @@ public class TestList {
         assertFalse(it.hasNext());
     }
 
-    @Test
-    public void testRun() {
-        List list = l(i(1), i(2), s("+"));
-        c.run(list);
-        assertEquals(1, c.stack.size());
-        assertEquals(i(3), c.pop());
-    }
-
-    @Test
-    public void testCall() {
-        List list = l(l(i(3)), s("call"));
-        c.run(list);
-        assertEquals(1, c.stack.size());
-        assertEquals(i(3), c.pop());
-    }
-
 }

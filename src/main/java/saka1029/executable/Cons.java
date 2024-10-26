@@ -50,7 +50,6 @@ public class Cons implements List {
                 list = cons.cdr;
                 return e;
             }
-
         };
     }
 

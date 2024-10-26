@@ -13,6 +13,23 @@ public class TestContext {
     static final Logger logger = Common.logger(TestContext.class);
 
     @Test
+    public void testRun() {
+        Context c = Context.of();
+        List list = l(i(1), i(2), s("+"));
+        c.run(list);
+        assertEquals(1, c.stack.size());
+        assertEquals(i(3), c.pop());
+    }
+
+    @Test
+    public void testCall() {
+        Context c = Context.of();
+        List list = l(l(i(3)), s("call"));
+        c.run(list);
+        assertEquals(1, c.stack.size());
+        assertEquals(i(3), c.pop());
+    }
+    @Test
     public void testIfInt() {
         Context c = Context.of();
         assertEquals(i(0), c.eval(l(TRUE, i(0), i(1), s("if"))));

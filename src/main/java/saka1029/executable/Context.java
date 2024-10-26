@@ -41,9 +41,9 @@ public class Context{
 
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
-    public void call(Iterator<Executable> body) {
-        executables.addLast(body);
-    }
+    // public void call(Iterator<Executable> body) {
+    //     executables.addLast(body);
+    // }
 
     public void run(List list) {
         list.execute(this);

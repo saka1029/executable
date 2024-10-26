@@ -12,12 +12,12 @@ public class Define extends SymbolMacro {
 
     @Override
     public void execute(Context c) {
-        Executable body = c.pop();
+        Executable body = c.pop();  // defineしたときの定義内容を保存
         c.globals.put(symbol, x -> body.call(x));
     }
 
     @Override
     public String toString() {
-        return "define " + symbol;
+        return "= " + symbol;
     }
 }
