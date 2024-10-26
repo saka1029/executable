@@ -5,6 +5,9 @@ public class Helper {
     private Helper() {
     }
 
+    public static Bool TRUE = Bool.TRUE;
+    public static Bool FALSE = Bool.FALSE;
+
     public static Bool b(boolean value) {
         return Bool.of(value);
     }
@@ -28,7 +31,10 @@ public class Helper {
     public static List NIL = List.NIL;
 
     public static List l(Executable... es) {
-        return Cons.of(es);
+        return List.of(es);
     }
 
+    public static Define define(Symbol symbol) {
+        return Define.of(symbol);
+    }
 }

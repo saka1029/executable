@@ -28,4 +28,7 @@ public interface List extends Value, Iterable<Executable> {
         c.call(iterator());
     }
 
+    public static List of(Executable... es) {
+        return Cons.of(es);
+    }
 }

@@ -18,7 +18,10 @@ public class Symbol implements Executable {
 
     @Override
     public void execute(Context c) {
-        c.globals.get(this).execute(c);
+        Executable e = c.globals.get(this);
+        if (e == null)
+            throw new RuntimeException("Symbol '%s' is not defined".formatted(this));
+        e.execute(c);
     }
 
     @Override

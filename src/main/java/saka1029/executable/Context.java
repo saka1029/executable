@@ -35,6 +35,10 @@ public class Context{
         return stack.remove(stack.size() - 1);
     }
 
+    public void dup() {
+        push(stack.get(stack.size() - 1));
+    }
+
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
     public void call(Iterator<Executable> body) {
@@ -45,6 +49,11 @@ public class Context{
         list.execute(this);
         pop().call(this);
         run();
+    }
+
+    public Executable eval(List list) {
+        run(list);
+        return pop();
     }
 
     public void run() {
@@ -75,7 +84,19 @@ public class Context{
     }
 
     private void initialize() {
+        add("dup", c -> c.dup());
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
+        add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
+        add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) + i(r))); });
+        add("/", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) / i(r))); });
+        add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
         add("call", c -> c.pop().call(c));
+        add("if", c-> {
+            Executable otherwise = c.pop(), then = c.pop();
+            if (b(c.pop()))
+                then.call(c);
+            else
+                otherwise.call(c);
+        });
     }
 }
