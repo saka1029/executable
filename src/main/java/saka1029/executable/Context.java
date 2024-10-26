@@ -90,6 +90,12 @@ public class Context{
         add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) + i(r))); });
         add("/", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) / i(r))); });
         add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
+        add("==", c -> { Executable r = c.pop(); c.push(b(c.pop().equals(r))); });
+        add("!=", c -> { Executable r = c.pop(); c.push(b(!c.pop().equals(r))); });
+        add("<", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) < 0)); });
+        add("<=", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) <= 0)); });
+        add(">", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) > 0)); });
+        add(">=", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) >= 0)); });
         add("call", c -> c.pop().call(c));
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();

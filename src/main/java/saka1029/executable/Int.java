@@ -1,6 +1,6 @@
 package saka1029.executable;
 
-public class Int implements Value {
+public class Int implements Comp {
 
     public final int value;
 
@@ -20,6 +20,11 @@ public class Int implements Value {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Int i && i.value == value;
+    }
+
+    @Override
+    public int compareTo(Executable o) {
+        return Integer.compare(value, ((Int)o).value);
     }
 
     @Override

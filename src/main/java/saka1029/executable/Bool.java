@@ -1,6 +1,6 @@
 package saka1029.executable;
 
-public class Bool implements Value {
+public class Bool implements Comp {
 
     public final boolean value;
 
@@ -13,6 +13,11 @@ public class Bool implements Value {
 
     public static Bool of(boolean value) {
         return value ? TRUE : FALSE;
+    }
+
+    @Override
+    public int compareTo(Executable o) {
+        return Boolean.compare(value, ((Bool)o).value);
     }
 
     @Override

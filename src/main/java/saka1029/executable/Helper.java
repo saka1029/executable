@@ -28,6 +28,10 @@ public class Helper {
         return Symbol.of(name);
     }
 
+    public static Comp c(Executable e) {
+        return (Comp) e;
+    }
+
     public static List NIL = List.NIL;
 
     public static List l(Executable... es) {
