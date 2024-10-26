@@ -30,7 +30,14 @@ public class TestContext {
     }
 
     @Test
-    public void testDefine() {
+    public void testDefineInt() {
+        Context c = Context.of();
+        c.run(l(i(9), define(s("nine"))));
+        assertEquals(i(9), c.eval(l(s("nine"))));
+    }
+
+    @Test
+    public void testDefineList() {
         Context c = Context.of();
         c.run(l(l(s("dup"), s("*")), define(s("square"))));
         assertEquals(i(9), c.eval(l(i(3), s("square"))));

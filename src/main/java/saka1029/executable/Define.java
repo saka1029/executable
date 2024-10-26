@@ -13,8 +13,7 @@ public class Define extends SymbolMacro {
     @Override
     public void execute(Context c) {
         Executable body = c.pop();
-        Executable callBody = x -> body.call(x);
-        c.globals.put(symbol, callBody);
+        c.globals.put(symbol, x -> body.call(x));
     }
 
     @Override
