@@ -51,6 +51,7 @@ public class TestContext {
         Context c = Context.of();
         c.run(l(i(9), define(s("nine"))));
         assertEquals(i(9), c.eval(l(s("nine"))));
+        assertEquals("9", c.globals.get(s("nine")).toString());
     }
 
     @Test
@@ -58,5 +59,6 @@ public class TestContext {
         Context c = Context.of();
         c.run(l(l(s("dup"), s("*")), define(s("square"))));
         assertEquals(i(9), c.eval(l(i(3), s("square"))));
+        assertEquals("(dup *)", c.globals.get(s("square")).toString());
     }
 }
