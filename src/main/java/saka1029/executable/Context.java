@@ -2,6 +2,7 @@ package saka1029.executable;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,22 +41,25 @@ public class Context{
         push(stack.get(stack.size() - 1));
     }
 
+    public void swap() {
+        int last = stack.size() - 1, second = last - 1;
+        Collections.swap(stack, last, second);
+    }
+
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
-    // public void call(Iterator<Executable> body) {
-    //     executables.addLast(body);
-    // }
-
     public void run(List list) {
+        Common.log(logger, Level.INFO, "run: %s", list);
         list.execute(this);
         pop().call(this);
         run();
     }
 
     public Executable eval(List list) {
-        Common.log(logger, Level.INFO, "eval: %s", list);
         run(list);
-        return pop();
+        Executable result = pop();
+        Common.log(logger, Level.INFO, "eval: returns %s", result);
+        return result;
     }
 
     public void run() {
@@ -73,7 +77,6 @@ public class Context{
         }
     }
 
-
     @Override
     public String toString() {
         return stack.toString();
@@ -87,6 +90,7 @@ public class Context{
 
     private void initialize() {
         add("dup", c -> c.dup());
+        add("swap", c -> c.swap());
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
         add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
         add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) + i(r))); });

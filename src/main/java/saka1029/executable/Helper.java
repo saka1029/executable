@@ -45,4 +45,8 @@ public class Helper {
     public static Define define(Symbol symbol) {
         return Define.of(symbol);
     }
+
+    public static DefineSet set(Symbol symbol) {
+        return DefineSet.of(symbol);
+    }
 }

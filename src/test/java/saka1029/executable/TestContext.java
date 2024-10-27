@@ -90,4 +90,20 @@ public class TestContext {
         // Common.log(logger, Level.INFO, "list=%s", list);
         assertEquals(list(i(3), i(2), i(1)), c.eval(list));
     }
+
+    @Test
+    public void testDefineReverseByFor() {
+        Context c = Context.of();
+        c.run(list(list(NIL, sym("swap"), list(sym("rcons")), sym("for")), define(sym("reverse"))));
+        assertEquals(list(i(3), i(2), i(1)), c.eval(list(list(i(1), i(2), i(3)), sym("reverse"))));
+    }
+
+    @Test
+    public void testDefineSet() {
+        Context c = Context.of();
+        c.run(list(i(9), define(sym("nine"))));
+        assertEquals(i(9), c.eval(list(sym("nine"))));
+        c.run(list(i(99), set(sym("nine"))));
+        assertEquals(i(99), c.eval(list(sym("nine"))));
+    }
 }
