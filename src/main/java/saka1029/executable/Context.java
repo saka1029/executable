@@ -110,11 +110,20 @@ public class Context{
         add("for", c -> {
             // LIST BLOCK each
             Executable block = c.pop();
-            List list = (List)c.pop();
-            for (Executable e : list) {
-                c.push(e);
-                block.call(c);
-            }
+            Iterator<Executable> iterator = ((List)c.pop()).iterator();
+            executables.addLast(new Iterator<>() {
+                @Override
+                public boolean hasNext() {
+                    return iterator.hasNext();
+                }
+                @Override
+                public Executable next() {
+                    return c -> {
+                        c.push(iterator.next());
+                        block.call(c);
+                    };
+                }
+            });
         });
         add("cons", c -> {
             List cdr = (List)c.pop();

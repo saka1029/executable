@@ -64,9 +64,9 @@ public class TestContext {
     }
 
     @Test
-    public void testEach() {
+    public void testFor() {
         Context c = Context.of();
-        List list = list(list(i(1), i(2), i(3)), list(sym("print")), sym("each"));
+        List list = list(list(i(1), i(2), i(3)), list(sym("print")), sym("for"));
         // Common.log(logger, Level.INFO, "list=%s", list);
         c.run(list);
     }
@@ -84,7 +84,7 @@ public class TestContext {
     }
 
     @Test
-    public void testEachRcons() {
+    public void testReverseByFor() {
         Context c = Context.of();
         List list = list(NIL, list(i(1), i(2), i(3)), list(sym("rcons")), sym("for"));
         // Common.log(logger, Level.INFO, "list=%s", list);
