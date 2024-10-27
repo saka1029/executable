@@ -23,7 +23,7 @@ public class Int implements Comp {
     }
 
     @Override
-    public int compareTo(Executable o) {
+    public int compareTo(Comp o) {
         return Integer.compare(value, ((Int)o).value);
     }
 

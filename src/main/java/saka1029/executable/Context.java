@@ -98,10 +98,10 @@ public class Context{
         add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
         add("==", c -> { Executable r = c.pop(); c.push(b(c.pop().equals(r))); });
         add("!=", c -> { Executable r = c.pop(); c.push(b(!c.pop().equals(r))); });
-        add("<", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) < 0)); });
-        add("<=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) <= 0)); });
-        add(">", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) > 0)); });
-        add(">=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) >= 0)); });
+        add("<", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) < 0)); });
+        add("<=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) <= 0)); });
+        add(">", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) > 0)); });
+        add(">=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) >= 0)); });
         add("call", c -> c.pop().call(c));
         add("print", c -> System.out.println(c.pop()));
         add("if", c-> {
