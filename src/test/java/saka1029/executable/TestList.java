@@ -19,16 +19,16 @@ public class TestList {
 
     @Test
     public void testCons() {
-        assertEquals("(a b)", Cons.of(s("a"), s("b")).toString());
+        assertEquals("(a b)", list(sym("a"), sym("b")).toString());
     }
 
     @Test
     public void testIterator() {
-        List list = l(i(1), i(2), s("+"));
+        List list = list(i(1), i(2), sym("+"));
         Iterator<Executable> it = list.iterator();
         assertEquals(i(1), it.next());
         assertEquals(i(2), it.next());
-        assertEquals(s("+"), it.next());
+        assertEquals(sym("+"), it.next());
         assertFalse(it.hasNext());
     }
 

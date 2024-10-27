@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 // import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +53,7 @@ public class Context{
     }
 
     public Executable eval(List list) {
+        Common.log(logger, Level.INFO, "eval: %s", list);
         run(list);
         return pop();
     }
@@ -92,17 +94,37 @@ public class Context{
         add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
         add("==", c -> { Executable r = c.pop(); c.push(b(c.pop().equals(r))); });
         add("!=", c -> { Executable r = c.pop(); c.push(b(!c.pop().equals(r))); });
-        add("<", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) < 0)); });
-        add("<=", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) <= 0)); });
-        add(">", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) > 0)); });
-        add(">=", c -> { Executable r = c.pop(); c.push(b(c(c.pop()).compareTo(r) >= 0)); });
+        add("<", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) < 0)); });
+        add("<=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) <= 0)); });
+        add(">", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) > 0)); });
+        add(">=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(r) >= 0)); });
         add("call", c -> c.pop().call(c));
+        add("print", c -> System.out.println(c.pop()));
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();
             if (b(c.pop()))
                 then.call(c);
             else
                 otherwise.call(c);
+        });
+        add("for", c -> {
+            // LIST BLOCK each
+            Executable block = c.pop();
+            List list = (List)c.pop();
+            for (Executable e : list) {
+                c.push(e);
+                block.call(c);
+            }
+        });
+        add("cons", c -> {
+            List cdr = (List)c.pop();
+            Executable car = c.pop();
+            c.push(Cons.of(car, cdr));
+        });
+        add("rcons", c -> {
+            Executable car = c.pop();
+            List cdr = (List)c.pop();
+            c.push(Cons.of(car, cdr));
         });
     }
 }

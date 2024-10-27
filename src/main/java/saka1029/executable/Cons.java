@@ -18,14 +18,14 @@ public class Cons implements List {
         return new Cons(car, cdr);
     }
 
-    public static List of(Executable... executables) {
+    public static List list(Executable... executables) {
         List list = List.NIL;
         for (int i = executables.length - 1; i >= 0; --i)
             list = Cons.of(executables[i], list);
         return list;
     }
 
-    public static List of(java.util.List<Executable> executables) {
+    public static List list(java.util.List<Executable> executables) {
         List list = List.NIL;
         for (int i = executables.size() - 1; i >= 0; --i)
             list = Cons.of(executables.get(i), list);

@@ -24,22 +24,22 @@ public class Helper {
         return ((Int)e).value;
     }
 
-    public static Symbol s(String name) {
+    public static Symbol sym(String name) {
         return Symbol.of(name);
     }
 
-    public static Comp c(Executable e) {
+    public static Comp comp(Executable e) {
         return (Comp) e;
     }
 
     public static List NIL = List.NIL;
 
-    public static List l(Executable... es) {
-        return Cons.of(es);
+    public static List list(Executable... es) {
+        return Cons.list(es);
     }
 
-    public static List l(java.util.List<Executable> es) {
-        return Cons.of(es);
+    public static List list(java.util.List<Executable> es) {
+        return Cons.list(es);
     }
 
     public static Define define(Symbol symbol) {
