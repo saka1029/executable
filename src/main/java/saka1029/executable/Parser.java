@@ -65,7 +65,7 @@ public class Parser {
     static boolean isWord(int ch) {
         return switch (ch) {
             case -1, '(', ')' -> false;
-            default -> true;
+            default -> !Character.isWhitespace(ch);
         };
     }
 

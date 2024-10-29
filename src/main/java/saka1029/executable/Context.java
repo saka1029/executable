@@ -46,6 +46,10 @@ public class Context{
         Collections.swap(stack, last, second);
     }
 
+    public void drop() {
+        stack.remove(stack.size() - 1);
+    }
+
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
     public void run(List list) {
@@ -91,6 +95,7 @@ public class Context{
     private void initialize() {
         add("dup", c -> c.dup());
         add("swap", c -> c.swap());
+        add("drop", c -> c.drop());
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
         add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
         add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) + i(r))); });
