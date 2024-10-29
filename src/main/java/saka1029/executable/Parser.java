@@ -2,6 +2,7 @@ package saka1029.executable;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.Map;
 
 public class Parser {
 
@@ -14,6 +15,10 @@ public class Parser {
         this.index = 0;
         get();
         java.util.List<Executable> list = new ArrayList<>();
+        while (ch != -1) {
+            list.add(read());
+            spaces();
+        }
         return Cons.list(list);
     }
 
@@ -30,6 +35,33 @@ public class Parser {
             get();
     }
 
+    List list() {
+        get(); // skip '('
+        java.util.List<Executable> list = new ArrayList<>();
+        while (ch != -1 && ch != ')') {
+            list.add(read());
+            spaces();
+        }
+        get(); // skip ')'
+        return Cons.list(list);
+    }
+
+    Define define() {
+        get(); // skip '='
+        Executable e = read();
+        if (!(e instanceof Symbol symbol))
+            throw error("Symbol expected after '=' but '%s'", e);
+        return Define.of(symbol);
+    }
+
+    DefineSet set() {
+        get(); // skip '!'
+        Executable e = read();
+        if (!(e instanceof Symbol symbol))
+            throw error("Symbol expected after '!' but '%s'", e);
+        return DefineSet.of(symbol);
+    }
+
     static boolean isWord(int ch) {
         return switch (ch) {
             case -1, '(', ')' -> false;
@@ -37,23 +69,21 @@ public class Parser {
         };
     }
 
-    List list() {
-        get(); // skip '('
-        java.util.List<Executable> list = new ArrayList<>();
-        return Cons.list(list);
-    }
-
     static final Pattern INT_PATTERN = Pattern.compile("[+-]?\\d+");
+    static final Map<String, Executable> CONST = Map.of(
+        "true", Bool.TRUE,
+        "false", Bool.FALSE
+    );
 
     Executable word() {
         StringBuilder sb = new StringBuilder();
         while (isWord(ch)) {
-            sb.append(ch);
+            sb.appendCodePoint(ch);
             get();
         }
         String word = sb.toString();
-        return INT_PATTERN.matcher(word).matches()
-            ? Int.of(Integer.parseInt(word))
+        return CONST.containsKey(word) ? CONST.get(word)
+            : INT_PATTERN.matcher(word).matches() ? Int.of(Integer.parseInt(word))
             : Symbol.of(word);
     }
 
@@ -62,6 +92,8 @@ public class Parser {
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
             case '(' -> list();
+            case '=' -> define();
+            case '!' -> set();
             case ')' -> throw error("Unexpected ')'");
             default -> word();
         };
