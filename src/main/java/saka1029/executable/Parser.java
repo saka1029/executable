@@ -37,6 +37,7 @@ public class Parser {
 
     List list() {
         get(); // skip '('
+        spaces();  // skip spaces after '('
         java.util.List<Executable> list = new ArrayList<>();
         while (ch != -1 && ch != ')') {
             list.add(read());
