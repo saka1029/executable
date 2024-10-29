@@ -98,7 +98,7 @@ public class Context{
         add("drop", c -> c.drop());
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
         add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
-        add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) + i(r))); });
+        add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) - i(r))); });
         add("/", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) / i(r))); });
         add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
         add("==", c -> { Executable r = c.pop(); c.push(b(c.pop().equals(r))); });
