@@ -106,4 +106,21 @@ public class TestContext {
         c.run(list(i(99), set(sym("nine"))));
         assertEquals(i(99), c.eval(list(sym("nine"))));
     }
+
+    Parser p = new Parser();
+
+    List parse(String input) {
+        return p.parse(input);
+    }
+
+    Executable eval(Context c, String input) {
+        return c.eval(parse(input));
+    }
+
+    @Test
+    public void testDefineFact() {
+        Context c = Context.of();
+        c.run(parse("(dup 0 <= (drop 1) (dup 1 - *) if) = fact"));
+        assertEquals(i(1), eval(c, "0 fact"));
+    }
 }
