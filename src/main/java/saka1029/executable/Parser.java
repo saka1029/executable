@@ -42,7 +42,7 @@ public class Parser {
             list.add(read());
             spaces();
         }
-        if (ch == -1)
+        if (ch != ')')
             throw error("Unexpected end of input");
         get(); // skip ')'
         return Cons.list(list);
