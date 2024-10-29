@@ -42,6 +42,8 @@ public class Parser {
             list.add(read());
             spaces();
         }
+        if (ch == -1)
+            throw error("Unexpected end of input");
         get(); // skip ')'
         return Cons.list(list);
     }
@@ -65,7 +67,7 @@ public class Parser {
     static boolean isWord(int ch) {
         return switch (ch) {
             case -1, '(', ')' -> false;
-            default -> true;
+            default -> !Character.isWhitespace(ch);
         };
     }
 
