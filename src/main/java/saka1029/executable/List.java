@@ -18,8 +18,13 @@ public interface List extends Value, Iterable<Executable> {
         }
 
         @Override
+        public String toString(String prefix, String suffix) {
+            return prefix + suffix;
+        }
+
+        @Override
         public String toString() {
-            return "()";
+            return toString("(", ")");
         }
     };
 
@@ -27,4 +32,6 @@ public interface List extends Value, Iterable<Executable> {
         // Common.log(logger, Level.INFO, "call: context=%s list=%s", c, this);
         c.executables.addLast(iterator());
     }
+
+    String toString(String prefix, String suffix);
 }

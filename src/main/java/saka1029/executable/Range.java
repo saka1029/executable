@@ -59,8 +59,12 @@ public class Range implements List {
         };
     }
 
+    public String toString(String prefix, String suffix) {
+        return "range%s%d, %d, %d%s".formatted(prefix, start, end, step, suffix);
+    }
+
     @Override
     public String toString() {
-        return "range(%d, %d, %d)".formatted(start, end, step);
+        return toString("(", ")");
     }
 }
