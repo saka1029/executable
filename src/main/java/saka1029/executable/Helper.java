@@ -52,6 +52,12 @@ public class Helper {
         return Cons.list(es);
     }
 
+    public static Cons cons(Executable e) {
+        if (!(e instanceof Cons cons))
+            throw error("'%s' is not cons", e);
+        return cons;
+    }
+
     public static Define define(Symbol symbol) {
         return Define.of(symbol);
     }
