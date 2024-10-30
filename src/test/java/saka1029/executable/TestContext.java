@@ -30,6 +30,19 @@ public class TestContext {
         assertEquals(1, c.stack.size());
         assertEquals(i(3), c.pop());
     }
+
+    @Test
+    public void testRot() {
+        Context c = Context.of();
+        c.push(i(1));
+        c.push(i(2));
+        c.push(i(3));
+        c.rot();
+        assertEquals(i(1), c.pop());
+        assertEquals(i(3), c.pop());
+        assertEquals(i(2), c.pop());
+    }
+
     @Test
     public void testIfInt() {
         Context c = Context.of();

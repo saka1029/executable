@@ -56,4 +56,10 @@ public class TestEval {
         assertEquals(eval("(3 (2 20) 1)"), eval("(1 (2 20) 3) reverse"));
     }
 
+    @Test
+    public void testDefineAppend() {
+        run("(() swap (rcons) for) = append");
+        assertEquals(NIL, eval("() () append"));
+    }
+
 }

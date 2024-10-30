@@ -42,12 +42,20 @@ public class Context{
     }
 
     public void swap() {
-        int last = stack.size() - 1, second = last - 1;
-        Collections.swap(stack, last, second);
+        int top = stack.size() - 1, second = top - 1;
+        Collections.swap(stack, top, second);
     }
 
     public void drop() {
         stack.remove(stack.size() - 1);
+    }
+
+    public void rot() {
+        int i0 = stack.size() - 1, i1 = i0 - 1, i2 = i0 - 2;
+        Executable top = stack.get(i0);
+        stack.set(i0, stack.get(i2));
+        stack.set(i2, stack.get(i1));
+        stack.set(i1, top);
     }
 
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
@@ -96,6 +104,7 @@ public class Context{
         add("dup", c -> c.dup());
         add("swap", c -> c.swap());
         add("drop", c -> c.drop());
+        add("rot", c -> c.rot());
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
         add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
         add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) - i(r))); });
@@ -144,5 +153,6 @@ public class Context{
             List cdr = (List)c.pop();
             c.push(Cons.of(car, cdr));
         });
+        add("null", c -> b(c.pop() == NIL));
     }
 }
