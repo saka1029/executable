@@ -63,12 +63,16 @@ public class Cons implements List {
         return obj instanceof Cons cons && cons.car.equals(car) && cons.cdr.equals(cdr);
     }
 
+    public static String toString(Cons cons, String prefix, String suffix) {
+        StringBuilder sb = new StringBuilder(prefix);
+        sb.append(cons.car);
+        for (List list = cons.cdr; list instanceof Cons c; list = c.cdr)
+            sb.append(" ").append(c.car);
+        return sb.append(suffix).toString();
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("(");
-        sb.append(car);
-        for (List list = cdr; list instanceof Cons cons; list = cons.cdr)
-            sb.append(" ").append(cons.car);
-        return sb.append(")").toString();
+        return toString(this, "(", ")");
     }
 }

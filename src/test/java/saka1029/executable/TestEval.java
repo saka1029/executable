@@ -6,8 +6,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static saka1029.executable.Helper.*;
 
-import java.beans.Transient;
-
 public class TestEval {
 
     Parser p = new Parser();
