@@ -161,5 +161,9 @@ public class Context{
             c.push(cons.car);
             c.push(cons.cdr);
         });
+        add("range", c -> {
+            int step = i(c.pop()), end = i(c.pop()), start = i(c.pop());
+            c.push(Range.of(start, end, step));
+        });
     }
 }

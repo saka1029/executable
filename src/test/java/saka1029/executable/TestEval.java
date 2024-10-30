@@ -6,6 +6,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static saka1029.executable.Helper.*;
 
+import java.beans.Transient;
+
 public class TestEval {
 
     Parser p = new Parser();
@@ -47,6 +49,15 @@ public class TestEval {
     }
 
     @Test
+    public void testDefineSum() {
+        run("(0 swap (+) for) = sum");
+        assertEquals(i(0), eval("() sum"));
+        assertEquals(i(1), eval("(1) sum"));
+        assertEquals(i(3), eval("(1 2) sum"));
+        assertEquals(i(6), eval("(1 2 3) sum"));
+    }
+
+    @Test
     public void testDefineReverse() {
         run("(() swap (rcons) for) = reverse");
         assertEquals(NIL, eval("() reverse"));
@@ -76,6 +87,16 @@ public class TestEval {
         assertEquals(eval("(x a b)"), eval("(x) (a b) append"));
         assertEquals(eval("(x y a b)"), eval("(x y) (a b) append"));
         assertEquals(eval("(x y)"), eval("(x y) () append"));
+    }
+
+    @Test
+    public void testFactByRange() {
+        run("(1 swap 1 swap 1 range (*) for) = fact");
+        assertEquals(i(1), eval("0 fact"));
+        assertEquals(i(1), eval("1 fact"));
+        assertEquals(i(2), eval("2 fact"));
+        assertEquals(i(6), eval("3 fact"));
+        assertEquals(i(24), eval("4 fact"));
     }
 
 }

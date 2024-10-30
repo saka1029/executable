@@ -31,5 +31,4 @@ public class TestList {
         assertEquals(sym("+"), it.next());
         assertFalse(it.hasNext());
     }
-
 }
