@@ -27,7 +27,9 @@ public class Helper {
     }
 
     public static int i(Executable e) {
-        return ((Int)e).value;
+        if (!(e instanceof Int i))
+            throw error("'%s' is not int", e);
+        return i.value;
     }
 
     public static Symbol sym(String name) {
@@ -35,7 +37,9 @@ public class Helper {
     }
 
     public static Comp comp(Executable e) {
-        return (Comp) e;
+        if (!(e instanceof Comp c))
+            throw error("'%s' is not comparable", e);
+        return c;
     }
 
     public static List NIL = List.NIL;
