@@ -157,7 +157,9 @@ public class Context{
         });
         add("null", c -> c.push(b(c.pop() == NIL)));
         add("uncons", c -> {
-            Cons cons = (Cons)c.pop();
+            Executable e = c.pop();
+            if (!(e instanceof Cons cons))
+                throw new RuntimeException("'%s' is not cons".formatted(e));
             c.push(cons.car);
             c.push(cons.cdr);
         });

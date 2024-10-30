@@ -57,6 +57,17 @@ public class TestEval {
     }
 
     @Test
+    public void testReverseByRecursion() {
+        run("(() reverse2) = reverse");
+        run("(dup1 null (swap drop) (swap uncons swap rot cons reverse2) if) = reverse2");
+        assertEquals(NIL, eval("() reverse"));
+        assertEquals(eval("(1)"), eval("(1) reverse"));
+        assertEquals(eval("(2 1)"), eval("(1 2) reverse"));
+        assertEquals(eval("(3 2 1)"), eval("(1 2 3) reverse"));
+        assertEquals(eval("(3 (2 20) 1)"), eval("(1 (2 20) 3) reverse"));
+    }
+
+    @Test
     public void testDefineAppend() {
         run("(swap dup null (drop) (uncons rot append cons) if) = append");
         assertEquals(NIL, eval("() () append"));
