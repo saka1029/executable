@@ -37,8 +37,8 @@ public class Context{
         return stack.remove(stack.size() - 1);
     }
 
-    public void dup() {
-        push(stack.get(stack.size() - 1));
+    public void dup(int index) {
+        push(stack.get(stack.size() - 1 - index));
     }
 
     public void swap() {
@@ -101,7 +101,9 @@ public class Context{
     }
 
     private void initialize() {
-        add("dup", c -> c.dup());
+        add("dup", c -> c.dup(0));
+        add("dup1", c -> c.dup(1));
+        add("dup2", c -> c.dup(2));
         add("swap", c -> c.swap());
         add("drop", c -> c.drop());
         add("rot", c -> c.rot());
@@ -153,6 +155,11 @@ public class Context{
             List cdr = (List)c.pop();
             c.push(Cons.of(car, cdr));
         });
-        add("null", c -> b(c.pop() == NIL));
+        add("null", c -> c.push(b(c.pop() == NIL)));
+        add("uncons", c -> {
+            Cons cons = (Cons)c.pop();
+            c.push(cons.car);
+            c.push(cons.cdr);
+        });
     }
 }

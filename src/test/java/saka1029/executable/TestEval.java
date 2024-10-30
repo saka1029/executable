@@ -58,8 +58,13 @@ public class TestEval {
 
     @Test
     public void testDefineAppend() {
-        run("(() swap (rcons) for) = append");
+        run("(swap dup null (drop) (uncons rot append cons) if) = append");
         assertEquals(NIL, eval("() () append"));
+        assertEquals(eval("(a)"), eval("() (a) append"));
+        assertEquals(eval("(a b)"), eval("() (a b) append"));
+        assertEquals(eval("(x a b)"), eval("(x) (a b) append"));
+        assertEquals(eval("(x y a b)"), eval("(x y) (a b) append"));
+        assertEquals(eval("(x y)"), eval("(x y) () append"));
     }
 
 }

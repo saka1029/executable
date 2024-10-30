@@ -8,12 +8,18 @@ public class Helper {
     public static Bool TRUE = Bool.TRUE;
     public static Bool FALSE = Bool.FALSE;
 
+    static RuntimeException error(String format, Object... args) {
+        return new RuntimeException(format.formatted(args));
+    }
+
     public static Bool b(boolean value) {
         return Bool.of(value);
     }
 
     public static boolean b(Executable e) {
-        return ((Bool)e).value;
+        if (!(e instanceof Bool b))
+            throw error("'%s' is not bool", e);
+        return b.value;
     }
 
     public static Int i(int value) {
