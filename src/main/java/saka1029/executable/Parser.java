@@ -14,9 +14,10 @@ public class Parser {
         this.input = input.codePoints().toArray();
         this.index = 0;
         get();
+        ParseContext pc = new ParseContext();
         java.util.List<Executable> list = new ArrayList<>();
         while (ch != -1) {
-            list.add(read());
+            list.add(read(pc));
             spaces();
         }
         return Cons.list(list);
@@ -35,12 +36,12 @@ public class Parser {
             get();
     }
 
-    List list() {
+    List list(ParseContext pc) {
         get(); // skip '('
         spaces();  // skip spaces after '('
         java.util.List<Executable> list = new ArrayList<>();
         while (ch != -1 && ch != ')') {
-            list.add(read());
+            list.add(read(pc));
             spaces();
         }
         if (ch != ')')
@@ -49,17 +50,17 @@ public class Parser {
         return Cons.list(list);
     }
 
-    Define define() {
+    Define define(ParseContext pc) {
         get(); // skip '='
-        Executable e = read();
+        Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
             throw error("Symbol expected after '=' but '%s'", e);
         return Define.of(symbol);
     }
 
-    DefineSet set() {
+    DefineSet set(ParseContext pc) {
         get(); // skip '!'
-        Executable e = read();
+        Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
             throw error("Symbol expected after '!' but '%s'", e);
         return DefineSet.of(symbol);
@@ -78,7 +79,7 @@ public class Parser {
         "false", Bool.FALSE
     );
 
-    Executable word() {
+    Executable word(ParseContext pc) {
         StringBuilder sb = new StringBuilder();
         while (isWord(ch)) {
             sb.appendCodePoint(ch);
@@ -90,15 +91,15 @@ public class Parser {
             : Symbol.of(word);
     }
 
-    Executable read() {
+    Executable read(ParseContext pc) {
         spaces();
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
-            case '(' -> list();
-            case '=' -> define();
-            case '!' -> set();
+            case '(' -> list(pc);
+            case '=' -> define(pc);
+            case '!' -> set(pc);
             case ')' -> throw error("Unexpected ')'");
-            default -> word();
+            default -> word(pc);
         };
     }
 }
