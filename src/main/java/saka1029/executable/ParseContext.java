@@ -16,5 +16,6 @@ public class ParseContext {
     }
 
     Frame endFrame() {
+        return null;
     }
 }
