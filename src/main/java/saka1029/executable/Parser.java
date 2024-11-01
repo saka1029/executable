@@ -1,6 +1,7 @@
 package saka1029.executable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.Map;
 
@@ -9,6 +10,27 @@ public class Parser {
     int[] input;
     int index;
     int ch;
+
+    static class ParseContext {
+
+        final Map<Symbol, Integer> arguments = new HashMap<>();
+        final java.util.List<Symbol> returns = new ArrayList<>();
+        final java.util.List<Executable> instructions = new ArrayList<>();
+
+        void begin(java.util.List<Symbol> arguments, java.util.List<Symbol> returns) {
+            for (int i = arguments.size() - 1, j = -1; i >= 0; --i, --j)
+                this.arguments.put(arguments.get(i), j);
+            this.returns.addAll(returns);
+        }
+
+        Frame end() {
+            Frame f = new Frame(arguments.size(), returns.size(), Cons.list(instructions));
+            arguments.clear();
+            returns.clear();
+            instructions.clear();
+            return f;
+        }
+    }
 
     public List parse(String input) {
         this.input = input.codePoints().toArray();
