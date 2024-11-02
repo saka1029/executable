@@ -1,5 +1,19 @@
 package saka1029.executable;
 
+/**
+ * Frame:
+ * <pre>
+ * arg1     <- fp-n
+ * ...
+ * argn     <- fp-1
+ * old fp   <- fp
+ * self     <- fp+1
+ * local1   <- fp+2
+ * ...
+ * localm   <- fp+m+1 
+ *                       <-sp
+ * </pre>
+ */
 public class Frame implements Executable {
     
     final int arguments, returns;
