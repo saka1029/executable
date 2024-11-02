@@ -2,6 +2,9 @@ package saka1029.executable;
 
 /**
  * Frame:
+ * 引数の数をn、ローカル変数の数をm、戻り値の数をoとする。
+ * <br>
+ * [Frame起動直後]
  * <pre>
  * arg1     <- fp-n
  * ...
@@ -13,14 +16,38 @@ package saka1029.executable;
  * localm   <- fp+m+1 
  *                       <-sp
  * </pre>
+ * [Frame終了直前]
+ * <pre>
+ * arg1     <- fp-n
+ * ...
+ * argn     <- fp-1
+ * old fp   <- fp
+ * self     <- fp+1
+ * local1   <- fp+2
+ * ...
+ * localm   <- fp+m+1 
+ * ...
+ * ret1
+ * ...
+ * reto
+ *                       <-sp
+ * </pre>
+ * [Frame終了時]
+ * <pre>
+ * ret1
+ * ...
+ * reto
+ *                       <-sp
+ * </pre>
  */
 public class Frame implements Executable {
     
-    final int arguments, returns;
+    final int arguments, locals, returns;
     final List executables;
 
-    Frame(int arguments, int returns, List executables) {
+    Frame(int arguments, int locals, int returns, List executables) {
         this.arguments = arguments;
+        this.locals = locals;
         this.returns = returns;
         this.executables = executables;
     }
