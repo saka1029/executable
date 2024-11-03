@@ -65,9 +65,8 @@ public class Frame implements Executable {
         int to = c.fp - arguments;
         for (int i = 0; i < returns; ++i, ++from, ++to)
             c.stack.set(to, c.stack.get(from));
-        int sp = oldSp = arguments;
         // drop stack
-        while (c.stack.size() > sp)
+        while (c.stack.size() > to)
             c.stack.remove(c.stack.size());
         c.fp = oldFp;
     }
