@@ -9,11 +9,10 @@ package saka1029.executable;
  * arg1     <- fp-n
  * ...
  * argn     <- fp-1
- * old fp   <- fp
- * self     <- fp+1
- * local1   <- fp+2
+ * self     <- fp
+ * local1   <- fp+1
  * ...
- * localm   <- fp+m+1 
+ * localm   <- fp+m 
  *                       <-sp
  * </pre>
  * [Frame終了直前]
@@ -21,11 +20,10 @@ package saka1029.executable;
  * arg1     <- fp-n
  * ...
  * argn     <- fp-1
- * old fp   <- fp
- * self     <- fp+1
- * local1   <- fp+2
+ * self     <- fp
+ * local1   <- fp+1
  * ...
- * localm   <- fp+m+1 
+ * localm   <- fp+m
  * ...
  * ret1
  * ...
@@ -43,27 +41,35 @@ package saka1029.executable;
 public class Frame implements Executable {
     
     final int arguments, locals, returns;
-    final List executables;
+    final List body;
 
-    Frame(int arguments, int locals, int returns, List executables) {
+    Frame(int arguments, int locals, int returns, List body) {
         this.arguments = arguments;
         this.locals = locals;
         this.returns = returns;
-        this.executables = executables;
+        this.body = body;
     }
 
     @Override
     public void execute(Context c) {
-        c.fstack.add(c.stack.size());
-        executables.execute(c);
-        // move return values in stack
-        int sp = c.stack.size(), fp = c.fstack.get(c.fstack.size() - 1), r = fp + returns;
-        for (int i = sp - returns, j = fp; i < returns; i++, j++)
-            c.stack.set(j, c.stack.get(i));
+        int oldSp = c.stack.size(), oldFp = c.fp;
+        c.fp = oldSp;
+        // push self
+        c.stack.add(DefinedBody.of(body));
+        // initialize locals
+        for (int i = 0; i < locals; ++i)
+            c.stack.add(null);
+        // execute
+        body.execute(c);
+        int from = c.stack.size() - returns;
+        int to = c.fp - arguments;
+        for (int i = 0; i < returns; ++i, ++from, ++to)
+            c.stack.set(to, c.stack.get(from));
+        int sp = oldSp = arguments;
         // drop stack
-        while (c.stack.size() > r)
-            c.pop();
-        c.fstack.remove(c.fstack.size() - 1);
+        while (c.stack.size() > sp)
+            c.stack.remove(c.stack.size());
+        c.fp = oldFp;
     }
 
 }
