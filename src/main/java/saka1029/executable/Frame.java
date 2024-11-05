@@ -52,10 +52,11 @@ public class Frame implements Executable {
 
     @Override
     public void execute(Context c) {
-        int oldSp = c.stack.size(), oldFp = c.fp;
-        c.fp = oldSp;
+        // save fp
+        int oldFp = c.fp;
+        int fp = c.fp = c.stack.size();
         // push self
-        c.stack.add(DefinedBody.of(body));
+        c.stack.add(DefinedBody.of(this));
         // initialize locals
         for (int i = 0; i < locals; ++i)
             c.stack.add(null);
@@ -63,7 +64,7 @@ public class Frame implements Executable {
         body.execute(c);
         // move return values
         int from = c.stack.size() - returns;
-        int to = oldSp - arguments;
+        int to = fp - arguments;
         for (int i = 0; i < returns; ++i, ++from, ++to)
             c.stack.set(to, c.stack.get(from));
         // drop stack
