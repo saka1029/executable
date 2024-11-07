@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.Map;
+import java.util.Deque;
+import java.util.ArrayDeque;
 
 public class Parser {
 
@@ -11,24 +13,26 @@ public class Parser {
     int index;
     int ch;
 
-    static class ParseContext {
+    static class LocalContext {
 
-        final Map<Symbol, Integer> arguments = new HashMap<>();
-        final java.util.List<Symbol> returns = new ArrayList<>();
+        final Map<Symbol, Integer> locals = new HashMap<>();
+        int argumentSize, returnSize;
         final java.util.List<Executable> instructions = new ArrayList<>();
+        int localOffset = 0;
 
-        void begin(java.util.List<Symbol> arguments, java.util.List<Symbol> returns) {
+        void begin(java.util.List<Symbol> arguments, int returnSize) {
             for (int i = arguments.size() - 1, j = -1; i >= 0; --i, --j)
-                this.arguments.put(arguments.get(i), j);
-            this.returns.addAll(returns);
+                this.locals.put(arguments.get(i), j);
+            this.returnSize = returnSize;
         }
 
         Frame end() {
-            Frame f = new Frame(arguments.size(), returns.size(), Cons.list(instructions));
-            arguments.clear();
-            returns.clear();
-            instructions.clear();
+            Frame f = new Frame(argumentSize, localOffset, returnSize, Cons.list(instructions));
             return f;
+        }
+
+        void localVariable(Symbol variable) {
+            locals.put(variable, ++localOffset);
         }
     }
 
@@ -36,7 +40,7 @@ public class Parser {
         this.input = input.codePoints().toArray();
         this.index = 0;
         get();
-        ParseContext pc = new ParseContext();
+        Deque<LocalContext> pc = new ArrayDeque<>();
         java.util.List<Executable> list = new ArrayList<>();
         while (ch != -1) {
             list.add(read(pc));
@@ -58,7 +62,7 @@ public class Parser {
             get();
     }
 
-    List list(ParseContext pc) {
+    List list(Deque<LocalContext> pc) {
         get(); // skip '('
         spaces();  // skip spaces after '('
         java.util.List<Executable> list = new ArrayList<>();
@@ -72,7 +76,7 @@ public class Parser {
         return Cons.list(list);
     }
 
-    Define define(ParseContext pc) {
+    Define define(Deque<LocalContext> pc) {
         get(); // skip '='
         Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
@@ -80,7 +84,7 @@ public class Parser {
         return Define.of(symbol);
     }
 
-    DefineSet set(ParseContext pc) {
+    DefineSet set(Deque<LocalContext> pc) {
         get(); // skip '!'
         Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
@@ -101,7 +105,7 @@ public class Parser {
         "false", Bool.FALSE
     );
 
-    Executable word(ParseContext pc) {
+    Executable word(Deque<LocalContext> pc) {
         StringBuilder sb = new StringBuilder();
         while (isWord(ch)) {
             sb.appendCodePoint(ch);
@@ -113,7 +117,7 @@ public class Parser {
             : Symbol.of(word);
     }
 
-    Executable read(ParseContext pc) {
+    Executable read(Deque<LocalContext> pc) {
         spaces();
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
