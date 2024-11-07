@@ -58,7 +58,7 @@ public class Context{
         stack.set(i1, top);
     }
 
-    java.util.List<Integer> fstack = new ArrayList<>();
+    int fp = 0;
 
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
