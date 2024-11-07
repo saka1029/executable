@@ -21,7 +21,8 @@ public class Parser {
         int localOffset = 0;
 
         void begin(java.util.List<Symbol> arguments, int returnSize) {
-            for (int i = arguments.size() - 1, j = -1; i >= 0; --i, --j)
+            this.argumentSize = arguments.size();
+            for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
                 this.locals.put(arguments.get(i), j);
             this.returnSize = returnSize;
         }
