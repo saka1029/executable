@@ -61,7 +61,7 @@ public class Frame implements Value {
         for (int i = 0; i < locals; ++i)
             c.stack.add(null);
         // execute
-        body.execute(c);
+        c.executables.addLast(body.iterator());
         // move return values
         int from = c.stack.size() - returns;
         int to = fp - arguments;
