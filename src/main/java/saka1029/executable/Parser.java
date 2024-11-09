@@ -60,6 +60,19 @@ public class Parser {
             get();
     }
 
+    Symbol symbol() {
+        spaces();
+        StringBuilder sb = new StringBuilder();
+        while (isWord(ch)) {
+            sb.appendCodePoint(ch);
+            get();
+        }
+        String word = sb.toString();
+        if (word.isEmpty() || INT_PATTERN.matcher(word).matches())
+            throw error("Symbol expected but '%s'", word);
+        return Symbol.of(word);
+    }
+
     List list(Deque<LocalContext> pc) {
         get(); // skip '('
         spaces();  // skip spaces after '('
@@ -76,9 +89,7 @@ public class Parser {
 
     SymbolMacro define(Deque<LocalContext> pc) {
         get(); // skip '='
-        Executable e = read(pc);
-        if (!(e instanceof Symbol symbol))
-            throw error("Symbol expected after '=' but '%s'", e);
+        Symbol symbol = symbol();
         if (pc.isEmpty())  // トップレベルなら大域変数
             return DefineGlobal.of(symbol);
         LocalContext lc = pc.getLast();
@@ -90,9 +101,7 @@ public class Parser {
 
     SymbolMacro set(Deque<LocalContext> pc) {
         get(); // skip '!'
-        Executable e = read(pc);
-        if (!(e instanceof Symbol symbol))
-            throw error("Symbol expected after '!' but '%s'", e);
+        Symbol symbol = symbol();
         if (pc.isEmpty())  // トップレベルなら大域変数
             return SetGlobal.of(symbol);
         LocalContext lc = pc.getLast();
@@ -125,9 +134,17 @@ public class Parser {
             get();
         }
         String word = sb.toString();
-        return CONST.containsKey(word) ? CONST.get(word)
-            : INT_PATTERN.matcher(word).matches() ? Int.of(Integer.parseInt(word))
-            : Symbol.of(word);
+        if (CONST.containsKey(word))
+            return CONST.get(word);
+        if (INT_PATTERN.matcher(word).matches())
+            return Int.of(Integer.parseInt(word));
+        Symbol symbol = Symbol.of(word);
+        if (pc.isEmpty())
+            return symbol;
+        LocalContext lc = pc.getLast();
+        if (lc.locals.containsKey(symbol))
+            return GetLocal.of(symbol, lc.locals.get(symbol));
+        return symbol;
     }
 
     Frame frame(Deque<LocalContext> pc) {
@@ -135,10 +152,7 @@ public class Parser {
         spaces();  // skip spaces after '['
         java.util.List<Symbol> arguments = new ArrayList<>();
         while (ch != -1 && ch != ']' && ch != '-' && ch != ':') {
-            Executable e = read(pc);
-            if (!(e instanceof Symbol s))
-                throw error("Symbol expected but '%s'", e);
-            arguments.add(s);
+            arguments.add(symbol());
             spaces();
         }
         if (ch != '-')
@@ -147,10 +161,7 @@ public class Parser {
         spaces(); // skip spaces after '-'
         java.util.List<Symbol> returns = new ArrayList<>();
         while (ch != -1 && ch != ']' && ch != ':') {
-            Executable e = read(pc);
-            if (!(e instanceof Symbol s))
-                throw error("Symbol expected but '%s'", e);
-            returns.add(s);
+            returns.add(symbol());
             spaces();
         }
         if (ch != ':')
