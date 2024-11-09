@@ -38,7 +38,7 @@ package saka1029.executable;
  *                       <-sp
  * </pre>
  */
-public class Frame implements Executable {
+public class Frame implements Value {
     
     final int arguments, locals, returns;
     final List body;
@@ -51,7 +51,7 @@ public class Frame implements Executable {
     }
 
     @Override
-    public void execute(Context c) {
+    public void call(Context c) {
         // save fp
         int oldFp = c.fp;
         int fp = c.fp = c.stack.size();
@@ -69,7 +69,7 @@ public class Frame implements Executable {
             c.stack.set(to, c.stack.get(from));
         // drop stack
         while (c.stack.size() > to)
-            c.stack.remove(c.stack.size());
+            c.stack.remove(c.stack.size() - 1);
         // restore fp
         c.fp = oldFp;
     }

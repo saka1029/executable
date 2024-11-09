@@ -101,9 +101,13 @@ public class Parser {
         return SetLocal.of(symbol, lc.locals.get(symbol));
     }
 
+    static String chString(int ch) {
+        return ch == -1 ? "EOS" : "'%s'".formatted(Character.toUpperCase(ch));
+    }
+
     static boolean isWord(int ch) {
         return switch (ch) {
-            case -1, '(', ')' -> false;
+            case -1, '(', ')', '[', ']' -> false;
             default -> !Character.isWhitespace(ch);
         };
     }
@@ -138,7 +142,7 @@ public class Parser {
             spaces();
         }
         if (ch != '-')
-            throw error("'-' expected but '%s'", Character.toString(ch));
+            throw error("'-' expected but %s", chString(ch));
         get(); // skip '-'
         spaces(); // skip spaces after '-'
         java.util.List<Symbol> returns = new ArrayList<>();
@@ -150,17 +154,19 @@ public class Parser {
             spaces();
         }
         if (ch != ':')
-            throw error("':' expected but '%s'", Character.toString(ch));
+            throw error("':' expected but %s", chString(ch));
         get(); // skip ':'
+        spaces();
         LocalContext lc = new LocalContext(arguments, returns.size());
         pc.add(lc);
         while (ch != -1 && ch != ']') {
             lc.instructions.add(read(pc));
             spaces();
         }
-        if (ch != ')')
-            throw error("')' expected but '%s'", Character.toString(ch));
-        get(); // skip ')'
+        if (ch != ']')
+            throw error("']' expected but %s", chString(ch));
+        get(); // skip ']'
+        pc.removeLast();
         return new Frame(arguments.size(), lc.localOffset, returns.size(), Cons.list(lc.instructions));
     }
 

@@ -122,6 +122,7 @@ public class Context{
         add(">=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) >= 0)); });
         add("call", c -> c.pop().call(c));
         add("print", c -> System.out.println(c.pop()));
+        add("stack", c -> System.out.println(c));
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();
             if (b(c.pop()))
