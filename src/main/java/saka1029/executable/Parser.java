@@ -20,16 +20,11 @@ public class Parser {
         final java.util.List<Executable> instructions = new ArrayList<>();
         int localOffset = 0;
 
-        void begin(java.util.List<Symbol> arguments, int returnSize) {
+        LocalContext(java.util.List<Symbol> arguments, int returnSize) {
             this.argumentSize = arguments.size();
             for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
                 this.locals.put(arguments.get(i), j);
             this.returnSize = returnSize;
-        }
-
-        Frame end() {
-            Frame f = new Frame(argumentSize, localOffset, returnSize, Cons.list(instructions));
-            return f;
         }
 
         int localVariable(Symbol variable) {
@@ -131,14 +126,54 @@ public class Parser {
             : Symbol.of(word);
     }
 
+    Frame frame(Deque<LocalContext> pc) {
+        get(); // skip '['
+        spaces();  // skip spaces after '['
+        java.util.List<Symbol> arguments = new ArrayList<>();
+        while (ch != -1 && ch != ']' && ch != '-' && ch != ':') {
+            Executable e = read(pc);
+            if (!(e instanceof Symbol s))
+                throw error("Symbol expected but '%s'", e);
+            arguments.add(s);
+            spaces();
+        }
+        if (ch != '-')
+            throw error("'-' expected but '%s'", Character.toString(ch));
+        get(); // skip '-'
+        spaces(); // skip spaces after '-'
+        java.util.List<Symbol> returns = new ArrayList<>();
+        while (ch != -1 && ch != ']' && ch != ':') {
+            Executable e = read(pc);
+            if (!(e instanceof Symbol s))
+                throw error("Symbol expected but '%s'", e);
+            returns.add(s);
+            spaces();
+        }
+        if (ch != ':')
+            throw error("':' expected but '%s'", Character.toString(ch));
+        get(); // skip ':'
+        LocalContext lc = new LocalContext(arguments, returns.size());
+        pc.add(lc);
+        while (ch != -1 && ch != ']') {
+            lc.instructions.add(read(pc));
+            spaces();
+        }
+        if (ch != ')')
+            throw error("')' expected but '%s'", Character.toString(ch));
+        get(); // skip ')'
+        return new Frame(arguments.size(), lc.localOffset, returns.size(), Cons.list(lc.instructions));
+    }
+
     Executable read(Deque<LocalContext> pc) {
         spaces();
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
-            case '(' -> list(pc);
             case '=' -> define(pc);
             case '!' -> set(pc);
+            case '(' -> list(pc);
             case ')' -> throw error("Unexpected ')'");
+            case '[' -> frame(pc);
+            case ']' -> throw error("Unexpected ']'");
             default -> word(pc);
         };
     }
