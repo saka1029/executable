@@ -84,8 +84,8 @@ public class Parser {
         Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
             throw error("Symbol expected after '=' but '%s'", e);
-        if (pc.isEmpty())  // トップレベルなら大域定義
-            return Define.of(symbol);
+        if (pc.isEmpty())  // トップレベルなら大域変数
+            return DefineGlobal.of(symbol);
         LocalContext lc = pc.getLast();
         if (lc.locals.containsKey(symbol))
             throw error("Symbol '%s' is alreday defined", symbol);
@@ -93,12 +93,17 @@ public class Parser {
         return DefineLocal.of(symbol, offset);
     }
 
-    DefineSet set(Deque<LocalContext> pc) {
+    SymbolMacro set(Deque<LocalContext> pc) {
         get(); // skip '!'
         Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
             throw error("Symbol expected after '!' but '%s'", e);
-        return DefineSet.of(symbol);
+        if (pc.isEmpty())  // トップレベルなら大域変数
+            return SetGlobal.of(symbol);
+        LocalContext lc = pc.getLast();
+        if (lc.locals.containsKey(symbol))  // ローカルになければ大域変数
+            return SetGlobal.of(symbol);
+        return SetLocal.of(symbol, lc.locals.get(symbol));
     }
 
     static boolean isWord(int ch) {

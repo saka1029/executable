@@ -58,11 +58,11 @@ public class Helper {
         return cons;
     }
 
-    public static Define define(Symbol symbol) {
-        return Define.of(symbol);
+    public static DefineGlobal define(Symbol symbol) {
+        return DefineGlobal.of(symbol);
     }
 
-    public static DefineSet set(Symbol symbol) {
-        return DefineSet.of(symbol);
+    public static SetGlobal set(Symbol symbol) {
+        return SetGlobal.of(symbol);
     }
 }

@@ -1,13 +1,13 @@
 package saka1029.executable;
 
-public class DefineSet extends SymbolMacro {
+public class SetGlobal extends SymbolMacro {
 
-    DefineSet(Symbol symbol) {
+    SetGlobal(Symbol symbol) {
         super(symbol);
     }
 
-    public static DefineSet of(Symbol symbol) {
-        return new DefineSet(symbol);
+    public static SetGlobal of(Symbol symbol) {
+        return new SetGlobal(symbol);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package saka1029.executable;
 
-public class Define extends SymbolMacro {
+public class DefineGlobal extends SymbolMacro {
 
-    Define(Symbol symbol) {
+    DefineGlobal(Symbol symbol) {
         super(symbol);
     }
 
-    public static Define of(Symbol symbol) {
-        return new Define(symbol);
+    public static DefineGlobal of(Symbol symbol) {
+        return new DefineGlobal(symbol);
     }
 
     @Override

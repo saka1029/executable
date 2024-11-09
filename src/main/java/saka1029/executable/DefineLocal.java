@@ -15,8 +15,8 @@ public class DefineLocal extends SymbolMacro {
 
     @Override
     public void execute(Context c) {
-        Executable e = c.stack.get(c.fp + offset);
-        e.execute(c);
+        Executable body = c.pop();
+        c.stack.set(c.fp + offset, DefinedBody.of(body));
     }
 
     @Override
