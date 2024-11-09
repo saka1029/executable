@@ -32,8 +32,10 @@ public class Parser {
             return f;
         }
 
-        void localVariable(Symbol variable) {
-            locals.put(variable, ++localOffset);
+        int localVariable(Symbol variable) {
+            int offset = ++localOffset;
+            locals.put(variable, offset);
+            return offset;
         }
     }
 
@@ -77,12 +79,18 @@ public class Parser {
         return Cons.list(list);
     }
 
-    Define define(Deque<LocalContext> pc) {
+    SymbolMacro define(Deque<LocalContext> pc) {
         get(); // skip '='
         Executable e = read(pc);
         if (!(e instanceof Symbol symbol))
             throw error("Symbol expected after '=' but '%s'", e);
-        return Define.of(symbol);
+        if (pc.isEmpty())  // トップレベルなら大域定義
+            return Define.of(symbol);
+        LocalContext lc = pc.getLast();
+        if (lc.locals.containsKey(symbol))
+            throw error("Symbol '%s' is alreday defined", symbol);
+        int offset = lc.localVariable(symbol);
+        return DefineLocal.of(symbol, offset);
     }
 
     DefineSet set(Deque<LocalContext> pc) {
