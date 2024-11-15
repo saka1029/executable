@@ -21,24 +21,18 @@ public class TestFrame {
     public void testFrameIterator() {
         java.util.List<String> list = java.util.List.of("1", "2", "3");
         Iterator<String> iterator = new Iterator<>() {
-            int index = 0;
+            int index = 0, size = list.size() + 2;
 
             @Override
             public boolean hasNext() {
-                return index < list.size() + 2;
+                return index < size;
             }
 
             @Override
             public String next() {
-                String result;
-                if (index == 0)
-                    result = "A";
-                else if (index == list.size() + 1)
-                    result = "Z";
-                else
-                    result = list.get(index - 1);
-                ++index;
-                return result;
+                return ++index == 1 ? "A"
+                    : index == size ? "Z"
+                    : list.get(index - 2);
             }
         };
         assertEquals("A", iterator.next());

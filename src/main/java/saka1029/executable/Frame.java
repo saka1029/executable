@@ -88,8 +88,7 @@ public class Frame implements Value {
 
             @Override
             public Executable next() {
-                ++index;
-                return index == 1 ? prolog
+                return ++index == 1 ? prolog
                     : index == size ? epilog
                     : body.get(index - 2);
             }
