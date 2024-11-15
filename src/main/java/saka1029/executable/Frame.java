@@ -1,6 +1,7 @@
 package saka1029.executable;
 
 import java.util.AbstractList;
+import java.util.Iterator;
 
 /**
  * Frame:
@@ -52,66 +53,47 @@ public class Frame implements Value {
         this.body = body;
     }
 
-    static class Ctx {
-        int oldFp, fp;
-    }
-
-    Executable prolog(Ctx ctx) {
-        return c -> {
+    @Override
+    public void call(Context context) {
+        var save = new Object() { int oldFp, fp; };
+        Executable prolog = c -> {
             // save fp
-            ctx.oldFp = c.fp;
-            ctx.fp = c.fp = c.stack.size();
+            save.oldFp = c.fp;
+            save.fp = c.fp = c.stack.size();
             // push self
             c.stack.add(DefinedBody.of(this));
             // initialize locals
             for (int i = 0; i < locals; ++i)
                 c.stack.add(null);
         };
-    }
-
-    Executable epilog(Ctx ctx) {
-        return c -> {
+        Executable epilog = c -> {
             // move return values
             int from = c.stack.size() - returns;
-            int to = ctx.fp - arguments;
+            int to = save.fp - arguments;
             for (int i = 0; i < returns; ++i, ++from, ++to)
                 c.stack.set(to, c.stack.get(from));
             // drop stack
             while (c.stack.size() > to)
                 c.stack.remove(c.stack.size() - 1);
             // restore fp
-            c.fp = ctx.oldFp;
+            c.fp = save.oldFp;
         };
-    }
+        context.executables.addLast(new Iterator<>() {
+            int index = 0, size = body.size() + 2;
 
-    class FrameBody extends AbstractList<Executable> {
+            @Override
+            public boolean hasNext() {
+                return index < size;
+            }
 
-        final Executable prolog, epilog;
-        final java.util.List<Executable> body;
-
-        FrameBody(Executable prolog, java.util.List<Executable> body, Executable epilog) {
-            this.prolog = prolog;
-            this.body = body;
-            this.epilog = epilog;
-        }
-
-        @Override
-        public int size() {
-            return body.size() + 2;
-        }
-
-        @Override
-        public Executable get(int index) {
-            return index == 0 ? prolog
-                : index == body.size() + 1 ? epilog
-                : body.get(index - 1);
-        }
-    }
-
-    @Override
-    public void call(Context c) {
-        Ctx ctx = new Ctx();
-        c.executables.addLast(new FrameBody(prolog(ctx), body, epilog(ctx)).iterator());
+            @Override
+            public Executable next() {
+                ++index;
+                return index == 1 ? prolog
+                    : index == size ? epilog
+                    : body.get(index - 2);
+            }
+        });
     }
 
     /******************
