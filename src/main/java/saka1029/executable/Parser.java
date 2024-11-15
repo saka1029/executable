@@ -178,7 +178,7 @@ public class Parser {
             throw error("']' expected but %s", chString(ch));
         get(); // skip ']'
         pc.removeLast();
-        return new Frame(arguments.size(), lc.localOffset, returns.size(), Cons.list(lc.instructions));
+        return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions);
     }
 
     Executable read(Deque<LocalContext> pc) {
