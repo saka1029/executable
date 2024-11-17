@@ -1,10 +1,6 @@
 package saka1029.executable;
 
-import java.util.AbstractList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Frame:
@@ -50,19 +46,12 @@ public class Frame implements Value {
     final java.util.List<Executable> body;
     final String header;
 
-    Frame(int argumentSize, int localSize, int returnSize, java.util.List<Executable> body,
-        java.util.List<Symbol> args, java.util.List<Symbol> rets) {
+    Frame(int argumentSize, int localSize, int returnSize, java.util.List<Executable> body, String header) {
         this.argumentSize = argumentSize;
         this.localSize = localSize;
         this.returnSize = returnSize;
         this.body = body;
-        StringBuilder sb = new StringBuilder();
-        for (Symbol s : args)
-            sb.append(" ").append(s);
-        sb.append(" -");
-        for (Symbol s : rets)
-            sb.append(" ").append(s);
-        this.header = sb.substring(1);
+        this.header = header;
     }
 
     @Override
@@ -111,7 +100,6 @@ public class Frame implements Value {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[").append(header);
-        sb.append(" :");
         for (Executable e : body)
             sb.append(" ").append(e);
         return sb.append("]").toString();

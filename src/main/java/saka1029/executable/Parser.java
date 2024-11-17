@@ -151,24 +151,31 @@ public class Parser {
     Frame frame(Deque<LocalContext> pc) {
         get(); // skip '['
         spaces();  // skip spaces after '['
+        StringBuilder header = new StringBuilder();
         java.util.List<Symbol> arguments = new ArrayList<>();
         while (ch != -1 && ch != ']' && ch != '-' && ch != ':') {
-            arguments.add(symbol());
+            Symbol s = symbol();
+            arguments.add(s);
+            header.append(" ").append(s);
             spaces();
         }
         if (ch != '-')
             throw error("'-' expected but %s", chString(ch));
         get(); // skip '-'
+        header.append(" -");
         spaces(); // skip spaces after '-'
         java.util.List<Symbol> returns = new ArrayList<>();
         while (ch != -1 && ch != ']' && ch != ':') {
-            returns.add(symbol());
+            Symbol s = symbol();
+            returns.add(s);
+            header.append(" ").append(s);
             spaces();
         }
         if (ch != ':')
             throw error("':' expected but %s", chString(ch));
         get(); // skip ':'
         spaces();
+        header.append(" :");
         LocalContext lc = new LocalContext(arguments, returns.size());
         pc.add(lc);
         while (ch != -1 && ch != ']') {
@@ -178,8 +185,8 @@ public class Parser {
         if (ch != ']')
             throw error("']' expected but %s", chString(ch));
         get(); // skip ']'
-        LocalContext last = pc.removeLast();
-        return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions, arguments, returns);
+        pc.removeLast();
+        return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions, header.substring(1));
     }
 
     Executable read(Deque<LocalContext> pc) {
