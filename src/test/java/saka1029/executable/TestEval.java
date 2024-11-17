@@ -37,6 +37,11 @@ public class TestEval {
     }
 
     @Test
+    public void testCall() {
+        assertEquals(i(3), eval("(1 2 +) call"));
+    }
+
+    @Test
     public void testDefineFact() {
         run("(dup 0 <= (drop 1) (dup 1 - fact *) if) = fact");
         assertEquals(i(1), eval("0 fact"));

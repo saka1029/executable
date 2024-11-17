@@ -43,10 +43,14 @@ public class TestFrame {
         assertFalse(iterator.hasNext());
     }
 
-
     @Test
     public void testArguments() {
         assertEquals(i(3), eval("[a b - r : stack a b +] = plus stack 1 2 stack plus stack"));
+    }
+
+    @Test
+    public void testCall() {
+        assertEquals(i(3), eval("1 2 [a b - r : stack a b +] call"));
     }
 
 }

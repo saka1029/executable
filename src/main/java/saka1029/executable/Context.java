@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 // import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import saka1029.Common;
 
@@ -93,7 +94,9 @@ public class Context{
 
     @Override
     public String toString() {
-        return stack.toString();
+        return stack.stream()
+            .map(e -> e.toString())
+            .collect(Collectors.joining(" ", "{", "}"));
     }
 
     final Map<Symbol, Executable> globals = new HashMap<>();
@@ -123,6 +126,7 @@ public class Context{
         add("call", c -> c.pop().call(c));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
+        add("call", c -> c.pop().call(c));
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();
             if (b(c.pop()))
