@@ -44,9 +44,9 @@ public class TestFrame {
     }
 
 
-    // @Test
+    @Test
     public void testArguments() {
-        assertEquals(i(3), eval("[a b - r : a b +] = plus stack 1 2 stack plus"));
+        assertEquals(i(3), eval("[a b - r : stack a b +] = plus stack 1 2 stack plus stack"));
     }
 
 }

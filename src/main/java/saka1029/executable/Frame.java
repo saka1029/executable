@@ -1,7 +1,10 @@
 package saka1029.executable;
 
 import java.util.AbstractList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Frame:
@@ -43,14 +46,23 @@ import java.util.Iterator;
  */
 public class Frame implements Value {
     
-    final int arguments, locals, returns;
+    final int argumentSize, localSize, returnSize;
     final java.util.List<Executable> body;
+    final String header;
 
-    Frame(int arguments, int locals, int returns, java.util.List<Executable> body) {
-        this.arguments = arguments;
-        this.locals = locals;
-        this.returns = returns;
+    Frame(int argumentSize, int localSize, int returnSize, java.util.List<Executable> body,
+        java.util.List<Symbol> args, java.util.List<Symbol> rets) {
+        this.argumentSize = argumentSize;
+        this.localSize = localSize;
+        this.returnSize = returnSize;
         this.body = body;
+        StringBuilder sb = new StringBuilder();
+        for (Symbol s : args)
+            sb.append(" ").append(s);
+        sb.append(" -");
+        for (Symbol s : rets)
+            sb.append(" ").append(s);
+        this.header = sb.substring(1);
     }
 
     @Override
@@ -63,14 +75,14 @@ public class Frame implements Value {
             // push self
             c.stack.add(DefinedBody.of(this));
             // initialize locals
-            for (int i = 0; i < locals; ++i)
+            for (int i = 0; i < localSize; ++i)
                 c.stack.add(null);
         };
         Executable epilog = c -> {
             // move return values
-            int from = c.stack.size() - returns;
-            int to = c.fp - arguments;
-            for (int i = 0; i < returns; ++i, ++from, ++to)
+            int from = c.stack.size() - returnSize;
+            int to = c.fp - argumentSize;
+            for (int i = 0; i < returnSize; ++i, ++from, ++to)
                 c.stack.set(to, c.stack.get(from));
             // drop stack
             while (c.stack.size() > to)
@@ -95,30 +107,13 @@ public class Frame implements Value {
         });
     }
 
-    /******************
     @Override
-    public void call(Context c) {
-        // save fp
-        int oldFp = c.fp;
-        int fp = c.fp = c.stack.size();
-        // push self
-        c.stack.add(DefinedBody.of(this));
-        // initialize locals
-        for (int i = 0; i < locals; ++i)
-            c.stack.add(null);
-        // execute
-        c.executables.addLast(body.iterator());
-        // move return values
-        int from = c.stack.size() - returns;
-        int to = fp - arguments;
-        for (int i = 0; i < returns; ++i, ++from, ++to)
-            c.stack.set(to, c.stack.get(from));
-        // drop stack
-        while (c.stack.size() > to)
-            c.stack.remove(c.stack.size() - 1);
-        // restore fp
-        c.fp = oldFp;
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[").append(header);
+        sb.append(" :");
+        for (Executable e : body)
+            sb.append(" ").append(e);
+        return sb.append("]").toString();
     }
-    *******************/
-
 }

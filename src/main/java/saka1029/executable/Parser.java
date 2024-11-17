@@ -25,6 +25,7 @@ public class Parser {
             for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
                 this.locals.put(arguments.get(i), j);
             this.returnSize = returnSize;
+            this.locals.put(Symbol.of("self"), 0);
         }
 
         int localVariable(Symbol variable) {
@@ -177,8 +178,8 @@ public class Parser {
         if (ch != ']')
             throw error("']' expected but %s", chString(ch));
         get(); // skip ']'
-        pc.removeLast();
-        return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions);
+        LocalContext last = pc.removeLast();
+        return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions, arguments, returns);
     }
 
     Executable read(Deque<LocalContext> pc) {
