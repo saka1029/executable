@@ -53,4 +53,9 @@ public class TestFrame {
         assertEquals(i(3), eval("1 2 [a b - r : stack a b +] call"));
     }
 
+    @Test
+    public void testLocal() {
+        assertEquals(i(25), eval("[a b - r : [a - r : 2 *] = double stack a double b double +] = hypot 3 4 hypot"));
+    }
+
 }
