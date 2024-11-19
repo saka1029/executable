@@ -102,4 +102,21 @@ public class TestEval {
         assertEquals(i(24), eval("4 fact"));
     }
 
+    static float Q_rsqrt(float number) {
+        final float threehalfs = 1.5F;
+        float x2 = number * 0.5F, y = number;
+        long i = Float.floatToIntBits(y);
+        i = 0x5f3759df - (i >> 1);
+        y = Float.intBitsToFloat((int)i);
+        y = y * (threehalfs - (x2 * y * y));
+        y = y * (threehalfs - (x2 * y * y));
+        return y;
+    }
+
+    @Test
+    public void TestQ_rsqrt() {
+        assertEquals((float)(1 / Math.sqrt(3)), Q_rsqrt(3F), 5E-6);
+        assertEquals((float)(1 / Math.sqrt(71)), Q_rsqrt(71F), 5E-6);
+    }
+
 }
