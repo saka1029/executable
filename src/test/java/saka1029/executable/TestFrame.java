@@ -83,8 +83,18 @@ public class TestFrame {
     }
 
     @Test
+    public void testSetLocal() {
+        assertEquals(i(10), eval("[list - r : 0 = sum list (sum + ! sum) for sum] = sum (1 2 3 4) sum"));
+    }
+
+    @Test
+    public void testSelf() {
+        assertEquals(i(120 ), eval("5 [n - r : n 0 <= 1 (n 1 - self n *) if] call"));
+    }
+
+    @Test
     public void testRecursion() {
-        run("[n - r : n 0 <= 1 (n 1 - self n *) if] = fact");
+        run("[n - r : n 0 <= 1 (n 1 - fact n *) if] = fact");
         assertEquals(i(1), eval("0 fact"));
         assertEquals(i(1), eval("1 fact"));
         assertEquals(i(2), eval("2 fact"));

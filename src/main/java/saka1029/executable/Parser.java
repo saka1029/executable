@@ -120,9 +120,9 @@ public class Parser {
         if (pc.isEmpty())  // トップレベルなら大域変数
             return SetGlobal.of(symbol);
         LocalContext lc = pc.getLast();
-        if (lc.locals.containsKey(symbol))  // ローカルになければ大域変数
-            return SetGlobal.of(symbol);
-        return SetLocal.of(symbol, lc.locals.get(symbol));
+        if (lc.locals.containsKey(symbol))  // ローカルにあれば局所変数
+            return SetLocal.of(symbol, lc.locals.get(symbol));
+        return SetGlobal.of(symbol);
     }
 
     static String chString(int ch) {
