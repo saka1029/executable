@@ -59,7 +59,7 @@ public class TestFrame {
     }
 
     @Test
-    public void testLocal() {
+    public void testLocalFrame() {
         assertEquals(i(25), eval("[a b - r : [a - r : a a *] = double a double b double +] = hypot 3 4 hypot"));
     }
 
