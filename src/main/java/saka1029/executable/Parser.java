@@ -7,6 +7,20 @@ import java.util.Map;
 import java.util.Deque;
 import java.util.ArrayDeque;
 
+/**
+ * SYNTAX
+ * <pre><code>
+ * program   = { element }
+ * element   = int | list | symbol | define | set
+ * int       = [ '+' | '-' ] INT { INT }
+ * list      = '(' { element} ')'
+ * symbol    = SYM { SYM }
+ * define    = '=' symbol
+ * set       = '!' symbol
+ * INT       = '0' .. '9'
+ * SYM       = {any charcter excludes '(' and ')'}
+ * </code></pre> 
+ */
 public class Parser {
 
     int[] input;
