@@ -54,8 +54,13 @@ public class TestFrame {
     }
 
     @Test
+    public void testLocalFunction() {
+        assertEquals(i(25), eval("[a b - r : (dup *) = double a double b double +] = hypot 3 4 hypot"));
+    }
+
+    @Test
     public void testLocal() {
-        assertEquals(i(25), eval("[a b - r : [a - r : 2 *] = double stack a double b double +] = hypot 3 4 hypot"));
+        assertEquals(i(25), eval("[a b - r : [a - r : a a *] = double a double b double +] = hypot 3 4 hypot"));
     }
 
 }

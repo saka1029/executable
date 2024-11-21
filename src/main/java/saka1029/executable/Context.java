@@ -96,7 +96,7 @@ public class Context{
     public String toString() {
         return stack.stream()
             .map(e -> e.toString())
-            .collect(Collectors.joining(" ", "{", "}"));
+            .collect(Collectors.joining(", ", "{", "}"));
     }
 
     final Map<Symbol, Executable> globals = new HashMap<>();
