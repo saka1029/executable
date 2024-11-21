@@ -13,6 +13,10 @@ public class TestFrame {
     Parser p = new Parser();
     Context c = Context.of();
 
+    void run(String s) {
+        c.run(p.parse(s));
+    }
+
     Executable eval(String s) {
         return c.eval(p.parse(s));
     }
@@ -76,6 +80,17 @@ public class TestFrame {
     @Test
     public void testTwoArgumentTwoReturn() {
         assertEquals(i(5), eval("[a b - r s : a b / a b %] = div 11 3 div stack +"));
+    }
+
+    @Test
+    public void testRecursion() {
+        run("[n - r : n 0 <= 1 (n 1 - self n *) if] = fact");
+        assertEquals(i(1), eval("0 fact"));
+        assertEquals(i(1), eval("1 fact"));
+        assertEquals(i(2), eval("2 fact"));
+        assertEquals(i(6), eval("3 fact"));
+        assertEquals(i(24), eval("4 fact"));
+        assertEquals(i(120), eval("5 fact"));
     }
 
 }
