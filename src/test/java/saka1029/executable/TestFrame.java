@@ -45,12 +45,12 @@ public class TestFrame {
 
     @Test
     public void testArguments() {
-        assertEquals(i(3), eval("[a b - r : stack a b +] = plus stack 1 2 stack plus stack"));
+        assertEquals(i(3), eval("[a b - r : a b +] = plus 1 2 plus"));
     }
 
     @Test
     public void testCall() {
-        assertEquals(i(3), eval("1 2 [a b - r : stack a b +] call"));
+        assertEquals(i(3), eval("1 2 [a b - r : a b +] call"));
     }
 
     @Test
@@ -61,6 +61,21 @@ public class TestFrame {
     @Test
     public void testLocalFrame() {
         assertEquals(i(25), eval("[a b - r : [a - r : a a *] = double a double b double +] = hypot 3 4 hypot"));
+    }
+
+    @Test
+    public void testNoArgumentOneReturn() {
+        assertEquals(i(123), eval("[ - r : 123] = value value"));
+    }
+
+    @Test
+    public void testNoArgumentTwoReturn() {
+        assertEquals(i(579), eval("[ - r s : 123 456] = value value +"));
+    }
+
+    @Test
+    public void testTwoArgumentTwoReturn() {
+        assertEquals(i(5), eval("[a b - r s : a b / a b %] = div 11 3 div stack +"));
     }
 
 }
