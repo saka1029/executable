@@ -23,7 +23,6 @@ public class TestParser {
     @Test
     public void testList() {
         assertEquals(list(NIL), p.parse("()"));
-        assertEquals(list(NIL), p.parse("()"));
         assertEquals(list(sym("a"), i(0), sym("<"), list(i(0), sym("a"), sym("-")), list(sym("a")), sym("if")),
             p.parse("a 0 < (0 a -) (a) if"));
     }

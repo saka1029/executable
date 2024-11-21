@@ -88,6 +88,13 @@ public class TestFrame {
     }
 
     @Test
+    public void testSetLocalReverse() {
+        assertEquals(list(), eval("()"));
+        assertEquals(list(i(4), i(3), i(2), i(1)),
+            eval("[list - r : () = acc list (acc stack cons ! acc) for acc] = reverse (1 2 3 4) reverse"));
+    }
+
+    @Test
     public void testSelf() {
         assertEquals(i(120 ), eval("5 [n - r : n 0 <= 1 (n 1 - self n *) if] call"));
     }

@@ -163,6 +163,7 @@ public class Context{
             c.push(Cons.of(car, cdr));
         });
         add("null", c -> c.push(b(c.pop() == NIL)));
+        // add("nil", c -> c.push(list(NIL)));
         add("uncons", c -> {
             Cons cons = cons(c.pop());
             c.push(cons.car);
