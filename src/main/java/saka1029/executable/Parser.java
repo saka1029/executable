@@ -120,41 +120,6 @@ public class Parser {
         return Quote.of(read(pc));
     }
 
-    // SymbolMacro define(Deque<LocalContext> pc) {
-    //     get(); // skip '='
-    //     Symbol symbol = symbol();
-    //     if (pc.isEmpty())  // トップレベルなら大域変数
-    //         return DefineGlobal.of(symbol);
-    //     LocalContext lc = pc.getLast();
-    //     if (lc.locals.containsKey(symbol))
-    //         throw error("Symbol '%s' is alreday defined", symbol);
-    //     Offset offset = lc.localVariable(symbol);
-    //     return DefineLocal.of(symbol, offset);
-    // }
-
-    // SymbolMacro getVariable(Deque<LocalContext> pc) {
-    //     get(); // skip '@'
-    //     Symbol symbol = symbol();
-    //     if (pc.isEmpty())
-    //         return GetGlobalVariable.of(symbol);
-    //     LocalContext lc = pc.getLast();
-    //     Integer offset = lc.locals.get(symbol);
-    //     if (offset != null)
-    //         return GetLocalVariable.of(symbol, lc.locals.get(symbol));
-    //     return GetGlobalVariable.of(symbol);
-    // }
-
-    // SymbolMacro set(Deque<LocalContext> pc) {
-    //     get(); // skip '!'
-    //     Symbol symbol = symbol();
-    //     if (pc.isEmpty())  // トップレベルなら大域変数
-    //         return SetGlobal.of(symbol);
-    //     LocalContext lc = pc.getLast();
-    //     if (lc.locals.containsKey(symbol))  // ローカルにあれば局所変数
-    //         return SetLocal.of(symbol, lc.locals.get(symbol));
-    //     return SetGlobal.of(symbol);
-    // }
-
     static String chString(int ch) {
         return ch == -1 ? "EOS" : "'%s'".formatted(Character.toUpperCase(ch));
     }
