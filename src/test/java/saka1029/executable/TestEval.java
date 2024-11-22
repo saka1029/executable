@@ -37,6 +37,18 @@ public class TestEval {
     }
 
     @Test
+    public void testDefineFunction() {
+        run("'(1 2 3) function list");
+        assertEquals(list(i(1), i(2), i(3)), eval("list '() cons cons cons"));
+    }
+
+    @Test
+    public void testDefineVariable() {
+        run("'(1 2 3) variable list");
+        assertEquals(list(i(1), i(2), i(3)), eval("list"));
+    }
+
+    @Test
     public void testCall() {
         assertEquals(i(3), eval("'(1 2 +) call"));
     }
