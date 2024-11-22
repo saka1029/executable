@@ -119,6 +119,18 @@ public class Parser {
         return DefineLocal.of(symbol, offset);
     }
 
+    SymbolMacro getVariable(Deque<LocalContext> pc) {
+        get(); // skip '@'
+        Symbol symbol = symbol();
+        if (pc.isEmpty())
+            return GetGlobalVariable.of(symbol);
+        LocalContext lc = pc.getLast();
+        Integer offset = lc.locals.get(symbol);
+        if (offset != null)
+            return GetLocalVariable.of(symbol, lc.locals.get(symbol));
+        return GetGlobalVariable.of(symbol);
+    }
+
     SymbolMacro set(Deque<LocalContext> pc) {
         get(); // skip '!'
         Symbol symbol = symbol();
@@ -163,7 +175,7 @@ public class Parser {
             return symbol;
         LocalContext lc = pc.getLast();
         if (lc.locals.containsKey(symbol))
-            return GetLocal.of(symbol, lc.locals.get(symbol));
+            return GetLocalFunction.of(symbol, lc.locals.get(symbol));
         return symbol;
     }
 
@@ -214,6 +226,7 @@ public class Parser {
             case -1 -> throw error("Unexpected end of input");
             case '\'' -> quote(pc);
             case '=' -> define(pc);
+            case '@' -> getVariable(pc);
             case '!' -> set(pc);
             case '(' -> list(pc);
             case ')' -> throw error("Unexpected ')'");

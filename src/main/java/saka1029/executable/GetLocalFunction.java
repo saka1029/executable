@@ -1,16 +1,16 @@
 package saka1029.executable;
 
-public class GetLocal extends SymbolMacro {
+public class GetLocalFunction extends SymbolMacro {
 
     final int offset;
 
-    GetLocal(Symbol symbol, int offset) {
+    GetLocalFunction(Symbol symbol, int offset) {
         super(symbol);
         this.offset = offset;
     }
 
-    public static GetLocal of(Symbol symbol, int offset) {
-        return new GetLocal(symbol, offset);
+    public static GetLocalFunction of(Symbol symbol, int offset) {
+        return new GetLocalFunction(symbol, offset);
     }
 
     @Override
