@@ -58,6 +58,11 @@ public class TestFrame {
     }
 
     @Test
+    public void testCallCall() {
+        assertEquals(i(3), eval("1 2 '[a b - r : a b +] call"));
+    }
+
+    @Test
     public void testLocalFunction() {
         assertEquals(i(25), eval("'[a b - r : '(dup *) function double a double b double +] function hypot 3 4 hypot"));
     }
