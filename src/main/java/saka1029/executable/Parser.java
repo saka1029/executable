@@ -238,9 +238,6 @@ public class Parser {
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
             case '\'' -> quote(pc);
-            // case '=' -> define(pc);
-            // case '@' -> getVariable(pc);
-            // case '!' -> set(pc);
             case '(' -> list(pc);
             case ')' -> throw error("Unexpected ')'");
             case '[' -> frame(pc);
