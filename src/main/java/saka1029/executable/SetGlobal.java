@@ -12,14 +12,16 @@ public class SetGlobal extends SymbolMacro {
 
     @Override
     public void execute(Context c) {
-        if (!c.globals.containsKey(symbol))
+        Context.FuncVar f = c.globals.get(symbol);
+        if (f == null)
             throw new RuntimeException("Symbol '%s' not defined".formatted(symbol));
         Executable body = c.pop();  // defineしたときの定義内容を保存
-        c.globals.put(symbol, body);
+        c.globals.put(symbol, Context.FuncVar.of(body, f.isFunction));
+
     }
 
     @Override
     public String toString() {
-        return "! " + symbol;
+        return "set " + symbol;
     }
 }

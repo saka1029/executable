@@ -10,15 +10,16 @@ import java.util.ArrayDeque;
 /**
  * SYNTAX
  * <pre><code>
- * program   = { element }
- * element   = int | list | symbol | define | set
- * int       = [ '+' | '-' ] INT { INT }
- * list      = '(' { element} ')'
- * symbol    = SYM { SYM }
- * define    = '=' symbol
- * set       = '!' symbol
- * INT       = '0' .. '9'
- * SYM       = {any charcter excludes '(' and ')'}
+ * program         = { element }
+ * element         = int | list | symbol | define-function | define-variable | set
+ * int             = [ '+' | '-' ] INT { INT }
+ * list            = '(' { element} ')'
+ * symbol          = SYM { SYM }
+ * define-function = 'function' symbol
+ * define-variable = 'variable' symbol
+ * set             = 'set' symbol
+ * INT             = '0' .. '9'
+ * SYM             = {any charcter excludes '(' and ')'}
  * </code></pre> 
  */
 public class Parser {
@@ -27,9 +28,21 @@ public class Parser {
     int index;
     int ch;
 
+    static class Offset {
+        final int offset;
+        final boolean isFunction;
+        Offset(int offset, boolean isFunction) {
+            this.offset = offset;
+            this.isFunction = isFunction;
+        }
+        static Offset of(int offset, boolean isFunction) {
+            return new Offset(offset, isFunction);
+        }
+    }
+
     static class LocalContext {
 
-        final Map<Symbol, Integer> locals = new HashMap<>();
+        final Map<Symbol, Offset> locals = new HashMap<>();
         int argumentSize, returnSize;
         final java.util.List<Executable> instructions = new ArrayList<>();
         int localOffset = 0;
@@ -37,14 +50,14 @@ public class Parser {
         LocalContext(java.util.List<Symbol> arguments, int returnSize) {
             this.argumentSize = arguments.size();
             for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
-                this.locals.put(arguments.get(i), j);
+                this.locals.put(arguments.get(i), Offset.of(j, false));
             this.returnSize = returnSize;
-            this.locals.put(Symbol.of("self"), 0);
+            this.locals.put(Symbol.of("self"), Offset.of(0, true));
         }
 
-        int localVariable(Symbol variable) {
+        int localVariable(Symbol variable, boolean isFunction) {
             int offset = ++localOffset;
-            locals.put(variable, offset);
+            locals.put(variable, Offset.of(offset, isFunction));
             return offset;
         }
     }
@@ -107,40 +120,40 @@ public class Parser {
         return Quote.of(read(pc));
     }
 
-    SymbolMacro define(Deque<LocalContext> pc) {
-        get(); // skip '='
-        Symbol symbol = symbol();
-        if (pc.isEmpty())  // トップレベルなら大域変数
-            return DefineGlobal.of(symbol);
-        LocalContext lc = pc.getLast();
-        if (lc.locals.containsKey(symbol))
-            throw error("Symbol '%s' is alreday defined", symbol);
-        int offset = lc.localVariable(symbol);
-        return DefineLocal.of(symbol, offset);
-    }
+    // SymbolMacro define(Deque<LocalContext> pc) {
+    //     get(); // skip '='
+    //     Symbol symbol = symbol();
+    //     if (pc.isEmpty())  // トップレベルなら大域変数
+    //         return DefineGlobal.of(symbol);
+    //     LocalContext lc = pc.getLast();
+    //     if (lc.locals.containsKey(symbol))
+    //         throw error("Symbol '%s' is alreday defined", symbol);
+    //     Offset offset = lc.localVariable(symbol);
+    //     return DefineLocal.of(symbol, offset);
+    // }
 
-    SymbolMacro getVariable(Deque<LocalContext> pc) {
-        get(); // skip '@'
-        Symbol symbol = symbol();
-        if (pc.isEmpty())
-            return GetGlobalVariable.of(symbol);
-        LocalContext lc = pc.getLast();
-        Integer offset = lc.locals.get(symbol);
-        if (offset != null)
-            return GetLocalVariable.of(symbol, lc.locals.get(symbol));
-        return GetGlobalVariable.of(symbol);
-    }
+    // SymbolMacro getVariable(Deque<LocalContext> pc) {
+    //     get(); // skip '@'
+    //     Symbol symbol = symbol();
+    //     if (pc.isEmpty())
+    //         return GetGlobalVariable.of(symbol);
+    //     LocalContext lc = pc.getLast();
+    //     Integer offset = lc.locals.get(symbol);
+    //     if (offset != null)
+    //         return GetLocalVariable.of(symbol, lc.locals.get(symbol));
+    //     return GetGlobalVariable.of(symbol);
+    // }
 
-    SymbolMacro set(Deque<LocalContext> pc) {
-        get(); // skip '!'
-        Symbol symbol = symbol();
-        if (pc.isEmpty())  // トップレベルなら大域変数
-            return SetGlobal.of(symbol);
-        LocalContext lc = pc.getLast();
-        if (lc.locals.containsKey(symbol))  // ローカルにあれば局所変数
-            return SetLocal.of(symbol, lc.locals.get(symbol));
-        return SetGlobal.of(symbol);
-    }
+    // SymbolMacro set(Deque<LocalContext> pc) {
+    //     get(); // skip '!'
+    //     Symbol symbol = symbol();
+    //     if (pc.isEmpty())  // トップレベルなら大域変数
+    //         return SetGlobal.of(symbol);
+    //     LocalContext lc = pc.getLast();
+    //     if (lc.locals.containsKey(symbol))  // ローカルにあれば局所変数
+    //         return SetLocal.of(symbol, lc.locals.get(symbol));
+    //     return SetGlobal.of(symbol);
+    // }
 
     static String chString(int ch) {
         return ch == -1 ? "EOS" : "'%s'".formatted(Character.toUpperCase(ch));
@@ -159,6 +172,31 @@ public class Parser {
         "false", Bool.FALSE
     );
 
+    static final Symbol FUNCTION = Symbol.of("function");
+    static final Symbol VARIABLE = Symbol.of("variable");
+    static final Symbol SET = Symbol.of("set");
+
+    SymbolMacro defineFunction(Deque<LocalContext> pc) {
+        Symbol symbol = symbol();
+        return DefineGlobal.of(symbol, true);
+    }
+
+    SymbolMacro defineVariable(Deque<LocalContext> pc) {
+        Symbol symbol = symbol();
+        return DefineGlobal.of(symbol, false);
+    }
+
+    SymbolMacro set(Deque<LocalContext> pc) {
+        Symbol symbol = symbol();
+        if (pc.isEmpty())
+            return SetGlobal.of(symbol);
+        LocalContext x = pc.getLast();
+        Offset y = x.locals.get(symbol);
+        if (y != null)
+            return SetLocal.of(symbol, y.offset);
+        return SetGlobal.of(symbol);
+    }
+
     Executable word(Deque<LocalContext> pc) {
         StringBuilder sb = new StringBuilder();
         while (isWord(ch)) {
@@ -171,11 +209,21 @@ public class Parser {
         if (INT_PATTERN.matcher(word).matches())
             return Int.of(Integer.parseInt(word));
         Symbol symbol = Symbol.of(word);
+        if (symbol.equals(FUNCTION))
+            return defineFunction(pc);
+        else if (symbol.equals(VARIABLE))
+            return defineVariable(pc);
+        else if (symbol.equals(SET))
+            return set(pc);
         if (pc.isEmpty())
             return symbol;
         LocalContext lc = pc.getLast();
-        if (lc.locals.containsKey(symbol))
-            return GetLocalFunction.of(symbol, lc.locals.get(symbol));
+        Offset offset = lc.locals.get(symbol);
+        if (offset != null)
+            if (offset.isFunction)
+                return GetLocalFunction.of(symbol, lc.locals.get(symbol).offset);
+            else
+                return GetLocalVariable.of(symbol, lc.locals.get(symbol).offset);
         return symbol;
     }
 
@@ -225,9 +273,9 @@ public class Parser {
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
             case '\'' -> quote(pc);
-            case '=' -> define(pc);
-            case '@' -> getVariable(pc);
-            case '!' -> set(pc);
+            // case '=' -> define(pc);
+            // case '@' -> getVariable(pc);
+            // case '!' -> set(pc);
             case '(' -> list(pc);
             case ')' -> throw error("Unexpected ')'");
             case '[' -> frame(pc);

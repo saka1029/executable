@@ -63,17 +63,19 @@ public class TestContext {
     @Test
     public void testDefineInt() {
         Context c = Context.of();
-        c.run(list(i(9), define(sym("nine"))));
+        c.run(list(i(9), defvar(sym("nine"))));
         assertEquals(i(9), c.eval(list(sym("nine"))));
-        assertEquals("9", c.globals.get(sym("nine")).toString());
+        assertEquals("9", c.globals.get(sym("nine")).value.toString());
+        assertEquals(false, c.globals.get(sym("nine")).isFunction);
     }
 
     @Test
     public void testDefineList() {
         Context c = Context.of();
-        c.run(list(quote(list(sym("dup"), sym("*"))), define(sym("square"))));
+        c.run(list(quote(list(sym("dup"), sym("*"))), defun(sym("square"))));
         assertEquals(i(9), c.eval(list(i(3), sym("square"))));
-        assertEquals("(dup *)", c.globals.get(sym("square")).toString());
+        assertEquals("(dup *)", c.globals.get(sym("square")).value.toString());
+        assertEquals(true, c.globals.get(sym("square")).isFunction);
     }
 
     @Test
@@ -107,14 +109,14 @@ public class TestContext {
     @Test
     public void testDefineReverseByFor() {
         Context c = Context.of();
-        c.run(list(quote(list(quote(NIL), sym("swap"), quote(sym("rcons")), sym("for"))), define(sym("reverse"))));
+        c.run(list(quote(list(quote(NIL), sym("swap"), quote(sym("rcons")), sym("for"))), defun(sym("reverse"))));
         assertEquals(list(i(3), i(2), i(1)), c.eval(list(quote(list(i(1), i(2), i(3))), sym("reverse"))));
     }
 
     @Test
     public void testDefineSet() {
         Context c = Context.of();
-        c.run(list(i(9), define(sym("nine"))));
+        c.run(list(i(9), defvar(sym("nine"))));
         assertEquals(i(9), c.eval(list(sym("nine"))));
         c.run(list(i(99), set(sym("nine"))));
         assertEquals(i(99), c.eval(list(sym("nine"))));

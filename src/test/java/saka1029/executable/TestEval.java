@@ -25,11 +25,11 @@ public class TestEval {
 
     @Test
     public void testDefineSet() {
-        run("1 = v");
-        run("v 1 + ! v");
+        run("1 variable v");
+        run("v 1 + set v");
         assertEquals(i(2), eval("v"));
         try {
-            run("v ! w");
+            run("v set w");
             fail();
         } catch (RuntimeException e) {
             assertEquals("Symbol 'w' not defined", e.getMessage());
@@ -43,7 +43,7 @@ public class TestEval {
 
     @Test
     public void testDefineFact() {
-        run("'(dup 0 <= '(drop 1) '(dup 1 - fact *) if) = fact");
+        run("'(dup 0 <= '(drop 1) '(dup 1 - fact *) if) function fact");
         assertEquals(i(1), eval("0 fact"));
         assertEquals(i(1), eval("1 fact"));
         assertEquals(i(2), eval("2 fact"));
@@ -53,7 +53,7 @@ public class TestEval {
 
     @Test
     public void testDefineSum() {
-        run("'(0 swap '+ for) = sum");
+        run("'(0 swap '+ for) function sum");
         assertEquals(i(0), eval("'() sum"));
         assertEquals(i(1), eval("'(1) sum"));
         assertEquals(i(3), eval("'(1 2) sum"));
@@ -62,7 +62,7 @@ public class TestEval {
 
     @Test
     public void testDefineReverse() {
-        run("'('() swap 'rcons for) = reverse");
+        run("'('() swap 'rcons for) function reverse");
         assertEquals(NIL, eval("'() reverse"));
         assertEquals(eval("'(1)"), eval("'(1) reverse"));
         assertEquals(eval("'(2 1)"), eval("'(1 2) reverse"));
@@ -72,8 +72,8 @@ public class TestEval {
 
     @Test
     public void testReverseByRecursion() {
-        run("'('() reverse2) = reverse");
-        run("'(dup1 null '(swap drop) '(swap uncons swap rot cons reverse2) if) = reverse2");
+        run("'('() reverse2) function reverse");
+        run("'(dup1 null '(swap drop) '(swap uncons swap rot cons reverse2) if) function reverse2");
         assertEquals(NIL, eval("'() reverse"));
         assertEquals(eval("'(1)"), eval("'(1) reverse"));
         assertEquals(eval("'(2 1)"), eval("'(1 2) reverse"));
@@ -83,7 +83,7 @@ public class TestEval {
 
     @Test
     public void testDefineAppend() {
-        run("'(swap dup null 'drop '(uncons rot append cons) if) = append");
+        run("'(swap dup null 'drop '(uncons rot append cons) if) function append");
         assertEquals(NIL, eval("'() '() append"));
         assertEquals(eval("'(a)"), eval("'() '(a) append"));
         assertEquals(eval("'(a b)"), eval("'() '(a b) append"));
@@ -94,7 +94,7 @@ public class TestEval {
 
     @Test
     public void testFactByRange() {
-        run("'(1 swap 1 swap 1 range '* for) = fact");
+        run("'(1 swap 1 swap 1 range '* for) function fact");
         assertEquals(i(1), eval("0 fact"));
         assertEquals(i(1), eval("1 fact"));
         assertEquals(i(2), eval("2 fact"));

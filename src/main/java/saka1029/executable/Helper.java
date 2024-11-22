@@ -62,8 +62,12 @@ public class Helper {
         return cons;
     }
 
-    public static DefineGlobal define(Symbol symbol) {
-        return DefineGlobal.of(symbol);
+    public static DefineGlobal defun(Symbol symbol) {
+        return DefineGlobal.of(symbol, true);
+    }
+
+    public static DefineGlobal defvar(Symbol symbol) {
+        return DefineGlobal.of(symbol, false);
     }
 
     public static SetGlobal set(Symbol symbol) {

@@ -99,10 +99,26 @@ public class Context{
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
-    final Map<Symbol, Executable> globals = new HashMap<>();
+    static class FuncVar {
+        Executable value;
+        boolean isFunction;
+        FuncVar(Executable value, boolean isFunction) {
+            this.value = value;
+            this.isFunction = isFunction;
+        }
+        static FuncVar of(Executable value, boolean isFunction) {
+            return new FuncVar(value, isFunction);
+        }
+        @Override
+        public String toString() {
+            return "FuncVar(%s, %s)".formatted(value, isFunction);
+        }
+    }
+
+    final Map<Symbol, FuncVar> globals = new HashMap<>();
 
     void add(String name, Executable e) {
-        globals.put(Symbol.of(name), e);
+        globals.put(Symbol.of(name), FuncVar.of(e, true));
     }
 
     private void initialize() {
@@ -123,7 +139,6 @@ public class Context{
         add("<=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) <= 0)); });
         add(">", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) > 0)); });
         add(">=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) >= 0)); });
-        add("call", c -> c.pop().call(c));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
         add("call", c -> c.pop().execute(c));

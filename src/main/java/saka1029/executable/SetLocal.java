@@ -22,7 +22,7 @@ public class SetLocal extends SymbolMacro {
     @Override
     public String toString() {
         // return "! %s@%d".formatted(symbol, offset);
-        return "! " + symbol;
+        return "set " + symbol;
     }
 
 }
