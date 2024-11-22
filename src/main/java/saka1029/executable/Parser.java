@@ -102,6 +102,11 @@ public class Parser {
         return Cons.list(list);
     }
 
+    Quote quote(Deque<LocalContext> pc) {
+        get(); // skip '\''
+        return Quote.of(read(pc));
+    }
+
     SymbolMacro define(Deque<LocalContext> pc) {
         get(); // skip '='
         Symbol symbol = symbol();
@@ -207,6 +212,7 @@ public class Parser {
         spaces();
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
+            case '\'' -> quote(pc);
             case '=' -> define(pc);
             case '!' -> set(pc);
             case '(' -> list(pc);

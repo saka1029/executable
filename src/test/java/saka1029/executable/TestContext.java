@@ -71,7 +71,7 @@ public class TestContext {
     @Test
     public void testDefineList() {
         Context c = Context.of();
-        c.run(list(list(sym("dup"), sym("*")), define(sym("square"))));
+        c.run(list(quote(list(sym("dup"), sym("*"))), define(sym("square"))));
         assertEquals(i(9), c.eval(list(i(3), sym("square"))));
         assertEquals("(dup *)", c.globals.get(sym("square")).toString());
     }
@@ -79,7 +79,7 @@ public class TestContext {
     @Test
     public void testFor() {
         Context c = Context.of();
-        List list = list(list(i(1), i(2), i(3)), list(sym("print")), sym("for"));
+        List list = list(quote(list(i(1), i(2), i(3))), quote(sym("print")), sym("for"));
         // Common.log(logger, Level.INFO, "list=%s", list);
         c.run(list);
     }
@@ -87,19 +87,19 @@ public class TestContext {
     @Test
     public void testCons() {
         Context c = Context.of();
-        assertEquals(list(i(1), i(2), i(3)), c.eval(list(i(1), list(i(2), i(3)), sym("cons"))));
+        assertEquals(list(i(1), i(2), i(3)), c.eval(list(i(1), quote(list(i(2), i(3))), sym("cons"))));
     }
 
     @Test
     public void testRcons() {
         Context c = Context.of();
-        assertEquals(list(i(1), i(2), i(3)), c.eval(list(list(i(2), i(3)), i(1), sym("rcons"))));
+        assertEquals(list(i(1), i(2), i(3)), c.eval(list(quote(list(i(2), i(3))), i(1), sym("rcons"))));
     }
 
     @Test
     public void testReverseByFor() {
         Context c = Context.of();
-        List list = list(NIL, list(i(1), i(2), i(3)), list(sym("rcons")), sym("for"));
+        List list = list(quote(NIL), quote(list(i(1), i(2), i(3))), quote(sym("rcons")), sym("for"));
         // Common.log(logger, Level.INFO, "list=%s", list);
         assertEquals(list(i(3), i(2), i(1)), c.eval(list));
     }
@@ -107,8 +107,8 @@ public class TestContext {
     @Test
     public void testDefineReverseByFor() {
         Context c = Context.of();
-        c.run(list(list(NIL, sym("swap"), list(sym("rcons")), sym("for")), define(sym("reverse"))));
-        assertEquals(list(i(3), i(2), i(1)), c.eval(list(list(i(1), i(2), i(3)), sym("reverse"))));
+        c.run(list(quote(list(quote(NIL), sym("swap"), quote(sym("rcons")), sym("for"))), define(sym("reverse"))));
+        assertEquals(list(i(3), i(2), i(1)), c.eval(list(quote(list(i(1), i(2), i(3))), sym("reverse"))));
     }
 
     @Test

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import saka1029.Common;
 
-public interface List extends Value, Iterable<Executable> {
+public interface List extends Executable, Iterable<Executable> {
 
     static final Logger logger = Common.logger(List.class);
 
@@ -18,20 +18,13 @@ public interface List extends Value, Iterable<Executable> {
         }
 
         @Override
-        public String toString(String prefix, String suffix) {
-            return prefix + suffix;
-        }
-
-        @Override
         public String toString() {
-            return toString("(", ")");
+            return "()";
         }
     };
 
-    default void call(Context c) {
-        // Common.log(logger, Level.INFO, "call: context=%s list=%s", c, this);
+    @Override
+    default void execute(Context c) {
         c.executables.addLast(iterator());
     }
-
-    String toString(String prefix, String suffix);
 }

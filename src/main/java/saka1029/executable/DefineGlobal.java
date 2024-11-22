@@ -13,7 +13,7 @@ public class DefineGlobal extends SymbolMacro {
     @Override
     public void execute(Context c) {
         Executable body = c.pop();  // defineしたときの定義内容を保存
-        c.globals.put(symbol, DefinedBody.of(body));
+        c.globals.put(symbol, body);
     }
 
     @Override

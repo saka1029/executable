@@ -64,16 +64,11 @@ public class Cons implements List {
     }
 
     @Override
-    public String toString(String prefix, String suffix) {
-        StringBuilder sb = new StringBuilder(prefix);
+    public String toString() {
+        StringBuilder sb = new StringBuilder("(");
         sb.append(car);
         for (List list = cdr; list instanceof Cons c; list = c.cdr)
             sb.append(" ").append(c.car);
-        return sb.append(suffix).toString();
-    }
-
-    @Override
-    public String toString() {
-        return toString("(", ")");
+        return sb.append(")").toString();
     }
 }

@@ -42,6 +42,10 @@ public class Helper {
         return c;
     }
 
+    public static Quote quote(Executable e) {
+        return Quote.of(e);
+    }
+
     public static List NIL = List.NIL;
 
     public static List list(Executable... es) {

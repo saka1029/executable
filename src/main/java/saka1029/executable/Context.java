@@ -66,7 +66,7 @@ public class Context{
     public void run(List list) {
         Common.log(logger, Level.INFO, "run: %s", list);
         list.execute(this);
-        pop().call(this);
+        // pop().call(this);
         run();
     }
 
@@ -126,13 +126,13 @@ public class Context{
         add("call", c -> c.pop().call(c));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
-        add("call", c -> c.pop().call(c));
+        add("call", c -> c.pop().execute(c));
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();
             if (b(c.pop()))
-                then.call(c);
+                then.execute(c);
             else
-                otherwise.call(c);
+                otherwise.execute(c);
         });
         add("for", c -> {
             // LIST BLOCK each
@@ -147,7 +147,7 @@ public class Context{
                 public Executable next() {
                     return c -> {
                         c.push(iterator.next());
-                        block.call(c);
+                        block.execute(c);
                     };
                 }
             });

@@ -15,7 +15,7 @@ public class SetGlobal extends SymbolMacro {
         if (!c.globals.containsKey(symbol))
             throw new RuntimeException("Symbol '%s' not defined".formatted(symbol));
         Executable body = c.pop();  // defineしたときの定義内容を保存
-        c.globals.put(symbol, DefinedBody.of(body));
+        c.globals.put(symbol, body);
     }
 
     @Override

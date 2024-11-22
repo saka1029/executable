@@ -20,7 +20,8 @@ public class GetLocal extends SymbolMacro {
 
     @Override
     public String toString() {
-        return "%s@%d".formatted(symbol, offset);
+        // return "%s@%d".formatted(symbol, offset);
+        return symbol.toString();
     }
 
 }

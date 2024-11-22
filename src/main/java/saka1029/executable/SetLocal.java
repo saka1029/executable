@@ -16,7 +16,7 @@ public class SetLocal extends SymbolMacro {
     @Override
     public void execute(Context c) {
         Executable value = c.pop();
-        c.stack.set(c.fp + offset, DefinedBody.of(value));
+        c.stack.set(c.fp + offset, value);
     }
 
     @Override

@@ -62,7 +62,7 @@ public class Frame implements Value {
             save.oldFp = c.fp;
             c.fp = c.stack.size();
             // push self
-            c.stack.add(DefinedBody.of(this));
+            c.stack.add(this);
             // initialize locals
             for (int i = 0; i < localSize; ++i)
                 c.stack.add(null);
