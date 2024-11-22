@@ -84,7 +84,7 @@ public class TestFrame {
 
     @Test
     public void testSetLocal() {
-        assertEquals(i(10), eval("'[list - r : 0 = sum @ list '(@ sum + ! sum) stack for @ sum] = sum '(1 2 3 4) sum"));
+        assertEquals(i(10), eval("'[list - r : 0 = sum @list '(@sum + !sum) stack for @sum] = sum '(1 2 3 4) sum"));
         // assertEquals(i(10), eval("'[list - r : 0 = acc list '(acc + ! acc) for acc] = sum '(1 2 3 4) sum"));
     }
 
@@ -92,7 +92,7 @@ public class TestFrame {
     public void testSetLocalReverse() {
         assertEquals(list(), eval("'()"));
         assertEquals(list(i(4), i(3), i(2), i(1)),
-            eval("'[list - r : '() = acc @ list '(@ acc stack cons ! acc) for @ acc] = reverse '(1 2 3 4) reverse"));
+            eval("'[list - r : '() =acc @list '(@acc stack cons !acc) for @acc] = reverse '(1 2 3 4) reverse"));
     }
 
     @Test
