@@ -49,49 +49,50 @@ public class TestFrame {
 
     @Test
     public void testArguments() {
-        assertEquals(i(3), eval("[a b - r : a b +] = plus 1 2 plus"));
+        assertEquals(i(3), eval("'[a b - r : a b +] = plus 1 2 plus"));
     }
 
     @Test
     public void testCall() {
-        assertEquals(i(3), eval("1 2 [a b - r : a b +] call"));
+        assertEquals(i(3), eval("1 2 [a b - r : a b +]"));
     }
 
     @Test
     public void testLocalFunction() {
-        assertEquals(i(25), eval("[a b - r : (dup *) = double a double b double +] = hypot 3 4 hypot"));
+        assertEquals(i(25), eval("'[a b - r : '(dup *) = double a double b double +] = hypot 3 4 hypot"));
     }
 
     @Test
     public void testLocalFrame() {
-        assertEquals(i(25), eval("[a b - r : [a - r : a a *] = double a double b double +] = hypot 3 4 hypot"));
+        assertEquals(i(25), eval("'[a b - r : '[a - r : a a *] = double a double b double +] = hypot 3 4 hypot"));
     }
 
     @Test
     public void testNoArgumentOneReturn() {
-        assertEquals(i(123), eval("[ - r : 123] = value value"));
+        assertEquals(i(123), eval("'[ - r : 123] = value value"));
     }
 
     @Test
     public void testNoArgumentTwoReturn() {
-        assertEquals(i(579), eval("[ - r s : 123 456] = value value +"));
+        assertEquals(i(579), eval("'[ - r s : 123 456] = value value +"));
     }
 
     @Test
     public void testTwoArgumentTwoReturn() {
-        assertEquals(i(5), eval("[a b - r s : a b / a b %] = div 11 3 div stack +"));
+        assertEquals(i(5), eval("'[a b - r s : a b / a b %] = div 11 3 div stack +"));
     }
 
     @Test
     public void testSetLocal() {
-        assertEquals(i(10), eval("[list - r : 0 = sum list (sum + ! sum) for sum] = sum (1 2 3 4) sum"));
+        // assertEquals(i(10), eval("'[list - r : 0 = sum list '(sum + ! sum) for sum] = sum '(1 2 3 4) sum"));
+        assertEquals(i(10), eval("'[list - r : 0 = acc list '(acc + ! acc) for acc] = sum '(1 2 3 4) sum"));
     }
 
     @Test
     public void testSetLocalReverse() {
-        assertEquals(list(), eval("()"));
+        assertEquals(list(), eval("'()"));
         assertEquals(list(i(4), i(3), i(2), i(1)),
-            eval("[list - r : () = acc list (acc stack cons ! acc) for acc] = reverse (1 2 3 4) reverse"));
+            eval("'[list - r : '() = acc list '(acc stack cons ! acc) for acc] = reverse '(1 2 3 4) reverse"));
     }
 
     @Test

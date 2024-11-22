@@ -55,7 +55,7 @@ public class Frame implements Value {
     }
 
     @Override
-    public void call(Context context) {
+    public void execute(Context context) {
         var save = new Object() { int oldFp; };
         Executable prolog = c -> {
             // save fp
