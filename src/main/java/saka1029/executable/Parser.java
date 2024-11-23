@@ -55,7 +55,7 @@ public class Parser {
             this.locals.put(Symbol.of("self"), Offset.of(0, true));
         }
 
-        int localVariable(Symbol variable, boolean isFunction) {
+        int addLocal(Symbol variable, boolean isFunction) {
             int offset = ++localOffset;
             locals.put(variable, Offset.of(offset, isFunction));
             return offset;
@@ -143,12 +143,28 @@ public class Parser {
 
     SymbolMacro defineFunction(Deque<LocalContext> pc) {
         Symbol symbol = symbol();
-        return DefineGlobal.of(symbol, true);
+        if (pc.isEmpty())
+            return DefineGlobal.of(symbol, true);
+        LocalContext x = pc.getLast();
+        Offset y = x.locals.get(symbol);
+        if (y != null)
+            throw error("%s '%s' is already defined",
+                y.isFunction ? "function" : "variable", symbol);
+        int n = x.addLocal(symbol, true);
+        return DefineLocal.of(symbol, n);
     }
 
     SymbolMacro defineVariable(Deque<LocalContext> pc) {
         Symbol symbol = symbol();
-        return DefineGlobal.of(symbol, false);
+        if (pc.isEmpty())
+            return DefineGlobal.of(symbol, false);
+        LocalContext x = pc.getLast();
+        Offset y = x.locals.get(symbol);
+        if (y != null)
+            throw error("%s '%s' is already defined",
+                y.isFunction ? "function" : "variable", symbol);
+        int n = x.addLocal(symbol, false);
+        return DefineLocal.of(symbol, n);
     }
 
     SymbolMacro set(Deque<LocalContext> pc) {

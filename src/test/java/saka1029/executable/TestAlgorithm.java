@@ -37,7 +37,8 @@ public class TestAlgorithm {
 
     @Test
     public void testReverseFrameNest() {
-        run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons rev) if] function rev i '() rev] function reverse");
+        // run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons rev) if] function rev i '() rev] function reverse");
+        run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons self) if] function rev i '() rev] function reverse");
         // run("'[i - r : i '() [i a - r : i null 'a '(i cdr i car a cons self) if]] function reverse");
         // run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons self) if] function rev i '() rev] function reverse");
         // run("'[i - r : '[i a - r : i null 'a '(i uncons swap a cons rev) if] function rev i '() rev] function reverse");
