@@ -167,6 +167,8 @@ public class Context{
                 }
             });
         });
+        add("car", c -> c.push(((Cons)c.pop()).car));
+        add("cdr", c -> c.push(((Cons)c.pop()).cdr));
         add("cons", c -> {
             List cdr = (List)c.pop();
             Executable car = c.pop();
