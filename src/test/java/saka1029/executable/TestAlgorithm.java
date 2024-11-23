@@ -47,4 +47,52 @@ public class TestAlgorithm {
         assertEquals(eval("'(3 (20 21) 1)"), eval("'(1 (20 21) 3) reverse"));
     }
 
+    @Test
+    public void testLength() {
+        run("'(0 swap '(drop 1 +) for) function length");
+        assertEquals(eval("0"), eval("'() length"));
+        assertEquals(eval("1"), eval("'(2) length"));
+        assertEquals(eval("2"), eval("'(1 2) length"));
+    }
+
+    @Test
+    public void testLengthRecursive() {
+        run("'(dup null 0 '(cdr length 1 +) if) function length");
+        assertEquals(eval("0"), eval("'() length"));
+        assertEquals(eval("1"), eval("'(2) length"));
+        assertEquals(eval("2"), eval("'(1 2) length"));
+    }
+
+    @Test
+    public void testLengthFrameFor() {
+        run("'[i - r : 0 variable a i '(drop a 1 + set a) for a] function length");
+        assertEquals(eval("0"), eval("'() length"));
+        assertEquals(eval("1"), eval("'(2) length"));
+        assertEquals(eval("2"), eval("'(1 2) length"));
+    }
+
+    @Test
+    public void testLengthFrameRecursive() {
+        run("'[i - r : i null 0 '(i cdr self 1 +) if] function length");
+        assertEquals(eval("0"), eval("'() length"));
+        assertEquals(eval("1"), eval("'(2) length"));
+        assertEquals(eval("2"), eval("'(1 2) length"));
+    }
+
+    @Test
+    public void testAppendRecursive() {
+        run("'(swap dup null 'drop '(uncons rot append cons) if) function append");
+        assertEquals(eval("'(3 4)"), eval("'() '(3 4) append"));
+        assertEquals(eval("'(2 3 4)"), eval("'(2) '(3 4) append"));
+        assertEquals(eval("'(1 2 3 4)"), eval("'(1 2) '(3 4) append"));
+    }
+
+    @Test
+    public void testAppendRecursiveFrame() {
+        run("'[a b - r : a null 'b '(a uncons b self cons) if] function append");
+        assertEquals(eval("'(3 4)"), eval("'() '(3 4) append"));
+        assertEquals(eval("'(2 3 4)"), eval("'(2) '(3 4) append"));
+        assertEquals(eval("'(1 2 3 4)"), eval("'(1 2) '(3 4) append"));
+    }
+
 }
