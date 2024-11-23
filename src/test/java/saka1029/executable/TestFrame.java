@@ -96,7 +96,7 @@ public class TestFrame {
     public void testSetLocalReverse() {
         assertEquals(list(), eval("'()"));
         assertEquals(list(i(4), i(3), i(2), i(1)),
-            eval("'[list - r : '() variable acc list '(acc stack cons set acc) for acc] function reverse '(1 2 3 4) reverse"));
+            eval("'[list - r : '() variable acc list '(acc cons set acc) for acc] function reverse '(1 2 3 4) reverse"));
     }
 
     @Test
