@@ -24,6 +24,7 @@ import java.util.ArrayDeque;
  */
 public class Parser {
 
+    static final Symbol SELF = Symbol.of("self");
     int[] input;
     int index;
     int ch;
@@ -40,7 +41,7 @@ public class Parser {
             for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
                 this.locals.put(arguments.get(i), j);
             this.returnSize = returnSize;
-            this.locals.put(Symbol.of("self"), 0);
+            this.locals.put(SELF, 0);
         }
 
         int addLocal(Symbol variable) {
@@ -180,7 +181,7 @@ public class Parser {
         LocalContext lc = pc.getLast();
         Integer offset = lc.locals.get(symbol);
         if (offset != null)
-            return GetLocal.of(symbol, offset);
+            return GetLocal.of(symbol, offset, symbol == SELF);
         return symbol;
     }
 
