@@ -38,10 +38,16 @@ public class TestAlgorithm {
     @Test
     public void testReverseFrameNest() {
         run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons rev) if] function rev i '() rev] function reverse");
-        // run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons self) if] function rev i '() rev] function reverse");
-        // run("'[i - r : i '() [i a - r : i null 'a '(i cdr i car a cons self) if]] function reverse");
-        // run("'[i - r : '[i a - r : i null 'a '(i cdr i car a cons self) if] function rev i '() rev] function reverse");
         // run("'[i - r : '[i a - r : i null 'a '(i uncons swap a cons rev) if] function rev i '() rev] function reverse");
+        assertEquals(eval("'()"), eval("'() reverse"));
+        assertEquals(eval("'(1)"), eval("'(1) reverse"));
+        assertEquals(eval("'(3 2 1)"), eval("'(1 2 3) reverse"));
+        assertEquals(eval("'(3 (20 21) 1)"), eval("'(1 (20 21) 3) reverse"));
+    }
+
+    @Test
+    public void testReverseFrameNestDirect() {
+        run("'[i - r : i '() [i a - r : i null 'a '(i cdr i car a cons self) if]] function reverse");
         assertEquals(eval("'()"), eval("'() reverse"));
         assertEquals(eval("'(1)"), eval("'(1) reverse"));
         assertEquals(eval("'(3 2 1)"), eval("'(1 2 3) reverse"));

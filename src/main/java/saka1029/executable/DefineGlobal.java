@@ -21,6 +21,6 @@ public class DefineGlobal extends SymbolMacro {
 
     @Override
     public String toString() {
-        return "= " + symbol;
+        return (isFunction ? "function " : "variale ") + symbol;
     }
 }
