@@ -104,7 +104,7 @@ public class TestAlgorithm {
 
     @Test
     public void testFilterFrame() {
-        run("'[p l - r : ] filter");
+        run("'[p l - r : l null '() '(l car p call '(l car p l cdr filter cons) '(p l cdr filter) if) if] function filter");
         assertEquals(eval("'(1 2 3)"), eval("'(4 <) '(1 2 3 4 5 6) filter"));
     }
 

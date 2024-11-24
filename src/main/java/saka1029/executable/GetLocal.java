@@ -18,7 +18,7 @@ public class GetLocal extends SymbolMacro {
     @Override
     public void execute(Context c) {
         if (isFunction)
-            c.stack.get(c.fp).execute(c); // self
+            c.stack.get(c.fp + offset).execute(c); // self
         else
             c.push(c.stack.get(c.fp + offset));
     }
