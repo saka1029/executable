@@ -28,21 +28,9 @@ public class Parser {
     int index;
     int ch;
 
-    static class Offset {
-        final int offset;
-        final boolean isFunction;
-        Offset(int offset, boolean isFunction) {
-            this.offset = offset;
-            this.isFunction = isFunction;
-        }
-        static Offset of(int offset, boolean isFunction) {
-            return new Offset(offset, isFunction);
-        }
-    }
-
     static class LocalContext {
 
-        final Map<Symbol, Offset> locals = new HashMap<>();
+        final Map<Symbol, Integer> locals = new HashMap<>();
         int argumentSize, returnSize;
         final java.util.List<Executable> instructions = new ArrayList<>();
         int localOffset = 0;
@@ -50,14 +38,14 @@ public class Parser {
         LocalContext(java.util.List<Symbol> arguments, int returnSize) {
             this.argumentSize = arguments.size();
             for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
-                this.locals.put(arguments.get(i), Offset.of(j, false));
+                this.locals.put(arguments.get(i), j);
             this.returnSize = returnSize;
-            this.locals.put(Symbol.of("self"), Offset.of(0, true));
+            this.locals.put(Symbol.of("self"), 0);
         }
 
-        int addLocal(Symbol variable, boolean isFunction) {
+        int addLocal(Symbol variable) {
             int offset = ++localOffset;
-            locals.put(variable, Offset.of(offset, isFunction));
+            locals.put(variable, offset);
             return offset;
         }
     }
@@ -143,15 +131,7 @@ public class Parser {
 
     SymbolMacro defineFunction(Deque<LocalContext> pc) {
         Symbol symbol = symbol();
-        if (pc.isEmpty())
-            return DefineGlobal.of(symbol, true);
-        LocalContext x = pc.getLast();
-        Offset y = x.locals.get(symbol);
-        if (y != null)
-            throw error("%s '%s' is already defined",
-                y.isFunction ? "function" : "variable", symbol);
-        int n = x.addLocal(symbol, true);
-        return DefineLocal.of(symbol, n);
+        return DefineGlobal.of(symbol, true);
     }
 
     SymbolMacro defineVariable(Deque<LocalContext> pc) {
@@ -159,11 +139,10 @@ public class Parser {
         if (pc.isEmpty())
             return DefineGlobal.of(symbol, false);
         LocalContext x = pc.getLast();
-        Offset y = x.locals.get(symbol);
+        Integer y = x.locals.get(symbol);
         if (y != null)
-            throw error("%s '%s' is already defined",
-                y.isFunction ? "function" : "variable", symbol);
-        int n = x.addLocal(symbol, false);
+            throw error("Variable '%s' is already defined", symbol);
+        int n = x.addLocal(symbol);
         return DefineLocal.of(symbol, n);
     }
 
@@ -172,9 +151,9 @@ public class Parser {
         if (pc.isEmpty())
             return SetGlobal.of(symbol);
         LocalContext x = pc.getLast();
-        Offset y = x.locals.get(symbol);
+        Integer y = x.locals.get(symbol);
         if (y != null)
-            return SetLocal.of(symbol, y.offset);
+            return SetLocal.of(symbol, y);
         return SetGlobal.of(symbol);
     }
 
@@ -199,12 +178,9 @@ public class Parser {
         if (pc.isEmpty())
             return symbol;
         LocalContext lc = pc.getLast();
-        Offset offset = lc.locals.get(symbol);
+        Integer offset = lc.locals.get(symbol);
         if (offset != null)
-            if (offset.isFunction)
-                return GetLocalFunction.of(symbol, lc.locals.get(symbol).offset);
-            else
-                return GetLocalVariable.of(symbol, lc.locals.get(symbol).offset);
+            return GetLocal.of(symbol, offset);
         return symbol;
     }
 

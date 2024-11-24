@@ -99,26 +99,10 @@ public class Context{
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
-    static class FuncVar {
-        Executable value;
-        boolean isFunction;
-        FuncVar(Executable value, boolean isFunction) {
-            this.value = value;
-            this.isFunction = isFunction;
-        }
-        static FuncVar of(Executable value, boolean isFunction) {
-            return new FuncVar(value, isFunction);
-        }
-        @Override
-        public String toString() {
-            return "FuncVar(%s, %s)".formatted(value, isFunction);
-        }
-    }
-
-    final Map<Symbol, FuncVar> globals = new HashMap<>();
+    final Map<Symbol, FunctionVariable> globals = new HashMap<>();
 
     void add(String name, Executable e) {
-        globals.put(Symbol.of(name), FuncVar.of(e, true));
+        globals.put(Symbol.of(name), FunctionVariable.of(e, true));
     }
 
     private void initialize() {

@@ -16,7 +16,7 @@ public class DefineGlobal extends SymbolMacro {
     @Override
     public void execute(Context c) {
         Executable body = c.pop();  // defineしたときの定義内容を保存
-        c.globals.put(symbol, Context.FuncVar.of(body, isFunction));
+        c.globals.put(symbol, FunctionVariable.of(body, isFunction));
     }
 
     @Override

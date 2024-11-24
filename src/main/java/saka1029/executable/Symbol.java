@@ -18,7 +18,7 @@ public class Symbol implements Executable {
 
     @Override
     public void execute(Context c) {
-        Context.FuncVar f = c.globals.get(this);
+        FunctionVariable f = c.globals.get(this);
         if (f == null)
             throw new RuntimeException("Symbol '%s' is not defined".formatted(this));
         if (f.isFunction)
