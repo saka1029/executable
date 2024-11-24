@@ -101,11 +101,17 @@ public class Context{
 
     final Map<Symbol, FunctionVariable> globals = new HashMap<>();
 
+    void addVariable(String name, Executable e) {
+        globals.put(Symbol.of(name), FunctionVariable.of(e, false));
+    }
+
     void add(String name, Executable e) {
         globals.put(Symbol.of(name), FunctionVariable.of(e, true));
     }
 
     private void initialize() {
+        addVariable("true", Bool.TRUE);
+        addVariable("false", Bool.FALSE);
         add("dup", c -> c.dup(0));
         add("dup1", c -> c.dup(1));
         add("dup2", c -> c.dup(2));

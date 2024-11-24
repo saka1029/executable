@@ -24,7 +24,11 @@ import java.util.ArrayDeque;
  */
 public class Parser {
 
+    static final Symbol FUNCTION = Symbol.of("function");
+    static final Symbol VARIABLE = Symbol.of("variable");
+    static final Symbol SET = Symbol.of("set");
     static final Symbol SELF = Symbol.of("self");
+
     int[] input;
     int index;
     int ch;
@@ -121,14 +125,6 @@ public class Parser {
     }
 
     static final Pattern INT_PATTERN = Pattern.compile("[+-]?\\d+");
-    static final Map<String, Executable> CONST = Map.of(
-        "true", Bool.TRUE,
-        "false", Bool.FALSE
-    );
-
-    static final Symbol FUNCTION = Symbol.of("function");
-    static final Symbol VARIABLE = Symbol.of("variable");
-    static final Symbol SET = Symbol.of("set");
 
     SymbolMacro defineFunction(Deque<LocalContext> pc) {
         Symbol symbol = symbol();
@@ -165,8 +161,6 @@ public class Parser {
             get();
         }
         String word = sb.toString();
-        if (CONST.containsKey(word))
-            return CONST.get(word);
         if (INT_PATTERN.matcher(word).matches())
             return Int.of(Integer.parseInt(word));
         Symbol symbol = Symbol.of(word);

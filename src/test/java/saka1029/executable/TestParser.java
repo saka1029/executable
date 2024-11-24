@@ -16,8 +16,8 @@ public class TestParser {
 
     @Test
     public void testConstant() {
-        assertEquals(list(TRUE), p.parse("true"));
-        assertEquals(list(FALSE), p.parse("false"));
+        assertEquals(list(Symbol.of("true")), p.parse("true"));
+        assertEquals(list(Symbol.of("false")), p.parse("false"));
     }
 
     @Test
