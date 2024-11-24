@@ -115,4 +115,11 @@ public class TestFrame {
         assertEquals(i(120), eval("5 fact"));
     }
 
+    @Test
+    public void testCallArgument() {
+        run("'[a b c - r : a b c call] function compare");
+        assertEquals(eval("0 1 <"), eval("0 1 '< compare"));
+        assertEquals(eval("1 0 <"), eval("1 0 '< compare"));
+        assertEquals(eval("1 0 >"), eval("1 0 '> compare"));
+    }
 }
