@@ -102,4 +102,10 @@ public class TestAlgorithm {
         assertEquals(eval("'(1 2 3 4)"), eval("'(1 2) '(3 4) append"));
     }
 
+    @Test
+    public void testFilterFrame() {
+        run("'[p l - r : ] filter");
+        assertEquals(eval("'(1 2 3)"), eval("'(4 <) '(1 2 3 4 5 6) filter"));
+    }
+
 }
