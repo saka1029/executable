@@ -178,6 +178,12 @@ public class Context{
             c.push(cons.car);
             c.push(cons.cdr);
         });
+        add("reverse", c -> {
+            List list = (List)c.pop(), result = NIL;
+            for (Executable e : list)
+                result = Cons.of(e, result);
+            c.push(result);
+        });
         add("range", c -> {
             int step = i(c.pop()), end = i(c.pop()), start = i(c.pop());
             c.push(Range.of(start, end, step));

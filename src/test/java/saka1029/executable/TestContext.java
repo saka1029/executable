@@ -121,4 +121,11 @@ public class TestContext {
         c.run(list(i(99), set(sym("nine"))));
         assertEquals(i(99), c.eval(list(sym("nine"))));
     }
+
+    @Test
+    public void testReverse() {
+        Context c = Context.of();
+        assertEquals(NIL, c.eval(list(quote(NIL), sym("reverse"))));
+        assertEquals(list(i(3), i(2), i(1)), c.eval(list(quote(list(i(1), i(2), i(3))), sym("reverse"))));
+    }
 }
