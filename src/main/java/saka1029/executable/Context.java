@@ -119,15 +119,15 @@ public class Context{
         add("rot", c -> c.rot());
         add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
         add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
-        add("-", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) - i(r))); });
+        add("-", c -> c.push(i(-i(c.pop()) + i(c.pop()))));
         add("/", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) / i(r))); });
         add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
-        add("==", c -> { Executable r = c.pop(); c.push(b(c.pop().equals(r))); });
-        add("!=", c -> { Executable r = c.pop(); c.push(b(!c.pop().equals(r))); });
-        add("<", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) < 0)); });
-        add("<=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) <= 0)); });
-        add(">", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) > 0)); });
-        add(">=", c -> { Executable r = c.pop(); c.push(b(comp(c.pop()).compareTo(comp(r)) >= 0)); });
+        add("==", c -> c.push(b(c.pop().equals(c.pop()))));
+        add("!=", c -> c.push(b(!c.pop().equals(c.pop()))));
+        add("<", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) > 0)));
+        add("<=", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) >= 0)));
+        add(">", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) < 0)));
+        add(">=", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) <= 0)));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
         add("call", c -> {
