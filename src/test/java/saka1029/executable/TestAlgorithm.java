@@ -104,10 +104,19 @@ public class TestAlgorithm {
 
     @Test
     public void testFilterFrame() {
-        run("'[p l - r : l null 'nil '(l car p call '(l car p l cdr filter stack cons) '(p l cdr filter) if) if] stack function filter");
+        run("'[p l - r :"
+            + "l null"
+            + "    'nil"
+            + "    '(l car p call"
+            + "        '(l car p l cdr filter stack cons)"
+            + "        '(p l cdr filter)"
+            + "    if)"
+            + "if] stack function filter");
         // 空リストを返すときは「'nil」または「''()」とする必要がある。
         // run("'[p l - r : l null ''() '(l car p call '(l car p l cdr filter stack cons) '(p l cdr filter) if) if] stack function filter");
         assertEquals(eval("'(1 2 3)"), eval("'(4 <) '(1 2 3 4 5 6) filter"));
+        assertEquals(eval("'()"), eval("'(4 <) '(4 5 6) filter"));
+        assertEquals(eval("'(4 5 6)"), eval("'(4 >=) '(1 2 3 4 5 6) filter"));
     }
 
 }

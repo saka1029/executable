@@ -7,7 +7,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 // import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -64,16 +63,15 @@ public class Context{
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
     public void run(List list) {
-        Common.log(logger, Level.INFO, "run: %s", list);
+        // Common.log(logger, Level.INFO, "run: %s", list);
         list.execute(this);
-        // pop().call(this);
         run();
     }
 
     public Executable eval(List list) {
         run(list);
         Executable result = pop();
-        Common.log(logger, Level.INFO, "eval: returns %s", result);
+        // Common.log(logger, Level.INFO, "eval: returns %s", result);
         return result;
     }
 
