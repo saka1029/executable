@@ -21,8 +21,7 @@ public class DefineLocal extends SymbolMacro {
 
     @Override
     public String toString() {
-        // return "= %s@%d".formatted(symbol, offset);
-        return "= " + symbol;
+        return "define %s@%d".formatted(symbol, offset);
     }
 
 }

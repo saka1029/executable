@@ -25,6 +25,6 @@ public class GetLocal extends SymbolMacro {
 
     @Override
     public String toString() {
-        return symbol.toString();
+        return "%s@%d".formatted(symbol, offset);
     }
 }
