@@ -18,7 +18,7 @@ public class Helper {
 
     public static boolean b(Executable e, String at) {
         if (!(e instanceof Bool b))
-            throw error("'%s' is not bool at '%s'", e, at);
+            throw error("%s: '%s' is not bool", at, e);
         return b.value;
     }
 
@@ -32,11 +32,8 @@ public class Helper {
 
     public static int asI(Executable e, String at) {
         if (!(e instanceof Int i))
-            throw error("'%s' is not int at '%s'", e, at);
+            throw error("%s: '%s' is not int", at, e);
         return i.value;
-    }
-    public static int asI(Executable e) {
-        return asI(e, "unknown");
     }
 
     public static Symbol sym(String name) {
@@ -45,12 +42,8 @@ public class Helper {
 
     public static Comp asComp(Executable e, String at) {
         if (!(e instanceof Comp c))
-            throw error("'%s' is not comparable at '%s'", e, at);
+            throw error("%s: '%s' is not comparable", at, e);
         return c;
-    }
-
-    public static Comp asComp(Executable e) {
-        return asComp(e, "unknown");
     }
 
     public static Quote quote(Executable e) {
@@ -69,21 +62,14 @@ public class Helper {
 
     public static List asList(Executable e, String at) {
         if (!(e instanceof List list))
-            throw error("'%s' is not list at '%s'", e, at);
+            throw error("%s: '%s' is not list", at, e);
         return list;
-    }
-
-    public static List asList(Executable e) {
-        return asList(e, "unknown");
     }
 
     public static Cons asCons(Executable e, String at) {
         if (!(e instanceof Cons cons))
-            throw error("'%s' is not cons at '%s'", e, at);
+            throw error("%s: '%s' is not cons", at, e);
         return cons;
-    }
-    public static Cons asCons(Executable e) {
-        return asCons(e, "unknown");
     }
 
     public static DefineGlobal defun(Symbol symbol) {
