@@ -121,6 +121,14 @@ public class TestAlgorithm {
     }
 
     @Test
+    public void testFilterReverse() {
+        run("'[l p - r : nil l '(dup p call 'rcons 'drop if) for reverse] function filter");
+        assertEquals(eval("'(1 2 3)"), eval(" '(1 2 3 4 5 6) '(4 <) filter"));
+        assertEquals(eval("'()"), eval("'(4 5 6) '(4 <) filter"));
+        assertEquals(eval("'(4 5 6)"), eval("'(1 2 3 4 5 6) '(4 >=) filter"));
+    }
+
+    @Test
     public void testMapFrame() {
         run("'[l p - r :"
             + "l null"
