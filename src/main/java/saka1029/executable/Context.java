@@ -117,17 +117,17 @@ public class Context{
         add("swap", c -> c.swap());
         add("drop", c -> c.drop());
         add("rot", c -> c.rot());
-        add("+", c -> c.push(i(i(c.pop()) + i(c.pop()))));
-        add("*", c -> c.push(i(i(c.pop()) * i(c.pop()))));
-        add("-", c -> c.push(i(-i(c.pop()) + i(c.pop()))));
-        add("/", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) / i(r))); });
-        add("%", c -> { Executable r = c.pop(); c.push(i(i(c.pop()) % i(r))); });
+        add("+", c -> c.push(i(asI(c.pop(), "+") + asI(c.pop(), "+"))));
+        add("*", c -> c.push(i(asI(c.pop(), "*") * asI(c.pop(), "*"))));
+        add("-", c -> c.push(i(-asI(c.pop(), "-") + asI(c.pop(), "-"))));
+        add("/", c -> { Executable r = c.pop(); c.push(i(asI(c.pop(), "/") / asI(r, "/"))); });
+        add("%", c -> { Executable r = c.pop(); c.push(i(asI(c.pop(), "%") % asI(r, "%"))); });
         add("==", c -> c.push(b(c.pop().equals(c.pop()))));
         add("!=", c -> c.push(b(!c.pop().equals(c.pop()))));
-        add("<", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) > 0)));
-        add("<=", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) >= 0)));
-        add(">", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) < 0)));
-        add(">=", c -> c.push(b(comp(c.pop()).compareTo(comp(c.pop())) <= 0)));
+        add("<", c -> c.push(b(asComp(c.pop(), "<").compareTo(asComp(c.pop(), "<")) > 0)));
+        add("<=", c -> c.push(b(asComp(c.pop(), "<=").compareTo(asComp(c.pop(), "<=")) >= 0)));
+        add(">", c -> c.push(b(asComp(c.pop(), ">").compareTo(asComp(c.pop(), ">")) < 0)));
+        add(">=", c -> c.push(b(asComp(c.pop(), ">=").compareTo(asComp(c.pop(), ">=")) <= 0)));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
         add("call", c -> {
@@ -136,7 +136,7 @@ public class Context{
         });
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();
-            if (b(c.pop()))
+            if (b(c.pop(), "if"))
                 then.execute(c);
             else
                 otherwise.execute(c);
@@ -144,7 +144,7 @@ public class Context{
         add("for", c -> {
             // LIST BLOCK each
             Executable block = c.pop();
-            Iterator<Executable> iterator = ((List)c.pop()).iterator();
+            Iterator<Executable> iterator = asList(c.pop(), "for").iterator();
             executables.addLast(new Iterator<>() {
                 @Override
                 public boolean hasNext() {
@@ -159,33 +159,33 @@ public class Context{
                 }
             });
         });
-        add("car", c -> c.push(((Cons)c.pop()).car));
-        add("cdr", c -> c.push(((Cons)c.pop()).cdr));
+        add("car", c -> c.push(asCons(c.pop(), "car").car));
+        add("cdr", c -> c.push(asCons(c.pop(), "cdr").cdr));
         add("cons", c -> {
-            List cdr = (List)c.pop();
+            List cdr = asList(c.pop(), "cons");
             Executable car = c.pop();
             c.push(Cons.of(car, cdr));
         });
         add("rcons", c -> {
             Executable car = c.pop();
-            List cdr = (List)c.pop();
+            List cdr = asList(c.pop(), "rcons");
             c.push(Cons.of(car, cdr));
         });
         add("null", c -> c.push(b(c.pop() == NIL)));
         // add("nil", c -> c.push(list(NIL)));
         add("uncons", c -> {
-            Cons cons = cons(c.pop());
+            Cons cons = asCons(c.pop(), "uncons");
             c.push(cons.car);
             c.push(cons.cdr);
         });
         add("reverse", c -> {
-            List list = (List)c.pop(), result = NIL;
+            List list = asList(c.pop(), "reverse"), result = NIL;
             for (Executable e : list)
                 result = Cons.of(e, result);
             c.push(result);
         });
         add("range", c -> {
-            int step = i(c.pop()), end = i(c.pop()), start = i(c.pop());
+            int step = asI(c.pop(), "range"), end = asI(c.pop(), "range"), start = asI(c.pop(), "range");
             c.push(Range.of(start, end, step));
         });
     }

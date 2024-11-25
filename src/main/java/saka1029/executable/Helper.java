@@ -16,30 +16,41 @@ public class Helper {
         return Bool.of(value);
     }
 
-    public static boolean b(Executable e) {
+    public static boolean b(Executable e, String at) {
         if (!(e instanceof Bool b))
-            throw error("'%s' is not bool", e);
+            throw error("'%s' is not bool at '%s'", e, at);
         return b.value;
+    }
+
+    public static boolean b(Executable e) {
+        return b(e, "unknown");
     }
 
     public static Int i(int value) {
         return Int.of(value);
     }
 
-    public static int i(Executable e) {
+    public static int asI(Executable e, String at) {
         if (!(e instanceof Int i))
-            throw error("'%s' is not int", e);
+            throw error("'%s' is not int at '%s'", e, at);
         return i.value;
+    }
+    public static int asI(Executable e) {
+        return asI(e, "unknown");
     }
 
     public static Symbol sym(String name) {
         return Symbol.of(name);
     }
 
-    public static Comp comp(Executable e) {
+    public static Comp asComp(Executable e, String at) {
         if (!(e instanceof Comp c))
-            throw error("'%s' is not comparable", e);
+            throw error("'%s' is not comparable at '%s'", e, at);
         return c;
+    }
+
+    public static Comp asComp(Executable e) {
+        return asComp(e, "unknown");
     }
 
     public static Quote quote(Executable e) {
@@ -56,10 +67,23 @@ public class Helper {
         return Cons.list(es);
     }
 
-    public static Cons cons(Executable e) {
+    public static List asList(Executable e, String at) {
+        if (!(e instanceof List list))
+            throw error("'%s' is not list at '%s'", e, at);
+        return list;
+    }
+
+    public static List asList(Executable e) {
+        return asList(e, "unknown");
+    }
+
+    public static Cons asCons(Executable e, String at) {
         if (!(e instanceof Cons cons))
-            throw error("'%s' is not cons", e);
+            throw error("'%s' is not cons at '%s'", e, at);
         return cons;
+    }
+    public static Cons asCons(Executable e) {
+        return asCons(e, "unknown");
     }
 
     public static DefineGlobal defun(Symbol symbol) {
