@@ -111,13 +111,38 @@ public class TestAlgorithm {
             + "        '(l car l cdr p filter stack cons)"
             + "        '(l cdr p filter)"
             + "    if)"
-            + "if] stack function filter");
+            + "if] function filter");
         // 空リストを返すときは「'nil」または「''()」とする必要がある。
         // 「'()」はNOPとなる。
         // run("'[p l - r : l null ''() '(l car p call '(l car p l cdr filter stack cons) '(p l cdr filter) if) if] stack function filter");
         assertEquals(eval("'(1 2 3)"), eval(" '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval("'()"), eval("'(4 5 6) '(4 <) filter"));
         assertEquals(eval("'(4 5 6)"), eval("'(1 2 3 4 5 6) '(4 >=) filter"));
+    }
+
+    @Test
+    public void testMapFrame() {
+        run("'[l p - r :"
+            + "l null"
+            + "    'nil"
+            + "    '(l car p call l cdr p self cons)"
+            + "if] function map");
+        assertEquals(eval("'()"), eval("'() '(1 +) map"));
+        assertEquals(eval("'(1 2 3)"), eval(" '(0 1 2) '(1 +) map"));
+    }
+
+    @Test
+    public void testMapFrameReverse() {
+        run("'[l p - r : '() l '(p call rcons) for reverse] function map");
+        assertEquals(eval("'()"), eval("'() '(1 +) map"));
+        assertEquals(eval("'(1 2 3)"), eval(" '(0 1 2) '(1 +) map"));
+    }
+
+    @Test
+    public void testMapFrameReverseSet() {
+        run("'[l p - r : '() variable m l '(p call m cons set m) for m reverse] function map");
+        assertEquals(eval("'()"), eval("'() '(1 +) map"));
+        assertEquals(eval("'(1 2 3)"), eval(" '(0 1 2) '(1 +) map"));
     }
 
 }
