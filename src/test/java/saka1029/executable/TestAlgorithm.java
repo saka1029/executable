@@ -1,6 +1,7 @@
 package saka1029.executable;
 
 import static org.junit.Assert.assertEquals;
+import static saka1029.executable.Helper.*;
 
 import org.junit.Test;
 
@@ -100,6 +101,49 @@ public class TestAlgorithm {
         assertEquals(eval("'(3 4)"), eval("'() '(3 4) append"));
         assertEquals(eval("'(2 3 4)"), eval("'(2) '(3 4) append"));
         assertEquals(eval("'(1 2 3 4)"), eval("'(1 2) '(3 4) append"));
+    }
+
+    /**
+     * <pre><code>
+     * def fib(n: int) -> int:
+     * if n < 2:
+     *     return n
+     * else:
+     *     return fib(n=n-1) + fib(n=n-2)
+     */
+    @Test
+    public void testFibonacciFrameRecursion() {
+        run("'[n - r : n 2 < n '(n 1 - self n 2 - self +) if] function fib");
+        assertEquals(i(0), eval("0 fib"));
+        assertEquals(i(1), eval("1 fib"));
+        assertEquals(i(1), eval("2 fib"));
+        assertEquals(i(2), eval("3 fib"));
+        assertEquals(i(3), eval("4 fib"));
+        assertEquals(i(5), eval("5 fib"));
+        assertEquals(i(8), eval("6 fib"));
+        assertEquals(i(13), eval("7 fib"));
+    }
+
+    /**
+     * <pre><code>
+     * def fib(n: int) -> int:
+     * a, b = 1, 0
+     * for _ in range(n):
+     *     a, b = b, a+b
+     * return b
+     * </code><pre>
+     */
+    @Test
+    public void testFibonacciFrameFor() {
+        run("'[n - r : 1 variable a 0 variable b 1 n 1 range '(drop a b + b set a set b) for b] function fib");
+        assertEquals(i(0), eval("0 fib"));
+        assertEquals(i(1), eval("1 fib"));
+        assertEquals(i(1), eval("2 fib"));
+        assertEquals(i(2), eval("3 fib"));
+        assertEquals(i(3), eval("4 fib"));
+        assertEquals(i(5), eval("5 fib"));
+        assertEquals(i(8), eval("6 fib"));
+        assertEquals(i(13), eval("7 fib"));
     }
 
     @Test
