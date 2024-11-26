@@ -117,17 +117,17 @@ public class Context{
         add("swap", c -> c.swap());
         add("drop", c -> c.drop());
         add("rot", c -> c.rot());
-        add("+", c -> c.push(i(asI(c.pop(), "+") + asI(c.pop(), "+"))));
-        add("*", c -> c.push(i(asI(c.pop(), "*") * asI(c.pop(), "*"))));
-        add("-", c -> c.push(i(-asI(c.pop(), "-") + asI(c.pop(), "-"))));
-        add("/", c -> { Executable r = c.pop(); c.push(i(asI(c.pop(), "/") / asI(r, "/"))); });
-        add("%", c -> { Executable r = c.pop(); c.push(i(asI(c.pop(), "%") % asI(r, "%"))); });
+        add("+", c -> c.push(i(asI(c.pop(), "+(right)") + asI(c.pop(), "+(left)"))));
+        add("*", c -> c.push(i(asI(c.pop(), "*(right)") * asI(c.pop(), "*(left)"))));
+        add("-", c -> c.push(i(-asI(c.pop(), "-(right)") + asI(c.pop(), "-(left)"))));
+        add("/", c -> { Executable r = c.pop(); c.push(i(asI(c.pop(), "/(left)") / asI(r, "/(right)"))); });
+        add("%", c -> { Executable r = c.pop(); c.push(i(asI(c.pop(), "%(left)") % asI(r, "%(right)"))); });
         add("==", c -> c.push(b(c.pop().equals(c.pop()))));
         add("!=", c -> c.push(b(!c.pop().equals(c.pop()))));
-        add("<", c -> c.push(b(asComp(c.pop(), "<").compareTo(asComp(c.pop(), "<")) > 0)));
-        add("<=", c -> c.push(b(asComp(c.pop(), "<=").compareTo(asComp(c.pop(), "<=")) >= 0)));
-        add(">", c -> c.push(b(asComp(c.pop(), ">").compareTo(asComp(c.pop(), ">")) < 0)));
-        add(">=", c -> c.push(b(asComp(c.pop(), ">=").compareTo(asComp(c.pop(), ">=")) <= 0)));
+        add("<", c -> c.push(b(asComp(c.pop(), "<(right)").compareTo(asComp(c.pop(), "<(left)")) > 0)));
+        add("<=", c -> c.push(b(asComp(c.pop(), "<=(right)").compareTo(asComp(c.pop(), "<=(left)")) >= 0)));
+        add(">", c -> c.push(b(asComp(c.pop(), ">(right)").compareTo(asComp(c.pop(), ">(left)")) < 0)));
+        add(">=", c -> c.push(b(asComp(c.pop(), ">=(right)").compareTo(asComp(c.pop(), ">=(left)")) <= 0)));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
         add("call", c -> {
@@ -185,7 +185,7 @@ public class Context{
             c.push(result);
         });
         add("range", c -> {
-            int step = asI(c.pop(), "range"), end = asI(c.pop(), "range"), start = asI(c.pop(), "range");
+            int step = asI(c.pop(), "range(step)"), end = asI(c.pop(), "range(end)"), start = asI(c.pop(), "range(start)");
             c.push(Range.of(start, end, step));
         });
     }
