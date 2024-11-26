@@ -182,6 +182,21 @@ public class Context{
                 }
             });
         });
+        add("filter", c -> {
+            Executable pred = c.pop(), list = asList(c.pop(), "filter");
+            c.instructions.addLast(new Iterator<>() {
+                Iterator<Executable> it = list.iterator();
+                boolean cont = true;
+                int step = 0;
+                Executable e = null;
+                @Override
+                public boolean hasNext() {
+                }
+                @Override
+                public Executable next() {
+                }
+            });
+        });
         add("car", c -> c.push(asCons(c.pop(), "car").car));
         add("cdr", c -> c.push(asCons(c.pop(), "cdr").cdr));
         add("cons", c -> {
