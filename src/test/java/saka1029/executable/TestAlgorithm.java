@@ -56,6 +56,15 @@ public class TestAlgorithm {
     }
 
     @Test
+    public void testReverseFrameWhile() {
+        run("'[i - r : '() '(i null not) '(i uncons set i rcons) while] function reverse");
+        assertEquals(eval("'()"), eval("'() reverse"));
+        assertEquals(eval("'(1)"), eval("'(1) reverse"));
+        assertEquals(eval("'(3 2 1)"), eval("'(1 2 3) reverse"));
+        assertEquals(eval("'(3 (20 21) 1)"), eval("'(1 (20 21) 3) reverse"));
+    }
+
+    @Test
     public void testLength() {
         run("'(0 swap '(drop 1 +) for) function length");
         assertEquals(eval("0"), eval("'() length"));

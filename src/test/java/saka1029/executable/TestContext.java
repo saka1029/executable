@@ -13,6 +13,11 @@ public class TestContext {
 
     static final Logger logger = Common.logger(TestContext.class);
 
+    static Executable eval(Context c, Executable... es) {
+        c.run(Cons.list(es));
+        return c.pop();
+    }
+
     @Test
     public void testRun() {
         Context c = Context.of();
@@ -20,6 +25,49 @@ public class TestContext {
         c.run(list);
         assertEquals(1, c.stack.size());
         assertEquals(i(3), c.pop());
+    }
+
+    @Test
+    public void testPlus() {
+        Context c = Context.of();
+        assertEquals(i(3), eval(c, i(1), i(2), sym("+")));
+    }
+
+    @Test
+    public void testMinus() {
+        Context c = Context.of();
+        assertEquals(i(-1), eval(c, i(1), i(2), sym("-")));
+    }
+
+    @Test
+    public void testMultiply() {
+        Context c = Context.of();
+        assertEquals(i(6), eval(c, i(3), i(2), sym("*")));
+    }
+
+    @Test
+    public void testAnd() {
+        Context c = Context.of();
+        assertEquals(TRUE, eval(c, TRUE, TRUE, sym("and")));
+        assertEquals(FALSE, eval(c, TRUE, FALSE, sym("and")));
+        assertEquals(FALSE, eval(c, FALSE, TRUE, sym("and")));
+        assertEquals(FALSE, eval(c, FALSE, FALSE, sym("and")));
+    }
+
+    @Test
+    public void testOr() {
+        Context c = Context.of();
+        assertEquals(TRUE, eval(c, TRUE, TRUE, sym("or")));
+        assertEquals(TRUE, eval(c, TRUE, FALSE, sym("or")));
+        assertEquals(TRUE, eval(c, FALSE, TRUE, sym("or")));
+        assertEquals(FALSE, eval(c, FALSE, FALSE, sym("or")));
+    }
+
+    @Test
+    public void testNot() {
+        Context c = Context.of();
+        assertEquals(FALSE, eval(c, TRUE, sym("not")));
+        assertEquals(TRUE, eval(c, FALSE, sym("not")));
     }
 
     @Test

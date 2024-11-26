@@ -16,14 +16,10 @@ public class Helper {
         return Bool.of(value);
     }
 
-    public static boolean b(Executable e, String at) {
+    public static boolean asBool(Executable e, String at) {
         if (!(e instanceof Bool b))
             throw error("%s: '%s' is not bool", at, e);
         return b.value;
-    }
-
-    public static boolean b(Executable e) {
-        return b(e, "unknown");
     }
 
     public static Int i(int value) {

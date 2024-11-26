@@ -128,6 +128,9 @@ public class Context{
         add("<=", c -> c.push(b(asComp(c.pop(), "<=(right)").compareTo(asComp(c.pop(), "<=(left)")) >= 0)));
         add(">", c -> c.push(b(asComp(c.pop(), ">(right)").compareTo(asComp(c.pop(), ">(left)")) < 0)));
         add(">=", c -> c.push(b(asComp(c.pop(), ">=(right)").compareTo(asComp(c.pop(), ">=(left)")) <= 0)));
+        add("and", c -> c.push(b(asBool(c.pop(), "and(right)") & asBool(c.pop(), "and(left)"))));
+        add("or", c -> c.push(b(asBool(c.pop(), "or(right)") | asBool(c.pop(), "or(left)"))));
+        add("not", c-> c.push(b(!asBool(c.pop(), "not"))));
         add("print", c -> System.out.println(c.pop()));
         add("stack", c -> System.out.println(c));
         add("call", c -> {
@@ -136,7 +139,7 @@ public class Context{
         });
         add("if", c-> {
             Executable otherwise = c.pop(), then = c.pop();
-            if (b(c.pop(), "if"))
+            if (asBool(c.pop(), "if"))
                 then.execute(c);
             else
                 otherwise.execute(c);
@@ -156,6 +159,26 @@ public class Context{
                         c.push(iterator.next());
                         block.execute(c);
                     };
+                }
+            });
+        });
+        add("while", c -> {
+            Executable body = c.pop(), cond = c.pop();
+            executables.addLast(new Iterator<>() {
+                boolean cont = true;
+                int step = 0;
+                @Override
+                public boolean hasNext() {
+                    return cont;
+                }
+                @Override
+                public Executable next() {
+                    if (step++ % 2 == 0)
+                        return cond;
+                    if (cont = asBool(c.pop(), "while"))
+                        return body;
+                    cont = false;
+                    return NIL;  // do nothing
                 }
             });
         });
