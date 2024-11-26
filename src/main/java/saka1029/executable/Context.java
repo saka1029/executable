@@ -155,10 +155,8 @@ public class Context{
                 }
                 @Override
                 public Executable next() {
-                    return c -> {
-                        c.push(iterator.next());
-                        block.execute(c);
-                    };
+                    c.push(iterator.next());
+                    return block;
                 }
             });
         });
