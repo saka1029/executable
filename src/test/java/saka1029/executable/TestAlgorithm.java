@@ -168,6 +168,15 @@ public class TestAlgorithm {
     }
 
     @Test
+    public void testFilterBuiltin() {
+        Context c = Context.of();
+        assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
+        assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
+        assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
+        assertEquals(eval(c, "'(2 4 6)"), eval(c, "'(1 2 3 4 5 6) '(2 % 0 ==) filter"));
+    }
+
+    @Test
     public void testFilterFrame() {
         Context c = Context.of();
         run(c, "'[l p - r :"
@@ -181,15 +190,6 @@ public class TestAlgorithm {
         // 空リストを返すときは「'nil」または「''()」とする必要がある。
         // 「'()」はNOPとなる。
         // run(c, "'[p l - r : l null ''() '(l car p call '(l car p l cdr filter cons) '(p l cdr filter) if) if] function filter");
-        assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
-        assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
-        assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
-        assertEquals(eval(c, "'(2 4 6)"), eval(c, "'(1 2 3 4 5 6) '(2 % 0 ==) filter"));
-    }
-
-    @Test
-    public void testFilterBuiltin() {
-        Context c = Context.of();
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
@@ -223,6 +223,7 @@ public class TestAlgorithm {
             + "if] function map");
         assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
+        assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
 
     @Test
@@ -231,6 +232,7 @@ public class TestAlgorithm {
         run(c, "'[l p - r : '() l '(p call rcons) for reverse] function map");
         assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
+        assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
 
     @Test
@@ -239,5 +241,6 @@ public class TestAlgorithm {
         run(c, "'[l p - r : '() variable m l '(p call m cons set m) for m reverse] function map");
         assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
+        assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
 }
