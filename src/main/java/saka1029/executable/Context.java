@@ -148,7 +148,7 @@ public class Context{
             // LIST BLOCK each
             Executable block = c.pop();
             Iterator<Executable> iterator = asList(c.pop(), "for").iterator();
-            executables.addLast(new Iterator<>() {
+            c.executables.addLast(new Iterator<>() {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
@@ -162,7 +162,7 @@ public class Context{
         });
         add("while", c -> {
             Executable body = c.pop(), cond = c.pop();
-            executables.addLast(new Iterator<>() {
+            c.executables.addLast(new Iterator<>() {
                 boolean cont = true;
                 int step = 0;
                 @Override
@@ -181,17 +181,35 @@ public class Context{
             });
         });
         add("filter", c -> {
-            Executable pred = c.pop(), list = asList(c.pop(), "filter");
-            c.instructions.addLast(new Iterator<>() {
+            Executable pred = c.pop();
+            List list = asList(c.pop(), "filter");
+            c.executables.addLast(new Iterator<>() {
                 Iterator<Executable> it = list.iterator();
+                java.util.List<Executable> result = new ArrayList<>();
                 boolean cont = true;
                 int step = 0;
-                Executable e = null;
+                Executable e;
                 @Override
                 public boolean hasNext() {
+                    return cont;
                 }
                 @Override
                 public Executable next() {
+                    if (step++ % 2 == 0) {
+                        if (it.hasNext()) {
+                            e = it.next();
+                            c.push(e);
+                            return pred;
+                        } else {
+                            c.push(Cons.list(result));
+                            cont = false;
+                            return NIL;
+                        }
+                    } else {
+                        if (asBool(c.pop(), "filter"))
+                            result.add(e);
+                        return NIL;
+                    }
                 }
             });
         });
