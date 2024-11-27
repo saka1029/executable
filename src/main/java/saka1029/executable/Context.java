@@ -58,6 +58,13 @@ public class Context{
         stack.set(i1, top);
     }
 
+    public static List append(List left, List right) {
+        if (left == NIL)
+            return right;
+        Cons cons = asCons(left, "append");
+        return Cons.of(cons.car, append(cons.cdr, right));
+    }
+
     int fp = 0;
 
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
@@ -261,6 +268,10 @@ public class Context{
             Cons cons = asCons(c.pop(), "uncons");
             c.push(cons.car);
             c.push(cons.cdr);
+        });
+        add("append", c -> {
+            List right = asList(c.pop(), "append(right)"), left = asList(c.pop(), "append(left)");
+            c.push(append(left, right));
         });
         add("reverse", c -> {
             List list = asList(c.pop(), "reverse"), result = NIL;
