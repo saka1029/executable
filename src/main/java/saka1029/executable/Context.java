@@ -213,6 +213,36 @@ public class Context{
                 }
             });
         });
+        add("map", c-> {
+            Executable mapper = c.pop();
+            List list = asList(c.pop(), "map");
+            c.executables.addLast(new Iterator<Executable>() {
+                Iterator<Executable> it = list.iterator();
+                java.util.List<Executable> result = new ArrayList<>();
+                boolean cont = true;
+                int step = 0;
+                @Override
+                public boolean hasNext() {
+                    return cont;
+                }
+                @Override
+                public Executable next() {
+                    if (step++ % 2 == 0) {
+                        if (it.hasNext()) {
+                            c.push(it.next());
+                            return mapper;
+                        } else {
+                            c.push(Cons.list(result));
+                            cont = false;
+                            return NIL;
+                        }
+                    } else {
+                        result.add(c.pop());
+                        return NIL;
+                    }
+                }
+            });
+        });
         add("car", c -> c.push(asCons(c.pop(), "car").car));
         add("cdr", c -> c.push(asCons(c.pop(), "cdr").cdr));
         add("cons", c -> {

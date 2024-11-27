@@ -184,6 +184,7 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
+        assertEquals(eval(c, "'(2 4 6)"), eval(c, "'(1 2 3 4 5 6) '(2 % 0 ==) filter"));
     }
 
     @Test
@@ -192,6 +193,7 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
+        assertEquals(eval(c, "'(2 4 6)"), eval(c, "'(1 2 3 4 5 6) '(2 % 0 ==) filter"));
     }
 
     @Test
@@ -201,6 +203,14 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
+    }
+
+    @Test
+    public void testMapBuiltin() {
+        Context c = Context.of();
+        assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
+        assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
+        assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
 
     @Test
