@@ -264,6 +264,8 @@ public class TestAlgorithm {
             + "            left p sort pivot right p sort cons append "
             + "    ) "
             + "if] function sort");
+        assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
         assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
+        assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
     }
 }
