@@ -243,4 +243,12 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
         assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
+
+    @Test
+    public void testCompose() {
+        Context c = Context.of();
+        assertEquals(i(3), eval(c, "1 2 '+ nil cons cons cons dup print call"));
+        assertEquals(i(3), eval(c, "1 2 '(+) nil cons cons cons dup print call"));
+        assertEquals(i(3), eval(c, "1 2 '+ dup print call"));
+    }
 }
