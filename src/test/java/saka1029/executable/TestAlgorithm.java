@@ -254,7 +254,7 @@ public class TestAlgorithm {
     @Test
     public void testSortFrame() {
         Context c = Context.of();
-        run(c, "'[list p - r : "
+        run(c, "'[list predicate - r : "
             + "    list null "
             + "    'nil"
             + "    '("
@@ -262,13 +262,13 @@ public class TestAlgorithm {
             + "        nil variable left nil variable right "
             + "               rest "
             + "               '( "
-            + "                        dup pivot p call "
+            + "                        dup pivot predicate call "
             + "                        '(left cons set left) "
             + "                        '(right cons set right) "
             + "                    if "
             + "                ) "
             + "            for "
-            + "            left p sort pivot right p sort cons append "
+            + "            (left predicate sort) pivot (right predicate sort) cons append "
             + "    ) "
             + "if] function sort");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
