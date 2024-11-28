@@ -27,4 +27,5 @@ public interface List extends Executable, Iterable<Executable> {
     default void execute(Context c) {
         c.executables.addLast(iterator());
     }
+
 }

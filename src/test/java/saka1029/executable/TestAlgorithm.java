@@ -245,6 +245,31 @@ public class TestAlgorithm {
     }
 
     @Test
+    public void testSortFrame() {
+        Context c = Context.of();
+        run(c, "'[list p - r : "
+            + "    list null "
+            + "    'nil"
+            + "    '("
+            + "        list uncons variable rest variable pivot "
+            + "        nil variable left nil variable right "
+            + "               rest "
+            + "               '( "
+            + "                        dup pivot p call "
+            + "                        '(left cons set left) "
+            + "                        '(right cons set right) "
+            + "                    if "
+            + "                ) "
+            + "            for "
+            + "            left p sort pivot right p sort cons append "
+            + "    ) "
+            + "if] function sort");
+        assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
+        assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
+        assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
+    }
+
+    @Test
     public void testCompose() {
         Context c = Context.of();
         assertEquals(i(3), eval(c, "1 2 '+ nil cons cons cons dup print call"));
