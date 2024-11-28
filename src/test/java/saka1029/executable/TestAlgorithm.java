@@ -244,6 +244,13 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
 
+    /**
+     * 与えられたリストの先頭をピボットとし、
+     * 残りのリストからピボット以上のリストと以下のリストに振り分ける。
+     * それぞれのリストをソート後にマージする。
+     * リスト振り分け時にconsを使用しているため、振り分け結果は逆順になる。
+     * したがってソート結果は安定的(stable)ではない。
+     */
     @Test
     public void testSortFrame() {
         Context c = Context.of();
@@ -269,11 +276,37 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
     }
 
+    /**
+     * 与えられたリストの先頭をピボットとし、
+     * 残りのリストからピボット以上のリストと以下のリストを作成し、
+     * それぞれのリストをソート後にマージする。
+     */
+    @Test
+    public void testSortFrameByFilter() {
+        Context c = Context.of();
+        run(c, "'[list predicate - r : "
+            + "    list null "
+            + "    'nil "
+            + "    '("
+            + "        list uncons variable rest variable pivot "
+            + "        rest '(pivot predicate call) filter predicate sort "
+            + "        pivot "
+            + "        rest '(pivot predicate call not) filter predicate sort "
+            + "        cons append "
+            + "    ) "
+            + "if] function sort");
+        assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
+        assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
+        assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
+    }
+
     @Test
     public void testCompose() {
         Context c = Context.of();
-        assertEquals(i(3), eval(c, "1 2 '+ nil cons cons cons dup print call"));
-        assertEquals(i(3), eval(c, "1 2 '(+) nil cons cons cons dup print call"));
-        assertEquals(i(3), eval(c, "1 2 '+ dup print call"));
+        assertEquals(i(3), eval(c, "1 2 '+ nil cons cons cons call"));
+        assertEquals(i(3), eval(c, "1 2 '(+) nil cons cons cons call"));
+        assertEquals(i(3), eval(c, "1 2 '+ call"));
+        run(c, "3 variable THREE");
+        assertEquals(i(4), eval(c, "'(1 THREE +) dup print call"));
     }
 }
