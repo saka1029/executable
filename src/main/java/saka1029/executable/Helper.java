@@ -68,6 +68,19 @@ public class Helper {
         return cons;
     }
 
+    @SuppressWarnings("unchecked")
+    public static Iterable<Executable> asIterable(Executable e, String at) {
+        if (!(e instanceof Iterable it))
+            throw error("%s: '%s' is not iterable", at, e);
+        return (Iterable<Executable>)it;
+    }
+
+    public static Array asArray(Executable e, String at) {
+        if (!(e instanceof Array a))
+            throw error("%s: '%s' is not array", at, e);
+        return a;
+    }
+
     public static DefineGlobal defun(Symbol symbol) {
         return DefineGlobal.of(symbol, true);
     }

@@ -154,7 +154,7 @@ public class Context{
         add("for", c -> {
             // LIST BLOCK each
             Executable block = c.pop();
-            Iterator<Executable> iterator = asList(c.pop(), "for").iterator();
+            Iterator<Executable> iterator = asIterable(c.pop(), "for").iterator();
             c.executables.addLast(new Iterator<>() {
                 @Override
                 public boolean hasNext() {
@@ -189,7 +189,7 @@ public class Context{
         });
         add("filter", c -> {
             Executable pred = c.pop();
-            List list = asList(c.pop(), "filter");
+            Iterable<Executable> list = asIterable(c.pop(), "filter");
             c.executables.addLast(new Iterator<>() {
                 Iterator<Executable> it = list.iterator();
                 java.util.List<Executable> result = new ArrayList<>();
@@ -222,7 +222,7 @@ public class Context{
         });
         add("map", c-> {
             Executable mapper = c.pop();
-            List list = asList(c.pop(), "map");
+            Iterable<Executable> list = asIterable(c.pop(), "map");
             c.executables.addLast(new Iterator<Executable>() {
                 Iterator<Executable> it = list.iterator();
                 java.util.List<Executable> result = new ArrayList<>();
@@ -274,7 +274,8 @@ public class Context{
             c.push(append(left, right));
         });
         add("reverse", c -> {
-            List list = asList(c.pop(), "reverse"), result = NIL;
+            Iterable<Executable> list = asIterable(c.pop(), "reverse");
+            List result = NIL;
             for (Executable e : list)
                 result = Cons.of(e, result);
             c.push(result);
