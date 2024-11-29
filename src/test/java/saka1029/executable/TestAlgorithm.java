@@ -329,4 +329,12 @@ public class TestAlgorithm {
         run(c, "3 variable THREE");
         assertEquals(i(4), eval(c, "'(1 THREE +) dup print call"));
     }
+
+    @Test
+    public void testSieve() {
+        Context c = Context.of();
+        run(c, "'[array exclude - : exclude dup + array size exclude range '(false swap array put) for] function sieve");
+        //                 0     1     2     3     4      5     6
+        assertEquals(array(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE), eval(c, "true 7 array dup 2 sieve"));
+    }
 }

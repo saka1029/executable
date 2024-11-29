@@ -58,6 +58,16 @@ public class Array implements Executable, Iterable<Executable> {
     }
 
     @Override
+    public int hashCode() {
+        return Arrays.hashCode(array);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Array right && Arrays.equals(array, right.array);
+    }
+
+    @Override
     public void execute(Context c) {
         c.executables.addLast(iterator());
     }

@@ -20,12 +20,42 @@ public class TestRange {
     }
 
     @Test
+    public void testAscendingEmpty() {
+        Range r = Range.of(4, 0 , 2);
+        Iterator<Executable> i = r.iterator();
+        assertFalse(i.hasNext());
+    }
+
+    @Test
     public void testDescending() {
         Range r = Range.of(4, 0 , -2);
         Iterator<Executable> i = r.iterator();
         assertEquals(i(4), i.next());
         assertEquals(i(2), i.next());
         assertEquals(i(0), i.next());
+        assertFalse(i.hasNext());
+    }
+
+    @Test
+    public void testDescendingEmpty() {
+        Range r = Range.of(0, 4 , -2);
+        Iterator<Executable> i = r.iterator();
+        assertFalse(i.hasNext());
+    }
+
+    @Test
+    public void testAscendingOneValue() {
+        Range r = Range.of(4, 4 , 2);
+        Iterator<Executable> i = r.iterator();
+        assertEquals(i(4), i.next());
+        assertFalse(i.hasNext());
+    }
+
+    @Test
+    public void testDescendingOneValue() {
+        Range r = Range.of(4, 4 , -2);
+        Iterator<Executable> i = r.iterator();
+        assertEquals(i(4), i.next());
         assertFalse(i.hasNext());
     }
 

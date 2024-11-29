@@ -9,7 +9,8 @@ public class Range implements List {
 
     Range(int start, int end, int step) {
         if (step == 0)
-            throw new IllegalArgumentException("step == 0");
+            throw new IllegalArgumentException(
+                "Invalid combination start=%d end=%d step=%d".formatted(start, end, step));
         this.start = start;
         this.end = end;
         this.step = step;
@@ -59,12 +60,8 @@ public class Range implements List {
         };
     }
 
-    public String toString(String prefix, String suffix) {
-        return "range%s%d, %d, %d%s".formatted(prefix, start, end, step, suffix);
-    }
-
     @Override
     public String toString() {
-        return toString("(", ")");
+        return "range{%d, %d, %d}".formatted(start, end, step);
     }
 }

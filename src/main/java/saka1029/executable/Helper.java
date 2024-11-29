@@ -81,6 +81,10 @@ public class Helper {
         return a;
     }
 
+    public static Array array(Executable... es) {
+        return Array.of(es);
+    }
+
     public static DefineGlobal defun(Symbol symbol) {
         return DefineGlobal.of(symbol, true);
     }

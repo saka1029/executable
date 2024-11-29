@@ -284,5 +284,25 @@ public class Context{
             int step = asI(c.pop(), "range(step)"), end = asI(c.pop(), "range(end)"), start = asI(c.pop(), "range(start)");
             c.push(Range.of(start, end, step));
         });
+        add("array", c -> {
+            int size = asI(c.pop(), "array");
+            Executable fill = c.pop();
+            c.push(Array.of(size, fill));
+        });
+        add("size", c -> {
+            Array array = asArray(c.pop(), "size");
+            c.push(i(array.size()));
+        });
+        add("get", c -> {
+            Array array = asArray(c.pop(), "get(array)");
+            int index = asI(c.pop(), "get(index)");
+            c.push(array.get(index));
+        });
+        add("put", c -> {
+            Array array = asArray(c.pop(), "put(array)");
+            int index = asI(c.pop(), "put(index)");
+            Executable value = c.pop();
+            array.put(index, value);
+        });
     }
 }
