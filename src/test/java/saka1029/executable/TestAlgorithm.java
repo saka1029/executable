@@ -260,15 +260,17 @@ public class TestAlgorithm {
             + "    '("
             + "        list uncons variable rest variable pivot "
             + "        nil variable left nil variable right "
-            + "               rest "
-            + "               '( "
-            + "                        dup pivot predicate call "
-            + "                        '(left cons set left) "
-            + "                        '(right cons set right) "
-            + "                    if "
-            + "                ) "
-            + "            for "
-            + "            (left predicate sort) pivot (right predicate sort) cons append "
+            + "           rest "
+            + "           '( "
+            + "                    dup pivot predicate call "
+            + "                    '(left cons set left) "
+            + "                    '(right cons set right) "
+            + "                if "
+            + "            ) "
+            + "        for "
+            // left, pivot, rightを連結する。left, rightはリスト、pivotは要素なので、
+            // "left pivot right cons append"となる。
+            + "        (left predicate sort) pivot (right predicate sort) cons append "
             + "    ) "
             + "if] function sort");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
@@ -292,6 +294,24 @@ public class TestAlgorithm {
             + "        rest '(pivot predicate call) filter predicate sort "
             + "        pivot "
             + "        rest '(pivot predicate call not) filter predicate sort "
+            + "        cons append "
+            + "    ) "
+            + "if] function sort");
+        assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
+        assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
+        assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
+    }
+
+    @Test
+    public void testSortFrameByFilterNoLocalVariable() {
+        Context c = Context.of();
+        run(c, "'[list predicate - r : "
+            + "    list null "
+            + "    'nil "
+            + "    '("
+            + "        list cdr '(list car predicate call) filter predicate sort "
+            + "        list car "
+            + "        list cdr '(list car predicate call not) filter predicate sort "
             + "        cons append "
             + "    ) "
             + "if] function sort");
