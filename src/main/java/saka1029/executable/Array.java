@@ -21,11 +21,11 @@ public class Array implements Executable, Iterable<Executable> {
     }
 
     public Executable get(int index) {
-        return array[index];
+        return array[index - 1];
     }
 
     public void put(int index, Executable value) {
-        array[index] = value;
+        array[index - 1] = value;
     }
 
     public static Array of(int size, Executable fill) {
