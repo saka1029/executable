@@ -72,4 +72,8 @@ public class Array implements Executable, Iterable<Executable> {
         c.executables.addLast(iterator());
     }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(array);
+    }
 }

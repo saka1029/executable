@@ -333,8 +333,25 @@ public class TestAlgorithm {
     @Test
     public void testSieve() {
         Context c = Context.of();
-        run(c, "'[array exclude - : exclude dup + array size exclude range '(false swap array put) for] function sieve");
+        run(c, "'[ex a - : ex dup + a size 1 - ex range "
+            + " '(false swap a put) for] function sieve");
         //                 0     1     2     3     4      5     6
-        assertEquals(array(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE), eval(c, "true 7 array dup 2 sieve"));
+        assertEquals(array(TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE),
+            eval(c, "true 7 array dup 2 swap sieve"));
+    }
+
+    @Test
+    public void testPrimes() {
+        Context c = Context.of();
+        run(c, "'[ex a - : ex dup + a size 1 - ex range "
+            + " '(false swap a put) for] function sieve");
+        run(c, "'[max - r : true max array variable a "
+            + " false 0 a put "
+            + " false 1 a put "
+            + " 2 a sieve "
+            + " 3 a size 1 - 2 range '(a sieve) for a "
+            + "] function primes");
+        assertEquals(array(FALSE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE),
+            eval(c, "10 primes"));
     }
 }
