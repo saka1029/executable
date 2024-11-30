@@ -353,4 +353,44 @@ public class TestAlgorithm {
         assertEquals(array(FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE),
             eval(c, "10 primes"));
     }
+
+    static int queen(int n) {
+        return new Object() {
+            int[] rows = new int[n];
+            boolean[] cols = new boolean[n], up = new boolean[2 * n - 1], down = new boolean[2 * n - 1];
+            int count = 0;
+
+            void set(int r, int c, boolean b) {
+                cols[c] = b;
+                up[r - c + n - 1] = b;
+                down[r + c] = b;
+            }
+
+            int solve(int r) {
+                if (r >= n)
+                    ++count;
+                else
+                    for (int c = 0; c < n; ++c)
+                        if (!(cols[c] || up[r - c + n - 1] || down[r + c])) {
+                            set(r, c, true);
+                            rows[r] = c;
+                            solve(r + 1);
+                            set(r, c, false);
+                        }
+                return count;
+            }
+        }.solve(0);
+    }
+
+    @Test
+    public void testNQueensJava() {
+        assertEquals(1, queen(1));
+        assertEquals(0, queen(2));
+        assertEquals(0, queen(3));
+        assertEquals(2, queen(4));
+        assertEquals(10, queen(5));
+        assertEquals(4, queen(6));
+        assertEquals(40, queen(7));
+        assertEquals(92, queen(8));
+    }
 }
