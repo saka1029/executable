@@ -343,15 +343,20 @@ public class TestAlgorithm {
     @Test
     public void testPrimes() {
         Context c = Context.of();
+        // エラトステネスの篩
         run(c, "'[ex a - : ex dup + a size ex range "
             + " '(false swap a put) for] function sieve");
         run(c, "'[max - r : true max array variable a "
             + " false 1 a put "
-            + " 2 a sieve "
-            + " 3 a size 2 range '(a sieve) for a "
+            + " 2 a sieve "     // 2の倍数を除去する。
+            + " 3 a size 2 range '(a sieve) for "   // その他を除去する。
+            + " a "     // 結果のbool配列を返す。
             + "] function primes");
-        assertEquals(array(FALSE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE),
-            eval(c, "10 primes"));
+        // bool配列から素数のリストに変換する。
+        run(c, "'[a - r : nil variable ps "
+            + " 1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for "
+            + " ps reverse] function select");
+        assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes select"));
     }
 
     static int queen(int n) {
@@ -392,5 +397,39 @@ public class TestAlgorithm {
         assertEquals(4, queen(6));
         assertEquals(40, queen(7));
         assertEquals(92, queen(8));
+    }
+
+    // @Test
+    public void testNQueensFrame() {
+        Context c = Context.of();
+        run(c, """
+        '[n - r :
+            0 n array variable rows
+            false n array variable cols
+            false 2 n * 1 - array variable up
+            false 2 n * 1 - array variable down
+            0 variable count
+            0 variable r
+            0 variable c
+                r n >
+                '(count 1 + set count)
+                '(
+                    1 size 1 range
+                    '(
+                        set c
+                        c cols get
+                        r c - n + up get
+                        r c + 1 - down get
+                        or or not
+                        '(
+                        )
+                        '()
+                        if 
+                    )
+                    for
+                )
+            if 
+        ] function queen""");
+
     }
 }
