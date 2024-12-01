@@ -3,6 +3,8 @@ package saka1029.executable;
 import java.util.Iterator;
 
 /**
+ * hashCodeとequalsは定義しないこと。
+ * 
  * Frame:
  * 引数の数をn、ローカル変数の数をm、戻り値の数をoとする。
  * <br>
