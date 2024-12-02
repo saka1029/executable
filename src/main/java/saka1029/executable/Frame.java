@@ -3,7 +3,6 @@ package saka1029.executable;
 import java.util.Iterator;
 
 /**
- * hashCodeとequalsは定義しないこと。
  * 
  * Frame:
  * 引数の数をn、ローカル変数の数をm、戻り値の数をoとする。
@@ -96,6 +95,22 @@ public class Frame implements Value {
                     : body.get(index - 2);
             }
         });
+    }
+
+    /**
+     * hashCodeとequalsは定義しないこと。
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    /**
+     * hashCodeとequalsは定義しないこと。
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     @Override
