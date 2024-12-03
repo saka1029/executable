@@ -2,26 +2,28 @@ package saka1029.executable;
 
 public class SetLocal extends SymbolMacro {
 
+    final Frame frame;
     final int offset;
 
-    SetLocal(Symbol symbol, int offset) {
+    SetLocal(Symbol symbol, Frame frame, int offset) {
         super(symbol);
+        this.frame = frame;
         this.offset = offset;
     }
 
-    public static SetLocal of(Symbol symbol, int offset) {
-        return new SetLocal(symbol, offset);
+    public static SetLocal of(Symbol symbol, Frame frame, int offset) {
+        return new SetLocal(symbol, frame, offset);
     }
 
     @Override
     public void execute(Context c) {
         Executable value = c.pop();
-        c.stack.set(c.fp + offset, value);
+        int fp = c.fp(frame);
+        c.stack.set(fp + offset, value);
     }
 
     @Override
     public String toString() {
-        // return "! %s@%d".formatted(symbol, offset);
         return "set " + symbol;
     }
 

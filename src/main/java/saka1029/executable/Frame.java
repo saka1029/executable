@@ -57,11 +57,8 @@ public class Frame implements Value {
 
     @Override
     public void execute(Context context) {
-        var save = new Object() { int oldFp; };
         Executable prolog = c -> {
-            // save fp
-            save.oldFp = c.fp;
-            c.fp = c.stack.size();
+            c.pushFp(this);
             // push self
             c.stack.add(this);
             // initialize locals
@@ -71,14 +68,14 @@ public class Frame implements Value {
         Executable epilog = c -> {
             // move return values
             int from = c.stack.size() - returnSize;
-            int to = c.fp - argumentSize;
+            int to = c.fp(this) - argumentSize;
             for (int i = 0; i < returnSize; ++i, ++from, ++to)
                 c.stack.set(to, c.stack.get(from));
             // drop stack
             while (c.stack.size() > to)
                 c.stack.remove(c.stack.size() - 1);
             // restore fp
-            c.fp = save.oldFp;
+            c.popFp(this);
         };
         context.executables.addLast(new Iterator<>() {
             int index = 0, size = body.size() + 2;

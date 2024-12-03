@@ -65,7 +65,21 @@ public class Context{
         return Cons.of(cons.car, append(cons.cdr, right));
     }
 
-    int fp = 0;
+    // int fp = 0;
+
+    Map<Frame, Deque<Integer>> fpStack = new HashMap<>();
+
+    void pushFp(Frame f) {
+        fpStack.computeIfAbsent(f, k -> new ArrayDeque<>()).addLast(stack.size());
+    }
+
+    int popFp(Frame f) {
+        return fpStack.get(f).removeLast();
+    }
+
+    int fp(Frame f) {
+        return fpStack.get(f).getLast();
+    }
 
     Deque<Iterator<Executable>> executables = new ArrayDeque<>();
 
