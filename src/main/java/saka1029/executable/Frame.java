@@ -1,67 +1,62 @@
 package saka1029.executable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-/**
- * 
- * Frame:
- * 引数の数をn、ローカル変数の数をm、戻り値の数をoとする。
- * <br>
- * [Frame起動直後]
- * <pre>
- * arg1     ← fp-n
- * ...
- * argn     ← fp-1
- * self     ← fp
- * local1   ← fp+1
- * ...
- * localm   ← fp+m 
- *          ← sp
- * </pre>
- * [Frame終了直前]
- * <pre>
- * arg1     ← fp-n
- * ...
- * argn     ← fp-1
- * self     ← fp
- * local1   ← fp+1
- * ...
- * localm   ← fp+m
- * ...
- * ret1
- * ...
- * reto
- *          ← sp
- * </pre>
- * [Frame終了時]
- * <pre>
- * ret1
- * ...
- * reto
- *          ← sp
- * </pre>
- */
 public class Frame implements Value {
     
-    final int argumentSize, localSize, returnSize;
-    final java.util.List<Executable> body;
+    final Frame parent;
+    final int argumentSize, returnSize;
+    final Map<Symbol, Integer> locals = new HashMap<>();
+    int localSize = 0;
+    final java.util.List<Executable> body = new ArrayList<>();
     final String header;
 
-    Frame(int argumentSize, int localSize, int returnSize, java.util.List<Executable> body, String header) {
-        this.argumentSize = argumentSize;
-        this.localSize = localSize;
+    Frame(Frame parent, java.util.List<Symbol> arguments, int returnSize, String header) {
+        this.parent = parent;
+        for (int i = arguments.size() - 1, offset = -1; i >= 0; --i, --offset)
+            locals.put(arguments.get(i), offset);
+        this.argumentSize = arguments.size();
         this.returnSize = returnSize;
-        this.body = body;
         this.header = header;
     }
 
+    public void addLocal(Symbol name) {
+        locals.put(name, localSize++);
+    }
+
+    public static FrameOffset find(Frame frame, Symbol name) {
+        for (Frame f = frame; f != null; f = f.parent) {
+            Integer value = f.locals.get(name);
+            if (value != null)
+                return FrameOffset.of(f, value);
+        }
+        return null;
+    }
+
+    /**
+     * eplogのスタック操作
+     * <pre>
+     * [epilog前]
+     *          fp                    sp
+     * A1 A2 A3 L1 L2 L3 ... R1 R2 R3 -
+     * ^to                   ^from
+     * </pre>
+     * 
+     * <pre>
+     * [epilog後]
+     *          sp
+     * R1 R2 R3 -
+     * </pre>
+     */
     @Override
     public void execute(Context context) {
         Executable prolog = c -> {
+            // save fp
             c.pushFp(this);
-            // push self
-            c.stack.add(this);
-            // initialize locals
+            // allocate locals
             for (int i = 0; i < localSize; ++i)
                 c.stack.add(null);
         };
