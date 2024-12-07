@@ -33,36 +33,35 @@ public class Parser {
     int index;
     int ch;
 
-    static class LocalContext {
+    // static class LocalContext {
 
-        final Map<Symbol, Integer> locals = new HashMap<>();
-        int argumentSize, returnSize;
-        final java.util.List<Executable> instructions = new ArrayList<>();
-        int localOffset = 0;
+    //     final Map<Symbol, Integer> locals = new HashMap<>();
+    //     int argumentSize, returnSize;
+    //     final java.util.List<Executable> instructions = new ArrayList<>();
+    //     int localOffset = 0;
 
-        LocalContext(java.util.List<Symbol> arguments, int returnSize) {
-            this.argumentSize = arguments.size();
-            for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
-                this.locals.put(arguments.get(i), j);
-            this.returnSize = returnSize;
-            this.locals.put(SELF, 0);
-        }
+    //     LocalContext(java.util.List<Symbol> arguments, int returnSize) {
+    //         this.argumentSize = arguments.size();
+    //         for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
+    //             this.locals.put(arguments.get(i), j);
+    //         this.returnSize = returnSize;
+    //         this.locals.put(SELF, 0);
+    //     }
 
-        int addLocal(Symbol variable) {
-            int offset = ++localOffset;
-            locals.put(variable, offset);
-            return offset;
-        }
-    }
+    //     int addLocal(Symbol variable) {
+    //         int offset = ++localOffset;
+    //         locals.put(variable, offset);
+    //         return offset;
+    //     }
+    // }
 
     public List parse(String input) {
         this.input = input.codePoints().toArray();
         this.index = 0;
         get();
-        Deque<LocalContext> pc = new ArrayDeque<>();
         java.util.List<Executable> list = new ArrayList<>();
         while (ch != -1) {
-            list.add(read(pc));
+            list.add(read(null));
             spaces();
         }
         return Cons.list(list);
@@ -94,12 +93,12 @@ public class Parser {
         return Symbol.of(word);
     }
 
-    List list(Deque<LocalContext> pc) {
+    List list(Frame frame) {
         get(); // skip '('
         spaces();  // skip spaces after '('
         java.util.List<Executable> list = new ArrayList<>();
         while (ch != -1 && ch != ')') {
-            list.add(read(pc));
+            list.add(read(frame));
             spaces();
         }
         if (ch != ')')
@@ -108,9 +107,9 @@ public class Parser {
         return Cons.list(list);
     }
 
-    Quote quote(Deque<LocalContext> pc) {
+    Quote quote(Frame frame) {
         get(); // skip '\''
-        return Quote.of(read(pc));
+        return Quote.of(read(frame));
     }
 
     static String chString(int ch) {
@@ -126,35 +125,36 @@ public class Parser {
 
     static final Pattern INT_PATTERN = Pattern.compile("[+-]?\\d+");
 
-    SymbolMacro defineFunction(Deque<LocalContext> pc) {
+    SymbolMacro defineFunction(Frame frame) {
         Symbol symbol = symbol();
+        Executable body = read(frame);
         return DefineGlobal.of(symbol, true);
     }
 
-    SymbolMacro defineVariable(Deque<LocalContext> pc) {
+    SymbolMacro defineVariable(Frame frame) {
         Symbol symbol = symbol();
-        if (pc.isEmpty())
+        Executable body = read(frame);
+        if (frame == null)
             return DefineGlobal.of(symbol, false);
-        LocalContext x = pc.getLast();
-        Integer y = x.locals.get(symbol);
-        if (y != null)
-            throw error("Variable '%s' is already defined", symbol);
-        int n = x.addLocal(symbol);
-        return DefineLocal.of(symbol, n);
+        FrameOffset position = Frame.find(frame, symbol);
+        if (position != null)
+            throw error("Local variable '%s' is already defined", symbol);
+        int offset = frame.addLocal(symbol);
+        return DefineLocal.of(symbol, frame, offset);
     }
 
-    SymbolMacro set(Deque<LocalContext> pc) {
+    SymbolMacro set(Frame frame) {
         Symbol symbol = symbol();
-        if (pc.isEmpty())
+        if (frame == null)
             return SetGlobal.of(symbol);
-        LocalContext x = pc.getLast();
-        Integer y = x.locals.get(symbol);
-        if (y != null)
-            return SetLocal.of(symbol, y);
+        // LocalContext x = pc.getLast();
+        FrameOffset position = Frame.find(frame, symbol);
+        if (position != null)
+            return SetLocal.of(symbol, position.frame, position.offset);
         return SetGlobal.of(symbol);
     }
 
-    Executable word(Deque<LocalContext> pc) {
+    Executable word(Frame frame) {
         StringBuilder sb = new StringBuilder();
         while (isWord(ch)) {
             sb.appendCodePoint(ch);
@@ -164,22 +164,23 @@ public class Parser {
         if (INT_PATTERN.matcher(word).matches())
             return Int.of(Integer.parseInt(word));
         Symbol symbol = Symbol.of(word);
-        if (symbol.equals(FUNCTION))
-            return defineFunction(pc);
+        if (symbol.equals(SELF))
+            return Self.of(frame);
+        else if (symbol.equals(FUNCTION))
+            return defineFunction(frame);
         else if (symbol.equals(VARIABLE))
-            return defineVariable(pc);
+            return defineVariable(frame);
         else if (symbol.equals(SET))
-            return set(pc);
-        if (pc.isEmpty())
+            return set(frame);
+        if (frame == null)
             return symbol;
-        LocalContext lc = pc.getLast();
-        Integer offset = lc.locals.get(symbol);
-        if (offset != null)
-            return GetLocal.of(symbol, offset, symbol == SELF);
+        FrameOffset position = Frame.find(frame, symbol);
+        if (position != null)
+            return GetLocal.of(symbol, position.frame, position.offset, false);
         return symbol;
     }
 
-    Frame frame(Deque<LocalContext> pc) {
+    Frame frame(Frame frame) {
         get(); // skip '['
         spaces();  // skip spaces after '['
         StringBuilder header = new StringBuilder();
@@ -220,16 +221,16 @@ public class Parser {
         return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions, header.substring(1));
     }
 
-    Executable read(Deque<LocalContext> pc) {
+    Executable read(Frame frame) {
         spaces();
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
-            case '\'' -> quote(pc);
-            case '(' -> list(pc);
+            case '\'' -> quote(frame);
+            case '(' -> list(frame);
             case ')' -> throw error("Unexpected ')'");
-            case '[' -> frame(pc);
+            case '[' -> frame(frame);
             case ']' -> throw error("Unexpected ']'");
-            default -> word(pc);
+            default -> word(frame);
         };
     }
 }

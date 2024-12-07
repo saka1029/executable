@@ -23,8 +23,10 @@ public class Frame implements Value {
         this.header = header;
     }
 
-    public void addLocal(Symbol name) {
-        locals.put(name, localSize++);
+    public int addLocal(Symbol name) {
+        int offset = localSize++;
+        locals.put(name, offset);
+        return offset;
     }
 
     public static FrameOffset find(Frame frame, Symbol name) {

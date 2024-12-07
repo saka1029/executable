@@ -67,3 +67,13 @@ final int returnSize;
 final Map<Symbol, Integer> locals;
 final java.util.List<Executable> executables;
 ```
+
+# ローカル変数の参照
+
+`ローカル変数名`でローカル変数の値をスタックにプッシュする。
+
+# ローカル変数の代入
+
+`式 set ローカル変数名`で式の値をローカル変数に代入する。
+
+
