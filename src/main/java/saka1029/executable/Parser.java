@@ -1,11 +1,7 @@
 package saka1029.executable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Pattern;
-import java.util.Map;
-import java.util.Deque;
-import java.util.ArrayDeque;
 
 /**
  * SYNTAX
@@ -32,28 +28,6 @@ public class Parser {
     int[] input;
     int index;
     int ch;
-
-    // static class LocalContext {
-
-    //     final Map<Symbol, Integer> locals = new HashMap<>();
-    //     int argumentSize, returnSize;
-    //     final java.util.List<Executable> instructions = new ArrayList<>();
-    //     int localOffset = 0;
-
-    //     LocalContext(java.util.List<Symbol> arguments, int returnSize) {
-    //         this.argumentSize = arguments.size();
-    //         for (int i = this.argumentSize - 1, j = -1; i >= 0; --i, --j)
-    //             this.locals.put(arguments.get(i), j);
-    //         this.returnSize = returnSize;
-    //         this.locals.put(SELF, 0);
-    //     }
-
-    //     int addLocal(Symbol variable) {
-    //         int offset = ++localOffset;
-    //         locals.put(variable, offset);
-    //         return offset;
-    //     }
-    // }
 
     public List parse(String input) {
         this.input = input.codePoints().toArray();
@@ -127,19 +101,25 @@ public class Parser {
 
     SymbolMacro defineFunction(Frame frame) {
         Symbol symbol = symbol();
-        Executable body = read(frame);
-        return DefineGlobal.of(symbol, true);
+        read(frame);
+        if (frame == null)
+            return DefineGlobal.of(symbol, DefineType.FUNCTION);
+        FrameOffset position = Frame.find(frame, symbol);
+        if (position != null)
+            throw error("Local function '%s' is already defined", symbol);
+        int offset = frame.addLocal(symbol, DefineType.FUNCTION);
+        return DefineLocal.of(symbol, frame, offset);
     }
 
     SymbolMacro defineVariable(Frame frame) {
         Symbol symbol = symbol();
-        Executable body = read(frame);
+        read(frame);
         if (frame == null)
-            return DefineGlobal.of(symbol, false);
+            return DefineGlobal.of(symbol, DefineType.VARIABLE);
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
             throw error("Local variable '%s' is already defined", symbol);
-        int offset = frame.addLocal(symbol);
+        int offset = frame.addLocal(symbol, DefineType.VARIABLE);
         return DefineLocal.of(symbol, frame, offset);
     }
 
@@ -147,10 +127,9 @@ public class Parser {
         Symbol symbol = symbol();
         if (frame == null)
             return SetGlobal.of(symbol);
-        // LocalContext x = pc.getLast();
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
-            return SetLocal.of(symbol, position.frame, position.offset);
+            return SetLocal.of(symbol, position);
         return SetGlobal.of(symbol);
     }
 
@@ -208,17 +187,16 @@ public class Parser {
         get(); // skip ':'
         spaces();
         header.append(" :");
-        LocalContext lc = new LocalContext(arguments, returns.size());
-        pc.add(lc);
+        Frame newFrame = Frame.of(frame, arguments, returns.size(), header.toString());
+        // LocalContext lc = new LocalContext(arguments, returns.size());
         while (ch != -1 && ch != ']') {
-            lc.instructions.add(read(pc));
+            newFrame.body.add(read(newFrame));
             spaces();
         }
         if (ch != ']')
             throw error("']' expected but %s", chString(ch));
         get(); // skip ']'
-        pc.removeLast();
-        return new Frame(arguments.size(), lc.localOffset, returns.size(), lc.instructions, header.substring(1));
+        return newFrame;
     }
 
     Executable read(Frame frame) {

@@ -86,11 +86,11 @@ public class Helper {
     }
 
     public static DefineGlobal defun(Symbol symbol) {
-        return DefineGlobal.of(symbol, true);
+        return DefineGlobal.of(symbol, DefineType.FUNCTION);
     }
 
     public static DefineGlobal defvar(Symbol symbol) {
-        return DefineGlobal.of(symbol, false);
+        return DefineGlobal.of(symbol, DefineType.VARIABLE);
     }
 
     public static SetGlobal set(Symbol symbol) {

@@ -18,10 +18,10 @@ public class Symbol implements Executable {
 
     @Override
     public void execute(Context c) {
-        FunctionVariable f = c.globals.get(this);
+        GlobalValue f = c.globals.get(this);
         if (f == null)
             throw new RuntimeException("Symbol '%s' is not defined".formatted(this));
-        if (f.isFunction)
+        if (f.type == DefineType.FUNCTION)
             f.value.execute(c);
         else
             c.push(f.value);

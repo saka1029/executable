@@ -118,14 +118,14 @@ public class Context{
             .collect(Collectors.joining(", ", "{", "}"));
     }
 
-    final Map<Symbol, FunctionVariable> globals = new HashMap<>();
+    final Map<Symbol, GlobalValue> globals = new HashMap<>();
 
     void addVariable(String name, Executable e) {
-        globals.put(Symbol.of(name), FunctionVariable.of(e, false));
+        globals.put(Symbol.of(name), GlobalValue.of(e, DefineType.VARIABLE));
     }
 
     void add(String name, Executable e) {
-        globals.put(Symbol.of(name), FunctionVariable.of(e, true));
+        globals.put(Symbol.of(name), GlobalValue.of(e, DefineType.FUNCTION));
     }
 
     private void initialize() {

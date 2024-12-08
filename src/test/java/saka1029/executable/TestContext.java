@@ -114,7 +114,7 @@ public class TestContext {
         c.run(list(i(9), defvar(sym("nine"))));
         assertEquals(i(9), c.eval(list(sym("nine"))));
         assertEquals("9", c.globals.get(sym("nine")).value.toString());
-        assertEquals(false, c.globals.get(sym("nine")).isFunction);
+        assertEquals(false, c.globals.get(sym("nine")).type);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TestContext {
         c.run(list(quote(list(sym("dup"), sym("*"))), defun(sym("square"))));
         assertEquals(i(9), c.eval(list(i(3), sym("square"))));
         assertEquals("(dup *)", c.globals.get(sym("square")).value.toString());
-        assertEquals(true, c.globals.get(sym("square")).isFunction);
+        assertEquals(true, c.globals.get(sym("square")).type);
     }
 
     @Test

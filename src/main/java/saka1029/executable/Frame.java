@@ -9,7 +9,7 @@ public class Frame implements Value {
     
     final Frame parent;
     final int argumentSize, returnSize;
-    final Map<Symbol, Integer> locals = new HashMap<>();
+    final Map<Symbol, LocalValue> locals = new HashMap<>();
     int localSize = 0;
     final java.util.List<Executable> body = new ArrayList<>();
     final String header;
@@ -17,23 +17,27 @@ public class Frame implements Value {
     Frame(Frame parent, java.util.List<Symbol> arguments, int returnSize, String header) {
         this.parent = parent;
         for (int i = arguments.size() - 1, offset = -1; i >= 0; --i, --offset)
-            locals.put(arguments.get(i), offset);
+            locals.put(arguments.get(i), LocalValue.of(DefineType.VARIABLE, offset));
         this.argumentSize = arguments.size();
         this.returnSize = returnSize;
         this.header = header;
     }
 
-    public int addLocal(Symbol name) {
+    public static Frame of(Frame parent, java.util.List<Symbol> arguments, int returnSize, String header) {
+        return new Frame(parent, arguments, returnSize, header);
+    }
+
+    public int addLocal(Symbol name, DefineType type) {
         int offset = localSize++;
-        locals.put(name, offset);
+        locals.put(name, LocalValue.of(type, offset));
         return offset;
     }
 
     public static FrameOffset find(Frame frame, Symbol name) {
         for (Frame f = frame; f != null; f = f.parent) {
-            Integer value = f.locals.get(name);
+            LocalValue value = f.locals.get(name);
             if (value != null)
-                return FrameOffset.of(f, value);
+                return FrameOffset.of(f, value.offset);
         }
         return null;
     }

@@ -2,25 +2,25 @@ package saka1029.executable;
 
 public class DefineGlobal extends SymbolMacro {
 
-    final boolean isFunction;
+    final DefineType type;
 
-    DefineGlobal(Symbol symbol, boolean isFunction) {
+    DefineGlobal(Symbol symbol, DefineType type) {
         super(symbol);
-        this.isFunction = isFunction;
+        this.type = type;
     }
 
-    public static DefineGlobal of(Symbol symbol, boolean isFunction) {
-        return new DefineGlobal(symbol, isFunction);
+    public static DefineGlobal of(Symbol symbol, DefineType type) {
+        return new DefineGlobal(symbol, type);
     }
 
     @Override
     public void execute(Context c) {
         Executable body = c.pop();  // defineしたときの定義内容を保存
-        c.globals.put(symbol, FunctionVariable.of(body, isFunction));
+        c.globals.put(symbol, GlobalValue.of(body, type));
     }
 
     @Override
     public String toString() {
-        return (isFunction ? "function " : "variale ") + symbol;
+        return (type == DefineType.FUNCTION ? "function " : "variale ") + symbol;
     }
 }
