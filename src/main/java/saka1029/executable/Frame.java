@@ -37,7 +37,7 @@ public class Frame implements Value {
         for (Frame f = frame; f != null; f = f.parent) {
             LocalValue value = f.locals.get(name);
             if (value != null)
-                return FrameOffset.of(f, value.offset);
+                return FrameOffset.of(value.type, f, value.offset);
         }
         return null;
     }

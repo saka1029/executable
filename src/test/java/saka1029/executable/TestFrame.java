@@ -49,7 +49,7 @@ public class TestFrame {
 
     @Test
     public void testArguments() {
-        assertEquals(i(3), eval("'[a b - r : a b +] function plus 1 2 plus"));
+        assertEquals(i(3), eval("function plus '[a b - r : a b +] 1 2 plus"));
     }
 
     @Test
@@ -64,39 +64,39 @@ public class TestFrame {
 
     @Test
     public void testLocalFunction() {
-        assertEquals(i(25), eval("'[a b - r : '(dup *) function double a double b double +] function hypot 3 4 hypot"));
+        assertEquals(i(25), eval("function hypot '[a b - r : function double '(dup *) a double b double +] 3 4 hypot"));
     }
 
     @Test
     public void testLocalFrame() {
-        assertEquals(i(25), eval("'[a b - r : '[a - r : a a *] function double a double b double +] function hypot 3 4 hypot"));
+        assertEquals(i(25), eval("function hypot '[a b - r : function double '[a - r : a a *] a double b double +] 3 4 hypot"));
     }
 
     @Test
     public void testNoArgumentOneReturn() {
-        assertEquals(i(123), eval("'[ - r : 123] function value value"));
+        assertEquals(i(123), eval("function value '[ - r : 123] value"));
     }
 
     @Test
     public void testNoArgumentTwoReturn() {
-        assertEquals(i(579), eval("'[ - r s : 123 456] function value value +"));
+        assertEquals(i(579), eval("function value '[ - r s : 123 456] value +"));
     }
 
     @Test
     public void testTwoArgumentTwoReturn() {
-        assertEquals(i(5), eval("'[a b - r s : a b / a b %] function div 11 3 div +"));
+        assertEquals(i(5), eval("function div '[a b - r s : a b / a b %] 11 3 div +"));
     }
 
     @Test
     public void testSetLocal() {
-        assertEquals(i(10), eval("'[list - r : 0 variable sum list '(sum + set sum) for sum] function sum '(1 2 3 4) sum"));
+        assertEquals(i(10), eval("function sum '[list - r : variable sum 0 list '(sum + set sum) for sum] '(1 2 3 4) sum"));
     }
 
     @Test
     public void testSetLocalReverse() {
         assertEquals(list(), eval("'()"));
         assertEquals(list(i(4), i(3), i(2), i(1)),
-            eval("'[list - r : '() variable acc list '(acc cons set acc) for acc] function reverse '(1 2 3 4) reverse"));
+            eval("function reverse '[list - r : variable acc '() list '(acc cons set acc) for acc] '(1 2 3 4) reverse"));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class TestFrame {
 
     @Test
     public void testRecursion() {
-        run("'[n - r : n 0 <= 1 '(n 1 - fact n *) if] function fact");
+        run("function fact '[n - r : n 0 <= 1 '(n 1 - fact n *) if]");
         assertEquals(i(1), eval("0 fact"));
         assertEquals(i(1), eval("1 fact"));
         assertEquals(i(2), eval("2 fact"));
@@ -117,7 +117,7 @@ public class TestFrame {
 
     @Test
     public void testCallArgument() {
-        run("'[a b c - r : a b c call] function compare");
+        run("function compare '[a b c - r : a b c call]");
         assertEquals(eval("0 1 <"), eval("0 1 '< compare"));
         assertEquals(eval("1 0 <"), eval("1 0 '< compare"));
         assertEquals(eval("1 0 >"), eval("1 0 '> compare"));

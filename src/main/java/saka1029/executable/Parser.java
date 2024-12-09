@@ -155,7 +155,7 @@ public class Parser {
             return symbol;
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
-            return GetLocal.of(symbol, position.frame, position.offset, false);
+            return GetLocal.of(symbol, position.type, position.frame, position.offset);
         return symbol;
     }
 

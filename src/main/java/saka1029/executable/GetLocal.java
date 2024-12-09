@@ -2,26 +2,26 @@ package saka1029.executable;
 
 public class GetLocal extends SymbolMacro {
 
+    final DefineType type;
     final Frame frame;
     final int offset;
-    final boolean isFunction;
 
-    GetLocal(Symbol symbol, Frame frame, int offset, boolean isFunction) {
+    GetLocal(Symbol symbol, DefineType type, Frame frame, int offset) {
         super(symbol);
         this.frame = frame;
         this.offset = offset;
-        this.isFunction = isFunction;
+        this.type = type;
     }
 
-    public static GetLocal of(Symbol symbol, Frame frame, int offset, boolean isFunction) {
-        return new GetLocal(symbol, frame, offset, isFunction);
+    public static GetLocal of(Symbol symbol, DefineType type, Frame frame, int offset) {
+        return new GetLocal(symbol, type, frame, offset);
     }
 
     @Override
     public void execute(Context c) {
         int fp = c.fp(frame); 
-        if (isFunction)
-            c.stack.get(fp + offset).execute(c); // self
+        if (type == DefineType.FUNCTION)
+            c.stack.get(fp + offset).execute(c);
         else
             c.push(c.stack.get(fp + offset));
     }
