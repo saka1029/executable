@@ -71,7 +71,7 @@ public class TestAlgorithm {
     @Test
     public void testLength() {
         Context c = Context.of();
-        run(c, "'(0 swap '(drop 1 +) for) function length");
+        run(c, "function length '(0 swap '(drop 1 +) for)");
         assertEquals(eval(c, "0"), eval(c, "'() length"));
         assertEquals(eval(c, "1"), eval(c, "'(2) length"));
         assertEquals(eval(c, "2"), eval(c, "'(1 2) length"));
@@ -80,7 +80,7 @@ public class TestAlgorithm {
     @Test
     public void testLengthRecursive() {
         Context c = Context.of();
-        run(c, "'(dup null 0 '(cdr length 1 +) if) function length");
+        run(c, "function length '(dup null 0 '(cdr length 1 +) if)");
         assertEquals(eval(c, "0"), eval(c, "'() length"));
         assertEquals(eval(c, "1"), eval(c, "'(2) length"));
         assertEquals(eval(c, "2"), eval(c, "'(1 2) length"));
@@ -89,7 +89,7 @@ public class TestAlgorithm {
     @Test
     public void testLengthFrameFor() {
         Context c = Context.of();
-        run(c, "'[i - r : 0 variable a i '(drop a 1 + set a) for a] function length");
+        run(c, "function length '[i - r : variable a 0 i '(drop a 1 + set a) for a]");
         assertEquals(eval(c, "0"), eval(c, "'() length"));
         assertEquals(eval(c, "1"), eval(c, "'(2) length"));
         assertEquals(eval(c, "2"), eval(c, "'(1 2) length"));
@@ -98,7 +98,7 @@ public class TestAlgorithm {
     @Test
     public void testLengthFrameRecursive() {
         Context c = Context.of();
-        run(c, "'[i - r : i null 0 '(i cdr self 1 +) if] function length");
+        run(c, "function length '[i - r : i null 0 '(i cdr self 1 +) if]");
         assertEquals(eval(c, "0"), eval(c, "'() length"));
         assertEquals(eval(c, "1"), eval(c, "'(2) length"));
         assertEquals(eval(c, "2"), eval(c, "'(1 2) length"));
@@ -107,7 +107,7 @@ public class TestAlgorithm {
     @Test
     public void testAppendRecursive() {
         Context c = Context.of();
-        run(c, "'(swap dup null 'drop '(uncons rot append cons) if) function append");
+        run(c, "function append '(swap dup null 'drop '(uncons rot append cons) if)");
         assertEquals(eval(c, "'(3 4)"), eval(c, "'() '(3 4) append"));
         assertEquals(eval(c, "'(2 3 4)"), eval(c, "'(2) '(3 4) append"));
         assertEquals(eval(c, "'(1 2 3 4)"), eval(c, "'(1 2) '(3 4) append"));
@@ -116,7 +116,7 @@ public class TestAlgorithm {
     @Test
     public void testAppendRecursiveFrame() {
         Context c = Context.of();
-        run(c, "'[a b - r : a null 'b '(a uncons b self cons) if] function append");
+        run(c, "function append '[a b - r : a null 'b '(a uncons b self cons) if]");
         assertEquals(eval(c, "'(3 4)"), eval(c, "'() '(3 4) append"));
         assertEquals(eval(c, "'(2 3 4)"), eval(c, "'(2) '(3 4) append"));
         assertEquals(eval(c, "'(1 2 3 4)"), eval(c, "'(1 2) '(3 4) append"));
@@ -133,7 +133,7 @@ public class TestAlgorithm {
     @Test
     public void testFibonacciFrameRecursion() {
         Context c = Context.of();
-        run(c, "'[n - r : n 2 < n '(n 1 - self n 2 - self +) if] function fib");
+        run(c, "function fib '[n - r : n 2 < n '(n 1 - self n 2 - self +) if]");
         assertEquals(i(0), eval(c, "0 fib"));
         assertEquals(i(1), eval(c, "1 fib"));
         assertEquals(i(1), eval(c, "2 fib"));
@@ -156,7 +156,7 @@ public class TestAlgorithm {
     @Test
     public void testFibonacciFrameFor() {
         Context c = Context.of();
-        run(c, "'[n - r : 1 variable a 0 variable b 1 n 1 range '(drop a b + b set a set b) for b] function fib");
+        run(c, "function fib '[n - r : variable a 1 variable b 0 1 n 1 range '(drop a b + b set a set b) for b]");
         assertEquals(i(0), eval(c, "0 fib"));
         assertEquals(i(1), eval(c, "1 fib"));
         assertEquals(i(1), eval(c, "2 fib"));
@@ -179,14 +179,14 @@ public class TestAlgorithm {
     @Test
     public void testFilterFrame() {
         Context c = Context.of();
-        run(c, "'[l p - r :"
+        run(c, "function filter '[l p - r :"
             + "l null"
             + "    'nil"
             + "    '(l car p call"
             + "        '(l car l cdr p filter cons)"
             + "        '(l cdr p filter)"
             + "    if)"
-            + "if] function filter");
+            + "if]");
         // 空リストを返すときは「'nil」または「''()」とする必要がある。
         // 「'()」はNOPとなる。
         // run(c, "'[p l - r : l null ''() '(l car p call '(l car p l cdr filter cons) '(p l cdr filter) if) if] function filter");
@@ -199,7 +199,7 @@ public class TestAlgorithm {
     @Test
     public void testFilterReverse() {
         Context c = Context.of();
-        run(c, "'[l p - r : nil l '(dup p call 'rcons 'drop if) for reverse] function filter");
+        run(c, "function filter '[l p - r : nil l '(dup p call 'rcons 'drop if) for reverse]");
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
@@ -333,8 +333,8 @@ public class TestAlgorithm {
     @Test
     public void testSieve() {
         Context c = Context.of();
-        run(c, "'[ex a - : ex dup + a size ex range "
-            + " '(false swap a put) for] function sieve");
+        run(c, "function sieve '[ex a - : ex dup + a size ex range "
+            + " '(false swap a put) for]");
         //                 1     2     3     4      5     6     7
         assertEquals(array(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE),
             eval(c, "true 7 array dup 2 swap sieve"));
@@ -344,18 +344,18 @@ public class TestAlgorithm {
     public void testPrimes() {
         Context c = Context.of();
         // エラトステネスの篩
-        run(c, "'[ex a - : ex dup + a size ex range "
-            + " '(false swap a put) for] function sieve");
-        run(c, "'[max - r : true max array variable a "
+        run(c, "function sieve '[ex a - : ex dup + a size ex range "
+            + " '(false swap a put) for]");
+        run(c, "function primes '[max - r : variable a (true max array) "
             + " false 1 a put "
             + " 2 a sieve "     // 2の倍数を除去する。
             + " 3 a size 2 range '(a sieve) for "   // その他を除去する。
             + " a "     // 結果のbool配列を返す。
-            + "] function primes");
+            + "]");
         // bool配列から素数のリストに変換する。
-        run(c, "'[a - r : nil variable ps "
+        run(c, "function select '[a - r : variable ps nil "
             + " 1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for "
-            + " ps reverse] function select");
+            + " ps reverse]");
         assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes select"));
     }
 
