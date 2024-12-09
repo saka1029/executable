@@ -108,7 +108,7 @@ public class Parser {
         if (position != null)
             throw error("Local function '%s' is already defined", symbol);
         int offset = frame.addLocal(symbol, DefineType.FUNCTION);
-        return DefineLocal.of(symbol, frame, offset, body);
+        return DefineLocal.of(symbol, frame, offset, DefineType.FUNCTION, body);
     }
 
     SymbolMacro defineVariable(Frame frame) {
@@ -120,7 +120,7 @@ public class Parser {
         if (position != null)
             throw error("Local variable '%s' is already defined", symbol);
         int offset = frame.addLocal(symbol, DefineType.VARIABLE);
-        return DefineLocal.of(symbol, frame, offset, body);
+        return DefineLocal.of(symbol, frame, offset, DefineType.VARIABLE, body);
     }
 
     SymbolMacro set(Frame frame) {

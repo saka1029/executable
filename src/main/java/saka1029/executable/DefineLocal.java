@@ -4,17 +4,19 @@ public class DefineLocal extends SymbolMacro {
 
     final int offset;
     final Frame frame;
+    final DefineType type;
     final Executable value;
 
-    DefineLocal(Symbol symbol, Frame frame, int offset, Executable value) {
+    DefineLocal(Symbol symbol, Frame frame, int offset, DefineType type, Executable value) {
         super(symbol);
         this.frame = frame;
         this.offset = offset;
+        this.type = type;
         this.value = value;
     }
 
-    public static DefineLocal of(Symbol symbol, Frame frame, int offset, Executable value) {
-        return new DefineLocal(symbol, frame, offset, value);
+    public static DefineLocal of(Symbol symbol, Frame frame, int offset, DefineType type, Executable value) {
+        return new DefineLocal(symbol, frame, offset, type, value);
     }
 
     @Override
@@ -29,6 +31,8 @@ public class DefineLocal extends SymbolMacro {
 
     @Override
     public String toString() {
-        return "define %s@%d".formatted(symbol, offset);
+        return "%s %s@%d %s".formatted(
+            type == DefineType.FUNCTION ? "function" : "variable",
+            symbol, offset, value);
     }
 }
