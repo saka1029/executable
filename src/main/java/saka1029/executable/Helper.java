@@ -96,4 +96,5 @@ public class Helper {
     public static SetGlobal set(Symbol symbol) {
         return SetGlobal.of(symbol);
     }
+
 }

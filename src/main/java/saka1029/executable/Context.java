@@ -111,6 +111,22 @@ public class Context{
         }
     }
 
+    public void execute(Executable... exs) {
+        executables.addLast(new Iterator<>() {
+            int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < exs.length;
+            }
+
+            @Override
+            public Executable next() {
+                return exs[index++];
+            }
+        });
+    }
+
     @Override
     public String toString() {
         return stack.stream()

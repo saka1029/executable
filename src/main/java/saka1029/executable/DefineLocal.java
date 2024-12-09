@@ -26,7 +26,7 @@ public class DefineLocal extends SymbolMacro {
             int fp = c.fp(frame);
             c.stack.set(fp + offset, body);
         };
-        context.executables.addLast(java.util.List.of(value, epilog).iterator());
+        context.execute(value, epilog);
     }
 
     @Override

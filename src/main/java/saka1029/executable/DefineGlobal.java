@@ -21,7 +21,7 @@ public class DefineGlobal extends SymbolMacro {
             Executable body = c.pop();  // defineしたときの定義内容を保存
             c.globals.put(symbol, GlobalValue.of(body, type));
         };
-        context.executables.addLast(java.util.List.of(value, epilog).iterator());
+        context.execute(value, epilog);
     }
 
     @Override
