@@ -31,8 +31,6 @@ public class DefineLocal extends SymbolMacro {
 
     @Override
     public String toString() {
-        return "%s %s@%d %s".formatted(
-            type == DefineType.FUNCTION ? "function" : "variable",
-            symbol, offset, value);
+        return "%s %s@%d %s".formatted(type, symbol, offset, value);
     }
 }
