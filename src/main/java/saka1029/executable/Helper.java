@@ -85,12 +85,12 @@ public class Helper {
         return Array.of(es);
     }
 
-    public static DefineGlobal defun(Symbol symbol) {
-        return DefineGlobal.of(symbol, DefineType.FUNCTION);
+    public static DefineGlobal defun(Symbol symbol, Executable body) {
+        return DefineGlobal.of(symbol, DefineType.FUNCTION, body);
     }
 
-    public static DefineGlobal defvar(Symbol symbol) {
-        return DefineGlobal.of(symbol, DefineType.VARIABLE);
+    public static DefineGlobal defvar(Symbol symbol, Executable value) {
+        return DefineGlobal.of(symbol, DefineType.VARIABLE, value);
     }
 
     public static SetGlobal set(Symbol symbol) {

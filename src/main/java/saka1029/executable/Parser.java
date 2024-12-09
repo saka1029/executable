@@ -101,26 +101,26 @@ public class Parser {
 
     SymbolMacro defineFunction(Frame frame) {
         Symbol symbol = symbol();
-        read(frame);
+        Executable body = read(frame);
         if (frame == null)
-            return DefineGlobal.of(symbol, DefineType.FUNCTION);
+            return DefineGlobal.of(symbol, DefineType.FUNCTION, body);
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
             throw error("Local function '%s' is already defined", symbol);
         int offset = frame.addLocal(symbol, DefineType.FUNCTION);
-        return DefineLocal.of(symbol, frame, offset);
+        return DefineLocal.of(symbol, frame, offset, body);
     }
 
     SymbolMacro defineVariable(Frame frame) {
         Symbol symbol = symbol();
-        read(frame);
+        Executable body = read(frame);
         if (frame == null)
-            return DefineGlobal.of(symbol, DefineType.VARIABLE);
+            return DefineGlobal.of(symbol, DefineType.VARIABLE, body);
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
             throw error("Local variable '%s' is already defined", symbol);
         int offset = frame.addLocal(symbol, DefineType.VARIABLE);
-        return DefineLocal.of(symbol, frame, offset);
+        return DefineLocal.of(symbol, frame, offset, body);
     }
 
     SymbolMacro set(Frame frame) {

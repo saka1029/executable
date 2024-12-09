@@ -111,7 +111,7 @@ public class TestContext {
     @Test
     public void testDefineInt() {
         Context c = Context.of();
-        c.run(list(i(9), defvar(sym("nine"))));
+        c.run(list(defvar(sym("nine"), i(9))));
         assertEquals(i(9), c.eval(list(sym("nine"))));
         assertEquals("9", c.globals.get(sym("nine")).value.toString());
         assertEquals(DefineType.VARIABLE, c.globals.get(sym("nine")).type);
@@ -120,7 +120,7 @@ public class TestContext {
     @Test
     public void testDefineList() {
         Context c = Context.of();
-        c.run(list(quote(list(sym("dup"), sym("*"))), defun(sym("square"))));
+        c.run(list(defun(sym("square"), quote(list(sym("dup"), sym("*"))))));
         assertEquals(i(9), c.eval(list(i(3), sym("square"))));
         assertEquals("(dup *)", c.globals.get(sym("square")).value.toString());
         assertEquals(DefineType.FUNCTION, c.globals.get(sym("square")).type);
@@ -157,14 +157,14 @@ public class TestContext {
     @Test
     public void testDefineReverseByFor() {
         Context c = Context.of();
-        c.run(list(quote(list(quote(NIL), sym("swap"), quote(sym("rcons")), sym("for"))), defun(sym("reverse"))));
+        c.run(list(defun(sym("reverse"), quote(list(quote(NIL), sym("swap"), quote(sym("rcons")), sym("for"))))));
         assertEquals(list(i(3), i(2), i(1)), c.eval(list(quote(list(i(1), i(2), i(3))), sym("reverse"))));
     }
 
     @Test
     public void testDefineSet() {
         Context c = Context.of();
-        c.run(list(i(9), defvar(sym("nine"))));
+        c.run(list(defvar(sym("nine"), i(9))));
         assertEquals(i(9), c.eval(list(sym("nine"))));
         c.run(list(i(99), set(sym("nine"))));
         assertEquals(i(99), c.eval(list(sym("nine"))));
