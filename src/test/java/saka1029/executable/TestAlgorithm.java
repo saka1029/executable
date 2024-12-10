@@ -40,7 +40,7 @@ public class TestAlgorithm {
     @Test
     public void testReverseFrameNest() {
         Context c = Context.of();
-        run(c, "function reverse '[i - r : function rev '[i a - r : i null 'a '(i cdr i car a cons rev) if] i '() rev]");
+        run(c, "function reverse '[i - r : function rev '[i a - r : i null 'a '(i cdr i car a cons self) if] i '() rev]");
         // run(c, "'[i - r : '[i a - r : i null 'a '(i uncons swap a cons rev) if] function rev i '() rev] function reverse");
         assertEquals(eval(c, "'()"), eval(c, "'() reverse"));
         assertEquals(eval(c, "'(1)"), eval(c, "'(1) reverse"));
