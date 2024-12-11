@@ -7,16 +7,17 @@ import java.util.regex.Pattern;
  * SYNTAX
  * <pre><code>
  * program         = { element }
- * element         = int | list | symbol | quote | define-function | define-variable | set
- * int             = [ '+' | '-' ] INT { INT }
- * list            = '(' { element} ')'
+ * element         = int | list | symbol | quote | define-function | define-variable | set | block
+ * int             = [ "+" | "-" ] INT { INT }
+ * list            = "(" { element} ")"
  * symbol          = SYM { SYM }
- * symbol          = '\'' element
- * define-function = 'function' symbol element
- * define-variable = 'variable' symbol element
- * set             = 'set' symbol
- * INT             = '0' .. '9'
- * SYM             = {any charcter excludes '(', ')', '[', ']', '\''}
+ * symbol          = "'" element
+ * define-function = "function" symbol element
+ * define-variable = "variable" symbol element
+ * set             = "set" symbol
+ * block           = "[" { symbol } "-" { symbol } ":" { element } "]"
+ * INT             = "0" .. "9"
+ * SYM             = {any charcter excludes "(", ")", "[", "]", "'"}
  * </code></pre> 
  */
 public class Parser {
