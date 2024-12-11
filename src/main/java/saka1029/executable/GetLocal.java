@@ -2,11 +2,11 @@ package saka1029.executable;
 
 public class GetLocal extends SymbolMacro {
 
-    final FrameOffset offset;
+    final FrameOffset position;
 
     GetLocal(Symbol symbol, FrameOffset offset) {
         super(symbol);
-        this.offset = offset;
+        this.position = offset;
     }
 
     public static GetLocal of(Symbol symbol, FrameOffset offset) {
@@ -15,15 +15,15 @@ public class GetLocal extends SymbolMacro {
 
     @Override
     public void execute(Context c) {
-        int fp = c.fp(offset.frame); 
-        if (offset.type == DefineType.FUNCTION)
-            c.stack.get(fp + offset.offset).execute(c);
+        int fp = c.fp(position.frame); 
+        if (position.type == DefineType.FUNCTION)
+            c.stack.get(fp + position.offset).execute(c);
         else
-            c.push(c.stack.get(fp + offset.offset));
+            c.push(c.stack.get(fp + position.offset));
     }
 
     @Override
     public String toString() {
-        return "%s@%d".formatted(symbol, offset);
+        return "%s@%d".formatted(symbol, position);
     }
 }
