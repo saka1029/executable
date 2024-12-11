@@ -199,4 +199,21 @@ public class TestFrame {
             ]
             """));
     }
+
+    @Test
+    public void testSetParentFunction() {
+        assertEquals(eval("99"), eval("""
+            [ - r : 
+                function parent-function '[ - r : 0]
+                function child '[ - :
+                    function grand-child '[ - :
+                        '[ - r : 99] set parent-function
+                    ]
+                    grand-child
+                ]
+                child
+                parent-function 
+            ]
+            """));
+    }
 }
