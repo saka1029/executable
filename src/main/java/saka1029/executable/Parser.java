@@ -7,15 +7,16 @@ import java.util.regex.Pattern;
  * SYNTAX
  * <pre><code>
  * program         = { element }
- * element         = int | list | symbol | define-function | define-variable | set
+ * element         = int | list | symbol | quote | define-function | define-variable | set
  * int             = [ '+' | '-' ] INT { INT }
  * list            = '(' { element} ')'
  * symbol          = SYM { SYM }
- * define-function = 'function' symbol
- * define-variable = 'variable' symbol
+ * symbol          = '\'' element
+ * define-function = 'function' symbol element
+ * define-variable = 'variable' symbol element
  * set             = 'set' symbol
  * INT             = '0' .. '9'
- * SYM             = {any charcter excludes '(' and ')'}
+ * SYM             = {any charcter excludes '(', ')', '[', ']', '\''}
  * </code></pre> 
  */
 public class Parser {
@@ -92,7 +93,7 @@ public class Parser {
 
     static boolean isWord(int ch) {
         return switch (ch) {
-            case -1, '(', ')', '[', ']' -> false;
+            case -1, '(', ')', '[', ']', '\'' -> false;
             default -> !Character.isWhitespace(ch);
         };
     }
