@@ -182,4 +182,21 @@ public class TestFrame {
             ]
             """));
     }
+
+    @Test
+    public void testSetParentVariable() {
+        assertEquals(eval("99"), eval("""
+            [ - r : 
+                variable parent-variable 0
+                function child '[ - :
+                    function grand-child '[ - :
+                        99 set parent-variable
+                    ]
+                    grand-child
+                ]
+                child
+                parent-variable 
+            ]
+            """));
+    }
 }
