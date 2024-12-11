@@ -99,9 +99,15 @@ public class Parser {
 
     static final Pattern INT_PATTERN = Pattern.compile("[+-]?\\d+");
 
+    Self self(Frame frame) {
+        if (frame == null)
+            throw error("'self' not in frame");
+        return Self.of(frame);
+    }
+
     SymbolMacro defineFunction(Frame frame) {
         Symbol symbol = symbol();
-        if (frame == null)
+        if (frame == null) // Frame外なら大域関数定義
             return DefineGlobal.of(symbol, DefineType.FUNCTION, read(frame));
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
@@ -114,7 +120,7 @@ public class Parser {
 
     SymbolMacro defineVariable(Frame frame) {
         Symbol symbol = symbol();
-        if (frame == null)
+        if (frame == null) // Frame外なら大域変数定義
             return DefineGlobal.of(symbol, DefineType.VARIABLE, read(frame));
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
@@ -146,7 +152,7 @@ public class Parser {
             return Int.of(Integer.parseInt(word));
         Symbol symbol = Symbol.of(word);
         if (symbol.equals(SELF))
-            return Self.of(frame);
+            return self(frame);
         else if (symbol.equals(FUNCTION))
             return defineFunction(frame);
         else if (symbol.equals(VARIABLE))
