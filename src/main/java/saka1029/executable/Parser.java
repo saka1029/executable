@@ -115,7 +115,7 @@ public class Parser {
         int offset = frame.addLocal(symbol, DefineType.FUNCTION);
         // freamに定義を追加したあと関数定義本体を読み込む。(再帰呼出しがありうるため)
         Executable body = read(frame);
-        return DefineLocal.of(symbol, frame, offset, DefineType.FUNCTION, body);
+        return DefineLocal.of(symbol, FrameOffset.of(DefineType.FUNCTION, frame, offset), body);
     }
 
     SymbolMacro defineVariable(Frame frame) {
@@ -128,7 +128,7 @@ public class Parser {
         // freamに定義を追加する前に変数値を読み込む。(再帰的定義はエラー)
         Executable body = read(frame);
         int offset = frame.addLocal(symbol, DefineType.VARIABLE);
-        return DefineLocal.of(symbol, frame, offset, DefineType.VARIABLE, body);
+        return DefineLocal.of(symbol, FrameOffset.of(DefineType.VARIABLE, frame, offset), body);
     }
 
     SymbolMacro set(Frame frame) {
@@ -163,7 +163,7 @@ public class Parser {
             return symbol;
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
-            return GetLocal.of(symbol, position.type, position.frame, position.offset);
+            return GetLocal.of(symbol, position);
         return symbol;
     }
 
