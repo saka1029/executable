@@ -64,7 +64,7 @@ public class Frame implements Value {
             c.pushFp(this);
             // allocate locals
             for (int i = 0; i < localSize; ++i)
-                c.stack.add(null);
+                c.stack.add(List.NIL);
         };
         Executable epilog = c -> {
             // move return values
@@ -78,21 +78,7 @@ public class Frame implements Value {
             // restore fp
             c.popFp(this);
         };
-        context.executables.addLast(new Iterator<>() {
-            int index = 0, size = body.size() + 2;
-
-            @Override
-            public boolean hasNext() {
-                return index < size;
-            }
-
-            @Override
-            public Executable next() {
-                return ++index == 1 ? prolog
-                    : index == size ? epilog
-                    : body.get(index - 2);
-            }
-        });
+        context.execute(prolog, c -> c.executables.addLast(body.iterator()), epilog);
     }
 
     /**
