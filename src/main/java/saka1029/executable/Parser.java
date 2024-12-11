@@ -107,7 +107,9 @@ public class Parser {
         if (position != null)
             throw error("Local function '%s' is already defined", symbol);
         int offset = frame.addLocal(symbol, DefineType.FUNCTION);
-        return DefineLocal.of(symbol, frame, offset, DefineType.FUNCTION, read(frame));
+        // freamに定義を追加したあと関数定義本体を読み込む。(再帰呼出しがありうるため)
+        Executable body = read(frame);
+        return DefineLocal.of(symbol, frame, offset, DefineType.FUNCTION, body);
     }
 
     SymbolMacro defineVariable(Frame frame) {
@@ -117,8 +119,10 @@ public class Parser {
         FrameOffset position = Frame.find(frame, symbol);
         if (position != null)
             throw error("Local variable '%s' is already defined", symbol);
+        // freamに定義を追加する前に変数値を読み込む。(再帰的定義はエラー)
+        Executable body = read(frame);
         int offset = frame.addLocal(symbol, DefineType.VARIABLE);
-        return DefineLocal.of(symbol, frame, offset, DefineType.VARIABLE, read(frame));
+        return DefineLocal.of(symbol, frame, offset, DefineType.VARIABLE, body);
     }
 
     SymbolMacro set(Frame frame) {
