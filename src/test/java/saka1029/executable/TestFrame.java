@@ -64,12 +64,22 @@ public class TestFrame {
 
     @Test
     public void testLocalFunction() {
-        assertEquals(i(25), eval("function hypot '[a b - r : function double '(dup *) a double b double +] 3 4 hypot"));
+        assertEquals(i(25), eval("""
+            function hypot '[a b - r :
+                function double '(dup *)
+                a double b double +
+            ]
+            3 4 hypot"""));
     }
 
     @Test
     public void testLocalFrame() {
-        assertEquals(i(25), eval("function hypot '[a b - r : function double '[a - r : a a *] a double b double +] 3 4 hypot"));
+        assertEquals(i(25), eval("""
+            function hypot '[a b - r :
+                function double '[a - r : a a *]
+                a double b double +
+            ]
+            3 4 hypot"""));
     }
 
     @Test
@@ -89,19 +99,32 @@ public class TestFrame {
 
     @Test
     public void testSetLocal() {
-        assertEquals(i(10), eval("function sum '[list - r : variable sum 0 list '(sum + set sum) for sum] '(1 2 3 4) sum"));
+        assertEquals(i(10), eval("""
+            function sum '[list - r :
+                variable sum 0
+                list '(sum + set sum) for sum]
+            '(1 2 3 4) sum
+            """));
     }
 
     @Test
     public void testSetLocalReverse() {
         assertEquals(list(), eval("'()"));
         assertEquals(list(i(4), i(3), i(2), i(1)),
-            eval("function reverse '[list - r : variable acc '() list '(acc cons set acc) for acc] '(1 2 3 4) reverse"));
+            eval("""
+                function reverse '[list - r :
+                    variable acc '()
+                    list '(acc cons set acc) for acc
+                ]
+                '(1 2 3 4) reverse"""));
     }
 
     @Test
     public void testSelf() {
-        assertEquals(i(120 ), eval("5 [n - r : n 0 <= 1 '(n 1 - self n *) if]"));
+        assertEquals(i(120 ), eval("""
+            5 [n - r :
+                n 0 <= 1 '(n 1 - self n *) if
+            ]"""));
     }
 
     @Test
@@ -121,5 +144,42 @@ public class TestFrame {
         assertEquals(eval("0 1 <"), eval("0 1 '< compare"));
         assertEquals(eval("1 0 <"), eval("1 0 '< compare"));
         assertEquals(eval("1 0 >"), eval("1 0 '> compare"));
+    }
+
+    @Test
+    public void testNestedFunction() {
+        assertEquals(eval("'(11 12 21 22 31 32)"), eval("""
+            function f1 '[a1 - r : 
+                variable v1 12
+                function f2 '[a2 - r :
+                    variable v2 22
+                    function f3 '[a3 - r :
+                        variable v3 32
+                        a1 v1 a2 v2 a3 v3 nil
+                        cons cons cons cons cons cons
+                    ]
+                    31 f3
+                ]
+                21 f2
+            ]
+            11 f1
+            """));
+    }
+
+    @Test
+    public void testNestedFrame() {
+        assertEquals(eval("'(11 12 21 22 31 32)"), eval("""
+            11 [a1 - r : 
+                variable v1 12
+                21 [a2 - r :
+                    variable v2 22
+                    31 [a3 - r :
+                        variable v3 32
+                        a1 v1 a2 v2 a3 v3 nil
+                        cons cons cons cons cons cons
+                    ]
+                ]
+            ]
+            """));
     }
 }
