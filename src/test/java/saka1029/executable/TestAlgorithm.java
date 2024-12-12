@@ -418,18 +418,16 @@ public class TestAlgorithm {
                 b r c - n + up put
                 b r c + 1 - down put
             ]
+            function found '(count 1 + set count)
             function solve '[r - ct :
                 variable c 0
                 r n >
-                '(count 1 + set count rows print)
+                'found
                 '(
                     1 n 1 range
                     '(
                         set c
-                        c cols get
-                        r c - n + up get
-                        r c + 1 - down get
-                        or or not
+                        c cols get r c - n + up get r c + 1 - down get or or not
                         '(
                             r c true used
                             c r rows put
@@ -446,6 +444,13 @@ public class TestAlgorithm {
             ]
             1 solve
         ]""");
+        assertEquals(eval(c, "1"), eval(c, "1 queen"));
+        assertEquals(eval(c, "0"), eval(c, "2 queen"));
+        assertEquals(eval(c, "0"), eval(c, "3 queen"));
+        assertEquals(eval(c, "2"), eval(c, "4 queen"));
+        assertEquals(eval(c, "10"), eval(c, "5 queen"));
+        assertEquals(eval(c, "4"), eval(c, "6 queen"));
+        assertEquals(eval(c, "40"), eval(c, "7 queen"));
         assertEquals(eval(c, "92"), eval(c, "8 queen"));
     }
 }
