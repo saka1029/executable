@@ -403,22 +403,27 @@ public class TestAlgorithm {
         assertEquals(92, queen(8));
     }
 
-    // @Test
+    @Test
     public void testNQueensFrame() {
         Context c = Context.of();
         run(c, """
-        '[n - r :
-            0 n array variable rows
-            false n array variable cols
-            false 2 n * 1 - array variable up
-            false 2 n * 1 - array variable down
-            0 variable count
-            0 variable r
-            0 variable c
+        function queen '[n - ct :
+            variable rows (0 n array)
+            variable cols (false n array)
+            variable up (false 2 n * 1 - array)
+            variable down (false 2 n * 1 - array)
+            variable count 0
+            function used '[r c b - :
+                b c cols put
+                b r c - n + up put
+                b r c + 1 - down put
+            ]
+            function solve '[r - ct :
+                variable c 0
                 r n >
-                '(count 1 + set count)
+                '(count 1 + set count rows print)
                 '(
-                    1 size 1 range
+                    1 n 1 range
                     '(
                         set c
                         c cols get
@@ -426,14 +431,21 @@ public class TestAlgorithm {
                         r c + 1 - down get
                         or or not
                         '(
+                            r c true used
+                            c r rows put
+                            r 1 + solve
+                            r c false used
                         )
                         '()
                         if 
                     )
                     for
                 )
-            if 
-        ] function queen""");
-
+                if 
+                count
+            ]
+            0 solve
+        ]""");
+        assertEquals(eval(c, "92"), eval(c, "8 queen"));
     }
 }

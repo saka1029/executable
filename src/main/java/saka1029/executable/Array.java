@@ -21,10 +21,14 @@ public class Array implements Executable, Iterable<Executable> {
     }
 
     public Executable get(int index) {
+        if (index < 1 || index > size())
+            throw new IndexOutOfBoundsException("array=%s size=%d index=%d".formatted(this, size(), index));
         return array[index - 1];
     }
 
     public void put(int index, Executable value) {
+        if (index < 1 || index > size())
+            throw new IndexOutOfBoundsException("array=%s size=%d index=%d".formatted(this, size(), index));
         array[index - 1] = value;
     }
 

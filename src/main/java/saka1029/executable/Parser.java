@@ -89,7 +89,7 @@ public class Parser {
     }
 
     static String chString(int ch) {
-        return ch == -1 ? "EOS" : "'%s'".formatted(Character.toUpperCase(ch));
+        return ch == -1 ? "EOS" : "'%s'".formatted(Character.toString(ch));
     }
 
     static boolean isWord(int ch) {
