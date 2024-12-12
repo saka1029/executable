@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * set             = "set" symbol
  * block           = "[" { symbol } "-" { symbol } ":" { element } "]"
  * INT             = "0" .. "9"
- * SYM             = {any charcter excludes "(", ")", "[", "]", "'"}
+ * SYM             = {any charcter excludes white spaces, "(", ")", "[", "]", "'"}
  * </code></pre> 
  */
 public class Parser {
