@@ -114,6 +114,12 @@ public class TestEval {
         assertEquals(i(24), eval("4 fact"));
     }
 
+    @Test
+    public void testFor() {
+        assertEquals(eval("'(1 2 3)"), eval("1 3 1 range '() for nil cons cons cons"));
+        assertEquals(eval("'(3 2 1)"), eval("nil 1 3 1 range 'rcons for"));
+    }
+
     static float Q_rsqrt(float number) {
         final float threehalfs = 1.5F;
         float x2 = number * 0.5F, y = number;
