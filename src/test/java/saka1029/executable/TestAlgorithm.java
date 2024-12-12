@@ -444,7 +444,7 @@ public class TestAlgorithm {
                 if 
                 count
             ]
-            0 solve
+            1 solve
         ]""");
         assertEquals(eval(c, "92"), eval(c, "8 queen"));
     }
