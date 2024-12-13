@@ -35,3 +35,24 @@ C0 : Context --fork()->  C1 : Context
    +--> executables         +--> executables
    +--> globals <-----------+
 ```
+
+## Terminal
+
+Terminalクラスは`Context.run()`の結果
+を表すenumである。
+
+```
+Terminal run() { ... }
+```
+
+```
+public enum Terminal { END, YIELD, BREAK }
+```
+
+`END`は実行すべきすべてのExecutableが完了したことを表す。
+
+`YIELD`は`yield`の呼び出しが行われたことを表し、
+スタックトップに`yield`された値が格納されている。
+
+`BREAK`は`break`の呼び出しが行われたことを表し、
+実行すべき残りのExecutableは破棄される。
