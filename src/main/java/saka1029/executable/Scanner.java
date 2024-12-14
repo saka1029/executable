@@ -1,19 +1,11 @@
 package saka1029.executable;
 
-import java.util.Map;
-
 public class Scanner {
 
     final int[] input;
     int index = 0;
     int ch;
     final StringBuilder sb = new StringBuilder();
-
-    final static Map<Integer, TokenType> ONE_CHAR_TOKENS = Map.of(
-        (int)'(', TokenType.LP, (int)')', TokenType.RP,
-        (int)'\'', TokenType.QUOTE, (int)'`', TokenType.BACK_QUOTE, (int)'$', TokenType.DOLLAR,
-        (int)'.', TokenType.DOT, (int)':', TokenType.COLON
-    );
 
     Scanner(String string) {
         this.input = string.codePoints().toArray();
@@ -22,6 +14,10 @@ public class Scanner {
 
     public static Scanner of(String string) {
         return new Scanner(string);
+    }
+
+    public String string() {
+        return sb.toString();
     }
 
     public Symbol symbol() {
@@ -38,7 +34,7 @@ public class Scanner {
 
     void appendGet(int ch) {
         sb.appendCodePoint(ch);
-        get();
+        ch();
     }
 
     static boolean isWord(int ch) {
@@ -50,7 +46,7 @@ public class Scanner {
 
     public TokenType get() {
         while (Character.isWhitespace(ch))
-            get();
+            ch();
         sb.setLength(0);
         switch (ch) {
             case -1: return TokenType.END;
