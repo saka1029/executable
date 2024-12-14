@@ -29,6 +29,22 @@ public class TestListConstructor {
     }
 
     @Test
+    public void testNest() {
+        Context c = Context.of();
+        assertEquals(eval(c, "'((1 2) 3)"), eval(c, "`(`(1 1 1 +) 1 1 1 + +)"));
+        assertEquals(eval(c, "'((1 1 1 +) 3)"), eval(c, "`('(1 1 1 +) 1 1 1 + +)"));
+    }
+
+    @Test
+    public void testValue() {
+        Context c = Context.of();
+        assertEquals(eval(c, "'(1)"), eval(c, "`1"));
+        assertEquals(eval(c, "'(1)"), eval(c, "`(1)"));
+        assertEquals(eval(c, "'()"), eval(c, "`()"));
+        assertEquals(eval(c, "'(())"), eval(c, "`nil"));
+    }
+
+    @Test
     public void testRange() {
         Context c = Context.of();
         assertEquals(eval(c, "'(1 2 3)"), eval(c, "`(1 3 1 range nil for)"));
