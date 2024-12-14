@@ -181,6 +181,11 @@ public class Context{
             else
                 otherwise.execute(c);
         });
+        add("when", c-> {
+            Executable then = c.pop();
+            if (asBool(c.pop(), "if"))
+                then.execute(c);
+        });
         add("for", c -> {
             // LIST BLOCK each
             Executable block = c.pop();

@@ -98,14 +98,24 @@ public class TestContext {
         assertEquals(i(1), c.eval(list(FALSE, i(0), i(1), sym("if"))));
     }
 
+    @Test
     public void testIfList() {
         Context c = Context.of();
         assertEquals(i(3), c.eval(list(TRUE,
-            list(i(1), i(2), sym("+")),
-            list(i(2), i(3), sym("+")), sym("if"))));
+            quote(list(i(1), i(2), sym("+"))),
+            quote(list(i(2), i(3), sym("+"))), sym("if"))));
         assertEquals(i(5), c.eval(list(FALSE,
-            list(i(1), i(2), sym("+")),
-            list(i(2), i(3), sym("+")), sym("if"))));
+            quote(list(i(1), i(2), sym("+"))),
+            quote(list(i(2), i(3), sym("+"))), sym("if"))));
+    }
+
+    @Test
+    public void testWhen() {
+        Context c = Context.of();
+        assertEquals(i(3), c.eval(list(i(1), TRUE,
+            quote(list(i(2), sym("+"))), sym("when"))));
+        assertEquals(i(1), c.eval(list(i(1), FALSE,
+            quote(list(i(2), sym("+"))), sym("when"))));
     }
 
     @Test
