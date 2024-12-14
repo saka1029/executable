@@ -6,18 +6,20 @@ import java.util.regex.Pattern;
 /**
  * SYNTAX
  * <pre><code>
- * program         = { element }
- * element         = int | list | symbol | quote | define-function | define-variable | set | block
- * int             = [ "+" | "-" ] INT { INT }
- * list            = "(" { element} ")"
- * symbol          = SYM { SYM }
- * symbol          = "'" element
- * define-function = "function" symbol element
- * define-variable = "variable" symbol element
- * set             = "set" symbol
- * block           = "[" { symbol } "-" { symbol } ":" { element } "]"
- * INT             = "0" .. "9"
- * SYM             = {any charcter excludes white spaces, "(", ")", "[", "]", "'"}
+ * program          = { element }
+ * element          = int | list | symbol | quote | list-constructor
+ *                  | define-function | define-variable | set | frame
+ * int              = [ "+" | "-" ] INT { INT }
+ * list             = "(" { element} ")"
+ * symbol           = SYM { SYM }
+ * quote            = "'" element
+ * list-constructor = "`" element
+ * define-function  = "function" symbol element
+ * define-variable  = "variable" symbol element
+ * set              = "set" symbol
+ * frame            = "[" { symbol } "-" { symbol } ":" { element } "]"
+ * INT              = "0" .. "9"
+ * SYM              = {any charcter excludes white spaces, "(", ")", "[", "]", "'"}
  * </code></pre> 
  */
 public class Parser {
@@ -88,13 +90,18 @@ public class Parser {
         return Quote.of(read(frame));
     }
 
+    ListConstructor listConstructor(Frame frame) {
+        get(); // skip '`'
+        return ListConstructor.of(read(frame));
+    }
+
     static String chString(int ch) {
         return ch == -1 ? "EOS" : "'%s'".formatted(Character.toString(ch));
     }
 
     static boolean isWord(int ch) {
         return switch (ch) {
-            case -1, '(', ')', '[', ']', '\'' -> false;
+            case -1, '(', ')', '[', ']', '\'', '`' -> false;
             default -> !Character.isWhitespace(ch);
         };
     }
@@ -214,6 +221,7 @@ public class Parser {
         return switch (ch) {
             case -1 -> throw error("Unexpected end of input");
             case '\'' -> quote(frame);
+            case '`' -> listConstructor(frame);
             case '(' -> list(frame);
             case ')' -> throw error("Unexpected ')'");
             case '[' -> frame(frame);
