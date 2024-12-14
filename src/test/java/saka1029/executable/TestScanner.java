@@ -26,9 +26,8 @@ public class TestScanner {
 
     @Test
     public void testFrame() {
-        Scanner s = Scanner.of("$(a.b:r 3 +)");
-        assertEquals(TokenType.DOLLAR, s.get()); assertEquals("$", s.string());
-        assertEquals(TokenType.LP, s.get()); assertEquals("(", s.string());
+        Scanner s = Scanner.of("[a.b:r 3 +]");
+        assertEquals(TokenType.LB, s.get()); assertEquals("[", s.string());
         assertEquals(TokenType.SYMBOL, s.get()); assertEquals("a", s.string());
         assertEquals(TokenType.DOT, s.get()); assertEquals(".", s.string());
         assertEquals(TokenType.SYMBOL, s.get()); assertEquals("b", s.string());
@@ -36,7 +35,7 @@ public class TestScanner {
         assertEquals(TokenType.SYMBOL, s.get()); assertEquals("r", s.string());
         assertEquals(TokenType.NUMBER, s.get()); assertEquals(3, s.number());
         assertEquals(TokenType.SYMBOL, s.get()); assertEquals("+", s.string());
-        assertEquals(TokenType.RP, s.get()); assertEquals(")", s.string());
+        assertEquals(TokenType.RB, s.get()); assertEquals("]", s.string());
         assertEquals(TokenType.END, s.get());
     }
 

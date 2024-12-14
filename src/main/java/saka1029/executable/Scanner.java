@@ -39,7 +39,7 @@ public class Scanner {
 
     static boolean isWord(int ch) {
         return switch (ch) {
-            case -1, '(', ')', '\'', '`', '$', '.', ':' -> false;
+            case -1, '(', ')', '[', ']', '\'', '`', '.', ':' -> false;
             default -> !Character.isWhitespace(ch);
         };
     }
@@ -52,9 +52,10 @@ public class Scanner {
             case -1: return TokenType.END;
             case '(': appendGet(ch); return TokenType.LP;
             case ')': appendGet(ch); return TokenType.RP;
+            case '[': appendGet(ch); return TokenType.LB;
+            case ']': appendGet(ch); return TokenType.RB;
             case '\'': appendGet(ch); return TokenType.QUOTE;
             case '`': appendGet(ch); return TokenType.BACK_QUOTE;
-            case '$': appendGet(ch); return TokenType.DOLLAR;
             case '.': appendGet(ch); return TokenType.DOT;
             case ':': appendGet(ch); return TokenType.COLON;
             case '-': appendGet(ch); /* thru */
