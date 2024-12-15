@@ -180,14 +180,15 @@ public class TestAlgorithm {
     @Test
     public void testFilterFrame() {
         Context c = Context.of();
-        run(c, "function filter '[l p - r :"
-            + "l null"
-            + "    'nil"
-            + "    '(l car p call"
-            + "        '(l car l cdr p filter cons)"
-            + "        '(l cdr p filter)"
-            + "    if)"
-            + "if]");
+        run(c, """
+            function filter '[l p - r :
+            l null
+            'nil
+            '(l car p call
+                '(l car l cdr p filter cons)
+                '(l cdr p filter)
+                if)
+            if]""");
         // 空リストを返すときは「'nil」または「''()」とする必要がある。
         // 「'()」はNOPとなる。
         // run(c, "'[p l - r : l null ''() '(l car p call '(l car p l cdr filter cons) '(p l cdr filter) if) if] function filter");
@@ -255,27 +256,26 @@ public class TestAlgorithm {
     @Test
     public void testSortFrame() {
         Context c = Context.of();
-        run(c, "function sort '[list predicate - r : "
-            + "    list null "
-            + "    'nil"
-            + "    '("
-            + "        variable pivot (list car) "
-            + "        variable rest (list cdr) "
-            + "        variable left nil "
-            + "        variable right nil "
-            + "           rest "
-            + "           '( "
-            + "                    dup pivot predicate call "
-            + "                    '(left cons set left) "
-            + "                    '(right cons set right) "
-            + "                if "
-            + "            ) "
-            + "        for "
-            // left, pivot, rightを連結する。left, rightはリスト、pivotは要素なので、
-            // "left pivot right cons append"となる。
-            + "        (left predicate sort) pivot (right predicate sort) cons append "
-            + "    ) "
-            + "if]");
+        run(c, """
+            function sort '[list predicate - r :
+                list null
+                'nil
+                '(
+                    variable pivot (list car)
+                    variable rest (list cdr)
+                    variable left nil
+                    variable right nil
+                       rest
+                       '(
+                                dup pivot predicate call
+                                '(left cons set left)
+                                '(right cons set right)
+                            if
+                        )
+                    for
+                    (left predicate sort) pivot (right predicate sort) cons append
+                )
+            if]""");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
         assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
         assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
@@ -289,18 +289,20 @@ public class TestAlgorithm {
     @Test
     public void testSortFrameByFilter() {
         Context c = Context.of();
-        run(c, "function sort '[list predicate - r : "
-            + "    list null "
-            + "    'nil "
-            + "    '("
-            + "        variable pivot (list car) "
-            + "        variable rest (list cdr) "
-            + "        rest '(pivot predicate call) filter predicate sort "
-            + "        pivot "
-            + "        rest '(pivot predicate call not) filter predicate sort "
-            + "        cons append "
-            + "    ) "
-            + "if]");
+        run(c, """
+            function sort '[list predicate - r :
+                list null
+                'nil
+                '(
+                    variable pivot (list car)
+                    variable rest (list cdr)
+                    rest '(pivot predicate call) filter predicate sort
+                    pivot
+                    rest '(pivot predicate call not) filter predicate sort
+                    cons append
+                )
+                if
+                ]""");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
         assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
         assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
@@ -309,16 +311,17 @@ public class TestAlgorithm {
     @Test
     public void testSortFrameByFilterNoLocalVariable() {
         Context c = Context.of();
-        run(c, "function sort '[list predicate - r : "
-            + "    list null "
-            + "    'nil "
-            + "    '("
-            + "        list cdr '(list car predicate call) filter predicate sort "
-            + "        list car "
-            + "        list cdr '(list car predicate call not) filter predicate sort "
-            + "        cons append "
-            + "    ) "
-            + "if]");
+        run(c, """
+            function sort '[list predicate - r :
+                list null
+                'nil
+                '(
+                    list cdr '(list car predicate call) filter predicate sort
+                    list car
+                    list cdr '(list car predicate call not) filter predicate sort
+                    cons append
+                )
+                if]""");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
         assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
         assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
@@ -337,8 +340,11 @@ public class TestAlgorithm {
     @Test
     public void testSieve() {
         Context c = Context.of();
-        run(c, "function sieve '[ex a - : ex dup + a size ex range "
-            + " '(false swap a put) for]");
+        run(c, """
+            function sieve '[ex a - :
+                ex dup + a size ex range
+                '(false swap a put)
+                for]""");
         //                 1     2     3     4      5     6     7
         assertEquals(array(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, TRUE),
             eval(c, "true 7 array dup 2 swap sieve"));
@@ -348,18 +354,24 @@ public class TestAlgorithm {
     public void testPrimes() {
         Context c = Context.of();
         // エラトステネスの篩
-        run(c, "function sieve '[ex a - : ex dup + a size ex range "
-            + " '(false swap a put) for]");
-        run(c, "function primes '[max - r : variable a (true max array) "
-            + " false 1 a put "
-            + " 2 a sieve "     // 2の倍数を除去する。
-            + " 3 a size 2 range '(a sieve) for "   // その他を除去する。
-            + " a "     // 結果のbool配列を返す。
-            + "]");
+        run(c, """
+            function sieve '[ex a - :
+                ex dup + a size ex range
+                '(false swap a put)
+                for]""");
+        run(c, """
+            function primes '[max - r :
+                variable a (true max array)
+                false 1 a put 
+                2 a sieve
+                3 a size 2 range '(a sieve) for
+                a]""");
         // bool配列から素数のリストに変換する。
-        run(c, "function select '[a - r : variable ps nil "
-            + " 1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for "
-            + " ps reverse]");
+        run(c, """
+            function select '[a - r :
+                variable ps nil
+                1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for
+                ps reverse]""");
         assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes select"));
     }
 
