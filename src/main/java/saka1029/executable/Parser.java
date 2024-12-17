@@ -33,11 +33,15 @@ public class Parser {
 
     public List parse(String input) {
         this.scanner = Scanner.of(input);
-        scanner.get();
+        get();
         java.util.List<Executable> list = new ArrayList<>();
         while (type != TokenType.END)
             list.add(read(null));
         return Cons.list(list);
+    }
+
+    TokenType get() {
+        return type = scanner.get();
     }
 
     RuntimeException error(String format, Object... args) {
@@ -47,29 +51,30 @@ public class Parser {
     Symbol symbol() {
         if (type != TokenType.SYMBOL)
             throw error("Symbol expected but '%s'", scanner.string());
-        scanner.get(); // skip symbol
-        return scanner.symbol();
+        Symbol symbol = scanner.symbol();
+        get(); // skip symbol
+        return symbol;
     }
 
     List list(Frame frame) {
-        scanner.get(); // skip '('
+        get(); // skip '('
         java.util.List<Executable> list = new ArrayList<>();
         while (type != TokenType.END && type != TokenType.RP) {
             list.add(read(frame));
         }
         if (type != TokenType.RP)
             throw error("Unexpected end of input");
-        scanner.get(); // skip ')'
+        get(); // skip ')'
         return Cons.list(list);
     }
 
     Quote quote(Frame frame) {
-        scanner.get(); // skip '\''
+        get(); // skip '\''
         return Quote.of(read(frame));
     }
 
     ListConstructor listConstructor(Frame frame) {
-        scanner.get(); // skip '`'
+        get(); // skip '`'
         return ListConstructor.of(read(frame));
     }
 
@@ -117,13 +122,13 @@ public class Parser {
 
     Int number(Frame frame) {
         Int number = scanner.number();
-        scanner.get(); // skip number
+        get(); // skip number
         return number;
     }
 
     Executable symbol(Frame frame) {
         Symbol symbol = scanner.symbol();
-        scanner.get();
+        get();
         if (symbol.equals(SELF))
             return self(frame);
         else if (symbol.equals(FUNCTION))
@@ -141,7 +146,7 @@ public class Parser {
     }
 
     Frame frame(Frame frame) {
-        scanner.get(); // skip '['
+        get(); // skip '['
         StringBuilder header = new StringBuilder();
         java.util.List<Symbol> arguments = new ArrayList<>();
         while (type != TokenType.END && type != TokenType.RB
@@ -152,7 +157,7 @@ public class Parser {
         }
         if (type != TokenType.DOT)
             throw error("'.' expected but '%s'", scanner.string());
-        scanner.get(); // skip '.'
+        get(); // skip '.'
         header.append(" .");
         java.util.List<Symbol> returns = new ArrayList<>();
         while (type != TokenType.END && type != TokenType.RB
@@ -163,7 +168,7 @@ public class Parser {
         }
         if (type != TokenType.COLON)
             throw error("':' expected but '%s'", scanner.string());
-        scanner.get(); // skip ':'
+        get(); // skip ':'
         header.append(" :");
         Frame newFrame = Frame.of(frame, arguments, returns.size(), header.toString());
         // LocalContext lc = new LocalContext(arguments, returns.size());
@@ -171,7 +176,7 @@ public class Parser {
             newFrame.body.add(read(newFrame));
         if (type != TokenType.RB)
             throw error("']' expected but '%s'", scanner.string());
-        scanner.get(); // skip ']'
+        get(); // skip ']'
         return newFrame;
     }
 

@@ -30,7 +30,7 @@ public class TestAlgorithm {
     @Test
     public void testReverseForFrame() {
         Context c = Context.of();
-        run(c, "function reverse '[i - r : variable a '() i '(a cons set a) for a]");
+        run(c, "function reverse '[i.r : variable a '() i '(a cons set a) for a]");
         assertEquals(eval(c, "'()"), eval(c, "'() reverse"));
         assertEquals(eval(c, "'(1)"), eval(c, "'(1) reverse"));
         assertEquals(eval(c, "'(3 2 1)"), eval(c, "'(1 2 3) reverse"));
@@ -40,9 +40,9 @@ public class TestAlgorithm {
     @Test
     public void testReverseFrameNest() {
         Context c = Context.of();
-        run(c, "function reverse '[i - r : function rev '[i a - r : i null 'a '(i cdr i car a cons rev) if] i '() rev]");
-        // run(c, "function reverse '[i - r : function rev '[i a - r : i null 'a '(i cdr i car a cons self) if] i '() rev]");
-        // run(c, "'[i - r : '[i a - r : i null 'a '(i uncons swap a cons rev) if] function rev i '() rev] function reverse");
+        run(c, "function reverse '[i . r : function rev '[i a . r : i null 'a '(i cdr i car a cons rev) if] i '() rev]");
+        // run(c, "function reverse '[i . r : function rev '[i a . r : i null 'a '(i cdr i car a cons self) if] i '() rev]");
+        // run(c, "'[i . r : '[i a . r : i null 'a '(i uncons swap a cons rev) if] function rev i '() rev] function reverse");
         assertEquals(eval(c, "'()"), eval(c, "'() reverse"));
         assertEquals(eval(c, "'(1)"), eval(c, "'(1) reverse"));
         assertEquals(eval(c, "'(3 2 1)"), eval(c, "'(1 2 3) reverse"));
@@ -52,7 +52,7 @@ public class TestAlgorithm {
     @Test
     public void testReverseFrameNestDirect() {
         Context c = Context.of();
-        run(c, "function reverse '[i - r : i '() [i a - r : i null 'a '(i cdr i car a cons self) if]]");
+        run(c, "function reverse '[i.r : i '() [i a.r : i null 'a '(i cdr i car a cons self) if]]");
         assertEquals(eval(c, "'()"), eval(c, "'() reverse"));
         assertEquals(eval(c, "'(1)"), eval(c, "'(1) reverse"));
         assertEquals(eval(c, "'(3 2 1)"), eval(c, "'(1 2 3) reverse"));
@@ -62,7 +62,7 @@ public class TestAlgorithm {
     @Test
     public void testReverseFrameWhile() {
         Context c = Context.of();
-        run(c, "function reverse '[i - r : '() '(i null not) '(i uncons set i rcons) while]");
+        run(c, "function reverse '[i . r : '() '(i null not) '(i uncons set i rcons) while]");
         assertEquals(eval(c, "'()"), eval(c, "'() reverse"));
         assertEquals(eval(c, "'(1)"), eval(c, "'(1) reverse"));
         assertEquals(eval(c, "'(3 2 1)"), eval(c, "'(1 2 3) reverse"));
@@ -90,7 +90,7 @@ public class TestAlgorithm {
     @Test
     public void testLengthFrameFor() {
         Context c = Context.of();
-        run(c, "function length '[i - r : variable a 0 i '(drop a 1 + set a) for a]");
+        run(c, "function length '[i . r : variable a 0 i '(drop a 1 + set a) for a]");
         assertEquals(eval(c, "0"), eval(c, "'() length"));
         assertEquals(eval(c, "1"), eval(c, "'(2) length"));
         assertEquals(eval(c, "2"), eval(c, "'(1 2) length"));
@@ -99,7 +99,7 @@ public class TestAlgorithm {
     @Test
     public void testLengthFrameRecursive() {
         Context c = Context.of();
-        run(c, "function length '[i - r : i null 0 '(i cdr self 1 +) if]");
+        run(c, "function length '[i . r : i null 0 '(i cdr self 1 +) if]");
         assertEquals(eval(c, "0"), eval(c, "'() length"));
         assertEquals(eval(c, "1"), eval(c, "'(2) length"));
         assertEquals(eval(c, "2"), eval(c, "'(1 2) length"));
@@ -117,7 +117,7 @@ public class TestAlgorithm {
     @Test
     public void testAppendRecursiveFrame() {
         Context c = Context.of();
-        run(c, "function append '[a b - r : a null 'b '(a uncons b self cons) if]");
+        run(c, "function append '[a b . r : a null 'b '(a uncons b self cons) if]");
         assertEquals(eval(c, "'(3 4)"), eval(c, "'() '(3 4) append"));
         assertEquals(eval(c, "'(2 3 4)"), eval(c, "'(2) '(3 4) append"));
         assertEquals(eval(c, "'(1 2 3 4)"), eval(c, "'(1 2) '(3 4) append"));
@@ -134,7 +134,7 @@ public class TestAlgorithm {
     @Test
     public void testFibonacciFrameRecursion() {
         Context c = Context.of();
-        run(c, "function fib '[n - r : n 2 < n '(n 1 - self n 2 - self +) if]");
+        run(c, "function fib '[n . r : n 2 < n '(n 1 - self n 2 - self +) if]");
         assertEquals(i(0), eval(c, "0 fib"));
         assertEquals(i(1), eval(c, "1 fib"));
         assertEquals(i(1), eval(c, "2 fib"));
@@ -157,7 +157,7 @@ public class TestAlgorithm {
     @Test
     public void testFibonacciFrameFor() {
         Context c = Context.of();
-        run(c, "function fib '[n - r : variable a 1 variable b 0 1 n 1 range '(drop a b + b set a set b) for b]");
+        run(c, "function fib '[n . r : variable a 1 variable b 0 1 n 1 range '(drop a b + b set a set b) for b]");
         assertEquals(i(0), eval(c, "0 fib"));
         assertEquals(i(1), eval(c, "1 fib"));
         assertEquals(i(1), eval(c, "2 fib"));
@@ -181,7 +181,7 @@ public class TestAlgorithm {
     public void testFilterFrame() {
         Context c = Context.of();
         run(c, """
-            function filter '[l p - r :
+            function filter '[l p . r :
             l null
             'nil
             '(l car p call
@@ -201,7 +201,7 @@ public class TestAlgorithm {
     @Test
     public void testFilterReverse() {
         Context c = Context.of();
-        run(c, "function filter '[l p - r : nil l '(dup p call 'rcons 'drop if) for reverse]");
+        run(c, "function filter '[l p . r : nil l '(dup p call 'rcons 'drop if) for reverse]");
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
@@ -218,7 +218,7 @@ public class TestAlgorithm {
     @Test
     public void testMapFrame() {
         Context c = Context.of();
-        run(c, "function map '[l p - r :"
+        run(c, "function map '[l p . r :"
             + "l null"
             + "    'nil"
             + "    '(l car p call l cdr p self cons)"
@@ -231,7 +231,7 @@ public class TestAlgorithm {
     @Test
     public void testMapFrameReverse() {
         Context c = Context.of();
-        run(c, "function map '[l p - r : '() l '(p call rcons) for reverse]");
+        run(c, "function map '[l p . r : '() l '(p call rcons) for reverse]");
         assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
         assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
@@ -240,7 +240,7 @@ public class TestAlgorithm {
     @Test
     public void testMapFrameReverseSet() {
         Context c = Context.of();
-        run(c, "function map '[l p - r : variable m '() l '(p call m cons set m) for m reverse]");
+        run(c, "function map '[l p . r : variable m '() l '(p call m cons set m) for m reverse]");
         assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
         assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
@@ -257,7 +257,7 @@ public class TestAlgorithm {
     public void testSortFrame() {
         Context c = Context.of();
         run(c, """
-            function sort '[list predicate - r :
+            function sort '[list predicate . r :
                 list null
                 'nil
                 '(
@@ -290,7 +290,7 @@ public class TestAlgorithm {
     public void testSortFrameByFilter() {
         Context c = Context.of();
         run(c, """
-            function sort '[list predicate - r :
+            function sort '[list predicate . r :
                 list null
                 'nil
                 '(
@@ -312,7 +312,7 @@ public class TestAlgorithm {
     public void testSortFrameByFilterNoLocalVariable() {
         Context c = Context.of();
         run(c, """
-            function sort '[list predicate - r :
+            function sort '[list predicate . r :
                 list null
                 'nil
                 '(
@@ -341,7 +341,7 @@ public class TestAlgorithm {
     public void testSieve() {
         Context c = Context.of();
         run(c, """
-            function sieve '[ex a - :
+            function sieve '[ex a . :
                 ex dup + a size ex range
                 '(false swap a put)
                 for]""");
@@ -355,12 +355,12 @@ public class TestAlgorithm {
         Context c = Context.of();
         // エラトステネスの篩
         run(c, """
-            function sieve '[ex a - :
+            function sieve '[ex a . :
                 ex dup + a size ex range
                 '(false swap a put)
                 for]""");
         run(c, """
-            function primes '[max - r :
+            function primes '[max . r :
                 variable a (true max array)
                 false 1 a put 
                 2 a sieve
@@ -368,7 +368,7 @@ public class TestAlgorithm {
                 a]""");
         // bool配列から素数のリストに変換する。
         run(c, """
-            function select '[a - r :
+            function select '[a . r :
                 variable ps nil
                 1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for
                 ps reverse]""");
@@ -419,19 +419,19 @@ public class TestAlgorithm {
     public void testNQueensFrame() {
         Context c = Context.of();
         run(c, """
-        function queen '[n - ct :
+        function queen '[n . ct :
             variable rows (0 n array)
             variable cols (false n array)
             variable up (false 2 n * 1 - array)
             variable down (false 2 n * 1 - array)
             variable count 0
-            function used '[r c b - :
+            function used '[r c b . :
                 b c cols put
                 b r c - n + up put
                 b r c + 1 - down put
             ]
             function found '(count 1 + set count)
-            function solve '[r - ct :
+            function solve '[r . ct :
                 variable c 0
                 r n >
                 'found
