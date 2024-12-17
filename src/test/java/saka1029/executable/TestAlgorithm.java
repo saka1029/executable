@@ -386,14 +386,11 @@ public class TestAlgorithm {
                     ex dup + a size ex range
                     '(false swap a put)
                     for]
-                function select '[.r:
-                    variable ps nil
-                    1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for
-                    ps reverse]
                 false 1 a put 
                 2 sieve
                 3 a size 2 range 'sieve for
-                a select]""");
+                `(1 a size 1 range '(dup a get not 'drop when) for)
+                ]""");
         assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes"));
     }
 
