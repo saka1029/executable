@@ -461,13 +461,10 @@ public class TestAlgorithm {
             function solve '[r . ct :
                 variable c 0
                 r n >
-                'found
-                '(
-                    1 n 1 range
-                    '(
+                'found '(
+                    1 n 1 range '(
                         set c
-                        c cols get r c - n + up get r c + 1 - down get or or not
-                        '(
+                        c cols get r c - n + up get r c + 1 - down get or or not '(
                             r c true used
                             c r rows put
                             r 1 + solve
