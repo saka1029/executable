@@ -375,6 +375,30 @@ public class TestAlgorithm {
         assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes select"));
     }
 
+    @Test
+    public void testPrimesNest() {
+        Context c = Context.of();
+        // エラトステネスの篩
+        run(c, """
+            function primes '[max . r :
+                variable a (true max array)
+                function sieve '[ex . :
+                    ex dup + a size ex range
+                    '(false swap a put)
+                    for]
+                false 1 a put 
+                2 sieve
+                3 a size 2 range 'sieve for
+                a]""");
+        // bool配列から素数のリストに変換する。
+        run(c, """
+            function select '[a . r :
+                variable ps nil
+                1 a size 1 range '(dup a get '(ps cons set ps) 'drop if) for
+                ps reverse]""");
+        assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes select"));
+    }
+
     static int queen(int n) {
         return new Object() {
             int[] rows = new int[n];
