@@ -279,11 +279,9 @@ public class TestAlgorithm {
                                 dup pivot predicate call
                                 '(left cons set left)
                                 '(right cons set right)
-                            if
-                        )
+                            if)
                     for
-                    (left predicate sort) pivot (right predicate sort) cons append
-                )
+                    (left predicate sort) pivot (right predicate sort) cons append)
             if]""");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
         assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
@@ -308,8 +306,7 @@ public class TestAlgorithm {
                     rest '(pivot predicate call) filter predicate sort
                     pivot
                     rest '(pivot predicate call not) filter predicate sort
-                    cons append
-                )
+                    cons append)
                 if
                 ]""");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
@@ -328,8 +325,7 @@ public class TestAlgorithm {
                     list cdr '(list car predicate call) filter predicate sort
                     list car
                     list cdr '(list car predicate call not) filter predicate sort
-                    cons append
-                )
+                    cons append)
                 if]""");
         assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
         assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
