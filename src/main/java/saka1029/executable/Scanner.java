@@ -24,8 +24,8 @@ public class Scanner {
         return Symbol.of(sb.toString());
     }
 
-    public int number() {
-        return Integer.parseInt(sb.toString());
+    public Int number() {
+        return Int.of(Integer.parseInt(sb.toString()));
     }
 
     int ch() {
