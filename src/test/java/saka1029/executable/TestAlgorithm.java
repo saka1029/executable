@@ -383,7 +383,7 @@ public class TestAlgorithm {
             function primes '[max . r :
                 variable a (true max array)
                 function sieve '[ex . :
-                    ex dup + a size ex range
+                    ex ex + a size ex range
                     '(false swap a put)
                     for]
                 false 1 a put 
