@@ -40,9 +40,10 @@ public class TestAlgorithm {
     @Test
     public void testReverseFrameNest() {
         Context c = Context.of();
-        run(c, "function reverse '[i . r : function rev '[i a . r : i null 'a '(i cdr i car a cons rev) if] i '() rev]");
-        // run(c, "function reverse '[i . r : function rev '[i a . r : i null 'a '(i cdr i car a cons self) if] i '() rev]");
-        // run(c, "'[i . r : '[i a . r : i null 'a '(i uncons swap a cons rev) if] function rev i '() rev] function reverse");
+        run(c, """
+            function reverse '[i . r :
+                function rev '[i a . r : i null 'a '(i cdr i car a cons rev) if]
+                i '() rev]""");
         assertEquals(eval(c, "'()"), eval(c, "'() reverse"));
         assertEquals(eval(c, "'(1)"), eval(c, "'(1) reverse"));
         assertEquals(eval(c, "'(3 2 1)"), eval(c, "'(1 2 3) reverse"));
@@ -157,7 +158,11 @@ public class TestAlgorithm {
     @Test
     public void testFibonacciFrameFor() {
         Context c = Context.of();
-        run(c, "function fib '[n . r : variable a 1 variable b 0 1 n 1 range '(drop a b + b set a set b) for b]");
+        run(c, """
+            function fib '[n . r :
+                variable a 1
+                variable b 0
+                1 n 1 range '(drop a b + b set a set b) for b]""");
         assertEquals(i(0), eval(c, "0 fib"));
         assertEquals(i(1), eval(c, "1 fib"));
         assertEquals(i(1), eval(c, "2 fib"));
@@ -191,7 +196,9 @@ public class TestAlgorithm {
             if]""");
         // 空リストを返すときは「'nil」または「''()」とする必要がある。
         // 「'()」はNOPとなる。
-        // run(c, "'[p l - r : l null ''() '(l car p call '(l car p l cdr filter cons) '(p l cdr filter) if) if] function filter");
+        // run(c, "'[p l - r : l null ''()
+        //  '(l car p call '(l car p l cdr filter cons)
+        //  '(p l cdr filter) if) if] function filter");
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
@@ -201,7 +208,9 @@ public class TestAlgorithm {
     @Test
     public void testFilterReverse() {
         Context c = Context.of();
-        run(c, "function filter '[l p . r : nil l '(dup p call 'rcons 'drop if) for reverse]");
+        run(c, """
+            function filter '[l p . r :
+                nil l '(dup p call 'rcons 'drop if) for reverse]""");
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
@@ -396,7 +405,9 @@ public class TestAlgorithm {
     static int queen(int n) {
         return new Object() {
             int[] rows = new int[n];
-            boolean[] cols = new boolean[n], up = new boolean[2 * n - 1], down = new boolean[2 * n - 1];
+            boolean[] cols = new boolean[n],
+                up = new boolean[2 * n - 1],
+                down = new boolean[2 * n - 1];
             int count = 0;
 
             void set(int r, int c, boolean b) {
