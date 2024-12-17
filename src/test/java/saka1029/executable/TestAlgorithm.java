@@ -473,13 +473,10 @@ public class TestAlgorithm {
                             r c true used
                             c r rows put
                             r 1 + solve
-                            r c false used
-                        )
+                            r c false used)
                         '()
-                        if 
-                    )
-                    for
-                )
+                        if)
+                    for)
                 if 
                 count
             ]
