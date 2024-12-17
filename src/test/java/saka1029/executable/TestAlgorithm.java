@@ -389,11 +389,9 @@ public class TestAlgorithm {
                 variable a (true max array)
                 function sieve '[ex . :
                     ex a get
-                    '(
-                        ex ex + a size ex range
+                    '(ex ex + a size ex range
                         '(false swap a put)
-                        for)
-                        when]
+                        for) when]
                 false 1 a put 
                 2 sieve
                 3 a size 2 range 'sieve for
