@@ -388,14 +388,18 @@ public class TestAlgorithm {
             function primes '[max . r :
                 variable a (true max array)
                 function sieve '[ex . :
-                    ex ex + a size ex range
-                    '(false swap a put)
-                    for]
+                    ex a get
+                    '(
+                        ex ex + a size ex range
+                        '(false swap a put)
+                        for)
+                        when]
                 false 1 a put 
                 2 sieve
                 3 a size 2 range 'sieve for
                 `(1 a size 1 range '(dup a get not 'drop when) for) ]""");
-        assertEquals(list(i(2), i(3), i(5), i(7)), eval(c, "10 primes"));
+        assertEquals(eval(c, "'(2 3 5 7 11 13 17 19 23 29 31 37 41 43 47)"),
+            eval(c, "50 primes"));
     }
 
     static int queen(int n) {
