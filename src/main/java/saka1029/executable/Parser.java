@@ -59,9 +59,8 @@ public class Parser {
     List list(Frame frame) {
         get(); // skip '('
         java.util.List<Executable> list = new ArrayList<>();
-        while (type != TokenType.END && type != TokenType.RP) {
+        while (type != TokenType.END && type != TokenType.RP)
             list.add(read(frame));
-        }
         if (type != TokenType.RP)
             throw error("Unexpected end of input");
         get(); // skip ')'

@@ -217,6 +217,15 @@ public class TestAlgorithm {
     }
 
     @Test
+    public void testFilterByListConstructor() {
+        Context c = Context.of();
+        run(c, "function filter '[l p.r : `(l '(dup p call not 'drop when) for)]");
+        assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
+        assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
+        assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
+    }
+
+    @Test
     public void testMapBuiltin() {
         Context c = Context.of();
         assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
@@ -255,6 +264,15 @@ public class TestAlgorithm {
         assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
     }
 
+    @Test
+    public void testMapFrameByListConstructor() {
+        Context c = Context.of();
+        run(c, "function map '[l p . r : `(l '(p call) for)]");
+        assertEquals(eval(c, "'()"), eval(c, "'() '(1 +) map"));
+        assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(0 1 2) '(1 +) map"));
+        assertEquals(eval(c, "'(1 4 9)"), eval(c, " '(1 2 3) '(dup *) map"));
+    }
+
     /**
      * 与えられたリストの先頭をピボットとし、
      * 残りのリストからピボット以上のリストと以下のリストに振り分ける。
@@ -269,17 +287,15 @@ public class TestAlgorithm {
             function sort '[list predicate . r :
                 list null
                 'nil
-                '(
-                    variable pivot (list car)
+                '(variable pivot (list car)
                     variable rest (list cdr)
                     variable left nil
                     variable right nil
-                       rest
-                       '(
-                                dup pivot predicate call
-                                '(left cons set left)
-                                '(right cons set right)
-                            if)
+                    rest
+                    '(dup pivot predicate call
+                        '(left cons set left)
+                        '(right cons set right)
+                        if)
                     for
                     (left predicate sort) pivot (right predicate sort) cons append)
             if]""");
@@ -300,8 +316,7 @@ public class TestAlgorithm {
             function sort '[list predicate . r :
                 list null
                 'nil
-                '(
-                    variable pivot (list car)
+                '(variable pivot (list car)
                     variable rest (list cdr)
                     rest '(pivot predicate call) filter predicate sort
                     pivot
