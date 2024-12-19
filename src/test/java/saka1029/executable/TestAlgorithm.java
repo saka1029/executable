@@ -219,7 +219,7 @@ public class TestAlgorithm {
     @Test
     public void testFilterByListConstructor() {
         Context c = Context.of();
-        run(c, "function filter '[l p.r : `(l '(dup p call not 'drop when) for)]");
+        run(c, "function filter '[l p.r : `(l '(dup p call 'drop unless) for)]");
         assertEquals(eval(c, "'(1 2 3)"), eval(c, " '(1 2 3 4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'()"), eval(c, "'(4 5 6) '(4 <) filter"));
         assertEquals(eval(c, "'(4 5 6)"), eval(c, "'(1 2 3 4 5 6) '(4 >=) filter"));
@@ -355,7 +355,7 @@ public class TestAlgorithm {
                 list null
                 'nil
                 '(
-                    `(list cdr '(dup list car predicate call not 'drop when) for) predicate sort
+                    `(list cdr '(dup list car predicate call 'drop unless) for) predicate sort
                     list car
                     `(list cdr '(dup list car predicate call 'drop when) for) predicate sort
                     cons append)

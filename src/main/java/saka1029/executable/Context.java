@@ -183,7 +183,12 @@ public class Context{
         });
         add("when", c-> {
             Executable then = c.pop();
-            if (asBool(c.pop(), "if"))
+            if (asBool(c.pop(), "when"))
+                then.execute(c);
+        });
+        add("unless", c-> {
+            Executable then = c.pop();
+            if (!asBool(c.pop(), "unless"))
                 then.execute(c);
         });
         add("for", c -> {
