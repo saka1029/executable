@@ -348,6 +348,24 @@ public class TestAlgorithm {
     }
 
     @Test
+    public void testSortFrameByListConstructor() {
+        Context c = Context.of();
+        run(c, """
+            function sort '[list predicate . r :
+                list null
+                'nil
+                '(
+                    `(list cdr '(dup list car predicate call not 'drop when) for) predicate sort
+                    list car
+                    `(list cdr '(dup list car predicate call 'drop when) for) predicate sort
+                    cons append)
+                if]""");
+        assertEquals(eval(c, "'()"), eval(c, "'() '< sort"));
+        assertEquals(eval(c, "'(1 2 3 4 5)"), eval(c, "'(1 5 3 4 2) '< sort"));
+        assertEquals(eval(c, "'(5 4 3 2 1)"), eval(c, "'(1 5 3 4 2) '> sort"));
+    }
+
+    @Test
     public void testCompose() {
         Context c = Context.of();
         assertEquals(i(3), eval(c, "1 2 '+ nil cons cons cons call"));
